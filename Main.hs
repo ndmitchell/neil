@@ -6,6 +6,7 @@ import System.Directory
 import System.Environment
 import System.FilePath
 
+import Paper.Graph
 import Paper.WordCount
 
 
@@ -13,7 +14,7 @@ import Paper.WordCount
 COMMANDS:
 make -- compile the document
 wc -- word count
-chart -- make a chart
+graph -- make a graph
 spell -- complete spell check
 colin -- auto-colin grammar check
 haskell -- auto-haskell checking
@@ -45,6 +46,7 @@ process "wc" files = do
         putStrLn $ int count
         return (file,count)
     putStrLn $ shw "Total" ++ "  " ++ int (sum $ map snd res)
+    graphLog res
 
 process x files = putStrLn $ "Error: Unknown action, " ++ show x
 
