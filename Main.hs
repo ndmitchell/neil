@@ -48,6 +48,9 @@ process "wc" files = do
     putStrLn $ shw "Total" ++ "  " ++ int (sum $ map snd res)
     graphLog res
 
+process "graph" files = do
+    graphCreate files
+
 process x files = putStrLn $ "Error: Unknown action, " ++ show x
 
 

@@ -1,5 +1,5 @@
 
-module Paper.Graph(graphLog) where
+module Paper.Graph(graphLog, graphCreate) where
 
 import Control.Monad
 import Data.List
@@ -8,6 +8,8 @@ import Data.Ord
 import System.Directory
 import System.FilePath
 import System.Time
+
+import Graphics.Google.Chart
 
 
 graphDir = "paper"
@@ -28,7 +30,7 @@ graphLog xs = do
 
 
 -- load the data
-graphLoad :: [FilePath] -> IO [(TimeStep,FilePath,Int)]
+graphLoad :: [FilePath] -> IO [(Date,FilePath,Int)]
 graphLoad xs =
     liftM (sortBy (comparing fst3) . concat) $ mapM f $
         group $ map splitFileName xs
@@ -37,27 +39,28 @@ graphLoad xs =
             let dir = fst (head xs)
                 files = map snd xs
             src <- readFile $ dir </> graphFile
-            return [(timeStep a,b,c) | s <- lines src, not $ null s, let (a,b,c) = read s, b `elem` files]
+            return [(date a,b,c) | s <- lines src, not $ null s, let (a,b,c) = read s, b `elem` files]
 
 fst3 (x,_,_) = x
 
-type TimeStep = (Int,Int,Int)
+-- year, month (1 based), day (1 based)
+type Date = (Int,Int,Int)
 
-timeStep :: CalendarTime -> TimeStep
-timeStep t = (ctYear t, fromEnum (ctMonth t) + 1, ctDay t)
-
-
-incStep :: TimeStep -> TimeStep
-incStep (a,12,31) = (a+1,1,1)
-incStep (a, b,31) = (a,b+1,1)
-incStep (a, b, c) = (a,b,c+1)
+date :: CalendarTime -> Date
+date t = (ctYear t, fromEnum (ctMonth t) + 1, ctDay t)
 
 
-totalCounts :: [FilePath] -> [(TimeStep,FilePath,Int)] -> [(TimeStep,Int)]
+incDate :: Date -> Date
+incDate (a,12,31) = (a+1,1,1)
+incDate (a, b,31) = (a,b+1,1)
+incDate (a, b, c) = (a,b,c+1)
+
+
+totalCounts :: [FilePath] -> [(Date,FilePath,Int)] -> [(Date,Int)]
 totalCounts _ [] = [((2000,1,1),0)]
 totalCounts files xs = f (Map.fromList (zip files $ repeat 0)) xs steps
     where
-        steps = iterate incStep $ fst3 (head xs)
+        steps = iterate incDate $ fst3 (head xs)
 
         f now xxs@((a,b,c):xs) (s:ss)
             | a > s = dump s now : f now xxs ss
@@ -70,5 +73,35 @@ totalCounts files xs = f (Map.fromList (zip files $ repeat 0)) xs steps
 graphCreate :: [FilePath] -> IO ()
 graphCreate files = do
     xs <- graphLoad files
-    xs <- return $ totalCounts files xs
+    let url = graphUrl $ totalCounts files xs
+    putStrLn url
     return ()
+
+
+-- a list of date/count pairs
+-- all the dates must be in order
+graphUrl :: [(Date,Int)] -> String
+graphUrl dat = chartURL $
+        setSize 400 300 $
+        setTitle "Word Count" $
+        setAxisTypes [AxisBottom,AxisLeft] $
+        setAxisLabels [xAxis, yAxis] $
+        setData (encodeDataSimple [map scale allY]) $
+        newLineChart
+    where
+        -- calculate the bounding box
+        minX = let (a,b,c) = fst (head dat) in (a,b,1)
+        maxX = let (a,b,c) = fst (last dat) in incDate (a,b,31)
+        allY = if length dat == 1 then replicate 2 $ snd $ head dat else map snd dat
+        minY = (minimum allY `div` 1000) * 1000
+        maxY = (maximum allY `div` 1000) * 1000 + 1000
+
+        -- calculate the axis
+        yAxis = map show [minY, minY+1000 .. maxY]
+        xAxis = map g $ takeWhile (<= maxX) $ iterate f minX
+            where
+                f (a,b,c) = incDate (a,b,31)
+                g (a,b,c) = take 3 (show (toEnum (b-1) :: Month)) ++ " " ++ show (a `mod` 100)
+
+        -- scaling (new range is 0 <= x <= 61)
+        scale y = (61 * (y - minY)) `div` (maxY - minY)
