@@ -5,6 +5,7 @@ import Control.Monad
 import Data.List
 import qualified Data.Map as Map
 import Data.Ord
+import System.Cmd
 import System.Directory
 import System.FilePath
 import System.Time
@@ -70,11 +71,11 @@ totalCounts files xs = f (Map.fromList (zip files $ repeat 0)) xs steps
         dump s mp = (s, sum $ Map.elems mp)
 
 
-graphCreate :: [FilePath] -> IO ()
-graphCreate files = do
+graphCreate :: [FilePath] -> FilePath -> IO ()
+graphCreate files dest = do
     xs <- graphLoad files
     let url = graphUrl $ totalCounts files xs
-    putStrLn url
+    system $ "wget \"" ++ url ++ "\" -O \"" ++ dest ++ "\""
     return ()
 
 

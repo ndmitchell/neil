@@ -2,6 +2,8 @@
 module Main(main) where
 
 import Control.Monad
+import Data.List
+import Data.Ord
 import System.Directory
 import System.Environment
 import System.FilePath
@@ -49,7 +51,8 @@ process "wc" files = do
     graphLog res
 
 process "graph" files = do
-    graphCreate files
+    let res = dropFileName (getMainFile files) </> "paper" </> "graph.png"
+    graphCreate files res
 
 process x files = putStrLn $ "Error: Unknown action, " ++ show x
 
@@ -74,6 +77,9 @@ getFile x = do
         if b then return [x] else error $ "File not found: " ++ x
 
 
+getMainFile :: [FilePath] -> FilePath
+getMainFile xs = snd $ maximumBy (comparing fst) [(rank x, x) | x <- xs]
+    where rank x = liftM negate $ findIndex (== takeBaseName x) (reverse $ splitDirectories x)
 
 
 ----- mini formatting library
