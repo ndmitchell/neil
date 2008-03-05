@@ -12,23 +12,21 @@
 % for tex2hs
 \newcommand{\ignore}{}
 
+
 % temporary command to keep reusing
 \newcommand{\f}{}
 
-\let\oldfigure\figure
-\let\oldendfigure\endfigure
-\renewenvironment{figure}
-    {\oldfigure}
-    {\hrule\oldendfigure}
 
-%\bibpunct();A{},
-%\let\cite=\citep
+% from the ICFP website
+\ifdefined\bibpunct\bibpunct();A{},\fi
+\ifdefined\citep\let\cite=\citep\fi
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% HIDING BITS OF THE THESIS
 
 \newcommand{\theonly}
-    {\ifdefined\only\only\else\fi}
+    {\ifdefined\only\only\fi}
 
 \let\oldinclude\include
 \renewcommand{\include}[1]
