@@ -42,7 +42,7 @@ make dat obj src = do
                 "lhs2tex " ++ takeFileName temp ++ " -o " ++ to
 
     let log = obj </> replaceExtension (mainFile src) "log"
-    system_ sys{errorMsg=latexError tex log} $
+    system_ sys{errorMsg=latexError (tex++fmt) log} $
         "texify --quiet " ++ mainFile src
     let dvi = replaceExtension (mainFile src) "dvi"
     copyFile (obj </> dvi) (dir </> dvi)
