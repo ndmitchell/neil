@@ -1,0 +1,103 @@
+\usepackage{comment}
+\usepackage{datetime}
+\usepackage{graphicx}
+\usepackage{url}
+
+%include paper.fmt
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% GENERAL FORMATTING AND LAYOUT
+
+% for tex2hs
+\newcommand{\ignore}{}
+
+% temporary command to keep reusing
+\newcommand{\f}{}
+
+\let\oldfigure\figure
+\let\oldendfigure\endfigure
+\renewenvironment{figure}
+    {\oldfigure}
+    {\hrule\oldendfigure}
+
+%\bibpunct();A{},
+%\let\cite=\citep
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% HIDING BITS OF THE THESIS
+
+\newcommand{\theonly}
+    {\ifdefined\only\only\else\fi}
+
+\let\oldinclude\include
+\renewcommand{\include}[1]
+    {\ifthenelse{\equal{#1}{\theonly}\or\equal{\theonly}{}}
+        {\oldinclude{#1}}
+        {}
+    }
+
+\let\oldbibliography\bibliography
+\renewcommand{\bibliography}
+    {\ifthenelse{\equal{\theonly}{}}
+        {\oldbibliography{paper}}
+        {}
+    }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% LHS2TEX
+
+\setlength\blanklineskip{3mm}
+\setlength\mathindent{0mm}
+
+
+\renewcommand{\Varid}[1]{\mathsf{#1}}
+\renewcommand{\Conid}[1]{\mathsf{#1}}
+\renewcommand{\Varid}[1]{\mathsf{#1}}
+\newcommand{\Keyword}[1]{\text{\textbf{\textsf{#1}}}}
+
+\newcommand{\backtick}[1]{\;\mathsf{\text{\`{}}\!#1\!\text{\`{}}}\;}
+
+\newcommand{\perc}{\%
+    }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% CUSTOM COMMANDS
+
+% \todo - write out a todo reminder, easy to grep for
+\newcommand{\todo}[1]{\textbf{\textsc{Todo:} #1}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EXAMPLES
+
+\newcounter{exmp}
+\setcounter{exmp}{0}
+
+\newcommand{\noexample}{\hfill$\Box$}
+
+% generic example (can be anything)
+\newenvironment{exampleany}[1]
+    {\subsubsection*{Example #1}}
+    {\noexample}
+
+% standard example
+\renewenvironment{example}
+    {\refstepcounter{exmp}
+     \begin{exampleany}{\arabic{exmp}}}
+    {\end{exampleany}}
+
+% naming an example
+\renewenvironment{examplename}[1]
+    {\refstepcounter{exmp}
+     \begin{exampleany}{\arabic{exmp} (#1)}}
+    {\end{exampleany}}
+
+% revisiting a previous example
+\newenvironment{examplerevisit}[1]
+    {\begin{exampleany}{#1 (revisited)}}
+    {\end{exampleany}}
+
+% \end{code} followed by \end{example}
+\newcommand{\codeexample}{\vspace{-9mm}\par}

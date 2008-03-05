@@ -1,0 +1,140 @@
+%include polycode.fmt
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% KEYWORDS
+
+%subst keyword a = "\Keyword{" a "}"
+%format letrec = "\keyword{letrec}"
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% OBVIOUS EXTRA SYMBOLS
+
+%format ... = "{\ldots}"
+%format <=> = "\mathbin{\Leftrightarrow}"
+%format <> = "\mathbin{<\hspace{-0.7mm}>}"
+%format =<< = "\mathbin{=\mkern-6.7mu<\!\!\!<}"
+%format =>* = "\mathbin{\Rightarrow\!\!\!^*}"
+%format Gamma = "{\Gamma}"
+%format Gamma' = "{\Gamma^\prime}"
+%format \\ = "\mathbin{\backslash}"
+%format `intersect` = "\mathbin{\cap}"
+%format `subseteq` = "\mathbin{\subseteq}"
+%format `union` = "\mathbin{\cup}"
+%format alpha  = "{\alpha}"
+%format beta  = "{\beta}"
+%format bullet = "{\bullet}"
+%format forall  = "{\forall}"
+%format lambda = "{\lambda}"
+%format not = "\Varid{not}"
+%format phi = "{\phi}"
+%format psi = "{\psi}"
+%format rho = "{\rho}"
+%format unions = "{\bigcup\!}"
+%format |--> = "\mathbin{\mapsto}"
+%format ~= = "\mathbin{\simeq}"
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% OTHER EXTRA SYMBOLS
+
+%format `o` = "\bullet{}"
+
+% hmm, i wish lhs2tex did [| semantic brackets
+%format $| = "[\!["
+%format |$ = "]\!]"
+
+%format \< = "{\langle}"
+%format \> = "{\rangle}"
+
+% spacing modifiers
+%format \? = "\;"
+%format \! = "\!"
+%format \!! = "\hspace{-0.3mm}"
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% CONVENTIONS
+%%
+%% `x` = complex, but writeout `x`
+%% _X = \mathcal{X}
+%% x_ = \overline{xs}
+%% x' = x^\prime{}
+%% x_1 = x_1
+
+%format `mkQ` = "\backtick{mkQ}"
+%format `cons` = "\backtick{cons}"
+%format `seq` = "\backtick{seq}"
+
+%format _C = "\mathcal{C}"
+%format _D = "\mathcal{D}"
+%format _F = "\mathcal{F}"
+%format _N = "\mathcal{N}"
+%format _O = "\mathcal{O}"
+%format _T = "\mathcal{T}"
+
+%format _C_ = "\mathcal{\overline{C}}"
+%format _T_ = "\mathcal{\overline{T}}"
+
+%format a'  = a "^{\prime}"
+%format b'  = b "^{\prime}"
+%format e'  = e "^{\prime}"
+%format v'  = v "^{\prime}"
+%format x'  = x "^{\prime}"
+%format xs' = xs "^{\prime}"
+%format main' = main "^{\prime}"
+
+%format xs_' = "\Varid{\overline{xs}^\prime}"
+
+%format x_1' = "\Varid{x_1^\prime}"
+%format x_2' = "\Varid{x_2^\prime}"
+%format x_n' = "\Varid{x_n^\prime}"
+
+%format alts_  = "\Varid{\overline{alts}}"
+%format binds_  = "\Varid{\overline{binds}}"
+%format c_     = "\Varid{\overline{c}}"
+%format t_     = "\Varid{\overline{t}}"
+%format rs_    = "\Varid{\overline{rs}}"
+%format vs_    = "\Varid{\overline{vs}}"
+%format xs_    = "\Varid{\overline{xs}}"
+%format ys_    = "\Varid{\overline{ys}}"
+%format ns_    = "\Varid{\overline{ns}}"
+
+%format a_1  = "\Varid{a_1}"
+%format a_m  = "\Varid{a_m}"
+%format p_1  = "\Varid{p_1}"
+%format p_n  = "\Varid{p_n}"
+%format t_1  = "\Varid{t_1}"
+%format t_n  = "\Varid{t_n}"
+%format v_1  = "\Varid{v_1}"
+%format v_n  = "\Varid{v_n}"
+%format x_1  = "\Varid{x_1}"
+%format x_2  = "\Varid{x_2}"
+%format x_n  = "\Varid{x_n}"
+%format y_i  = "\Varid{y_i}"
+%format y_1  = "\Varid{y_1}"
+%format y_2  = "\Varid{y_2}"
+%format y_n  = "\Varid{y_n}"
+%format h_0  = "\Varid{h_0}"
+%format x_n  = "\Varid{x_n}"
+%format x_i  = "\Varid{x_i}"
+%format ns_1 = "\Varid{ns_1}"
+%format ns_2 = "\Varid{ns_2}"
+%format ns_3 = "\Varid{ns_3}"
+%format ns_n = "\Varid{ns_n}"
+%format t_1  = "\Varid{t_1}"
+%format t_2  = "\Varid{t_2}"
+%format t_n  = "\Varid{t_n}"
+%format a_1  = "\Varid{a_1}"
+%format a_2  = "\Varid{a_2}"
+%format b_1  = "\Varid{b_1}"
+%format b_2  = "\Varid{b_2}"
+%format c_1  = "\Varid{c_1}"
+%format c_2  = "\Varid{c_2}"
+%format p_1  = "\Varid{p_1}"
+%format p_2  = "\Varid{p_2}"
+%format v_1  = "\Varid{v_1}"
+%format v_2  = "\Varid{v_2}"
+%format s_1  = "\Varid{s_1}"
+%format s_2  = "\Varid{s_2}"
+%format r_2  = "\Varid{r_2}"
+%format xs_2 = "\Varid{xs_2}"
