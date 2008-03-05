@@ -15,16 +15,14 @@ import System.FilePath
 -- attempt to diagnose something
 latexError :: [FilePath] -> FilePath -> String -> IO ()
 latexError texFiles logFile messages = do
-        mapM_ f $ lines messages
+        mapM_ (uncurry showSection) $ nub $ concatMap getMsg $ lines messages
         mapM_ checkFile texFiles
     where
         rep from to x = if x == from then to else x
 
-        f s = putStrLn s >> g (lines $ s1 ++ map (rep ':' '\n') s2)
+        getMsg s = [(file, read pos) | file:pos:_ <- [lines $ s1 ++ map (rep ':' '\n') s2]
+                                     , not $ null pos, all isDigit pos]
             where (s1,s2) = splitAt 3 s
-
-        g (file:pos:text) | not (null pos) && all isDigit pos = showSection file (read pos)
-        g _ = return ()
 
 
 -- show a section of a file, centered around a particular point
