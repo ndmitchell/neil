@@ -1,6 +1,7 @@
 \usepackage{comment}
 \usepackage{datetime}
 \usepackage{graphicx}
+\usepackage{makecmds}
 \usepackage{url}
 
 %include paper.fmt
@@ -83,13 +84,13 @@
     {\noexample}
 
 % standard example
-\renewenvironment{example}
+\provideenvironment{example}
     {\refstepcounter{exmp}
      \begin{exampleany}{\arabic{exmp}}}
     {\end{exampleany}}
 
 % naming an example
-\renewenvironment{examplename}[1]
+\provideenvironment{examplename}[1]
     {\refstepcounter{exmp}
      \begin{exampleany}{\arabic{exmp} (#1)}}
     {\end{exampleany}}
