@@ -10,12 +10,14 @@ import System.Exit
 import System.FilePath
 
 import Paper.FileData
+import Paper.LatexError
 
 
 make :: FilePath -> FilePath -> FileData -> IO ()
 make dat obj src = do
     let dir = directory src
         dat_ x = liftM ((dat </> x) :)
+        sys = System (return ()) (const $ return ()) obj
 
     eps1 <- files (dir </> "graphics") "eps"
     eps2 <- files dir "eps"
@@ -29,17 +31,19 @@ make dat obj src = do
     for bib $
         \b -> replaceDirectory b obj <== [b] $ \from to -> do
             copyFile from to
-            system_ obj $ "bibtex -quiet " ++ takeBaseName b
+            system_ sys $ "bibtex -quiet " ++ takeBaseName b
     for tex $
         \t -> replaceDirectory t obj <== (t:fmt) $ \from to -> do
             -- intermediate copy step because lhs2tex has bugs
             -- which means the input can't be an absolute path
             let temp = to <.> "lhs"
             copyFile from temp
-            systemThen_ (removeFile to) obj $
+            system_ sys{cleanup=removeFile to} $
                 "lhs2tex " ++ takeFileName temp ++ " -o " ++ to
 
-    system_ obj $ "texify --quiet " ++ mainFile src
+    let log = obj </> replaceExtension (mainFile src) "log"
+    system_ sys{errorMsg=latexError tex log} $
+        "texify --quiet " ++ mainFile src
     let dvi = replaceExtension (mainFile src) "dvi"
     copyFile (obj </> dvi) (dir </> dvi)
 
@@ -47,43 +51,32 @@ make dat obj src = do
 for x = flip mapM x
 
 files dir ext = do
-    s <- getDirectoryContents dir
+    b <- doesDirectoryExist dir
+    s <- if b then getDirectoryContents dir else return []
     s <- return $ filter ((==) ('.':ext) . takeExtension) s
     return $ map (dir </>) s
 
 
 
-system_ = systemThen_ (return ())
+data System = System
+    {cleanup :: IO ()
+    ,errorMsg :: String -> IO ()
+    ,curDir :: FilePath}
 
-systemThen_ cleanup dir cmd = do
+system_ sys cmd = do
     orig <- getCurrentDirectory
-    bracket_ (setCurrentDirectory dir) (setCurrentDirectory orig) $ do
+    bracket_ (setCurrentDirectory (curDir sys)) (setCurrentDirectory orig) $ do
         putStrLn cmd
         res <- system $ cmd ++ " > stdout.txt 2> stderr.txt"
         out <- readFile "stdout.txt"
         err <- readFile "stderr.txt"
         putStr $ out ++ err
         when (res /= ExitSuccess) $ do
-            cleanup
-            reportError out
+            cleanup sys
+            errorMsg sys out
             putStrLn "System command failed! Press enter to continue"
             getChar
             exitWith (ExitFailure 1)
-
-
-reportError :: String -> IO ()
-reportError s2 = do
-        b <- doesFileExist file
-        when (b && not (null pos) && all isDigit pos) $ do
-            src <- readFile file
-            putStr $ unlines $ map f $ take 7 $ drop (read pos - 3) $ zip [1..] $ lines src
-    where
-        s = last $ "" : lines s2
-        (pre,post) = splitAt 3 s
-        (front,rest) = break (== ':') post
-        file = pre ++ front
-        pos = takeWhile (/= ':') $ drop 1 rest
-        f (p,s) = show p ++ " : " ++ s
 
 
 (<==) :: FilePath -> [FilePath] -> (FilePath -> FilePath -> IO ()) -> IO ()
