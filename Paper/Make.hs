@@ -12,15 +12,17 @@ import System.FilePath
 import Paper.FileData
 
 
-make :: FilePath -> FileData -> IO ()
-make obj src = do
+make :: FilePath -> FilePath -> FileData -> IO ()
+make dat obj src = do
     let dir = directory src
+        dat_ x = liftM ((dat </> x) :)
+
     eps1 <- files (dir </> "graphics") "eps"
     eps2 <- files dir "eps"
-    fmt <- files dir "fmt"
+    fmt <- dat_ "paper.fmt" $ files dir "fmt"
     cls <- files dir "cls"
-    bib <- files dir "bib"
-    tex <- return $ map (dir </>) (allFiles src)
+    bib <- dat_ "paper.bib" $ files dir "bib"
+    tex <- dat_ "paper.tex" $ return $ map (dir </>) (allFiles src)
 
     for (eps1 ++ eps2 ++ fmt ++ cls) $
         \e -> replaceDirectory e obj <== [e] $ copyFile

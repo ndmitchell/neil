@@ -62,13 +62,18 @@ process "graph" files = do
     putStrLn $ "Written graph, " ++ res
 
 process "make" files = do
-    root <- objDir files
-    make root files
+    dat <- dataDir
+    obj <- objDir files
+    make dat obj files
 
 process x files = putStrLn $ "Error: Unknown action, " ++ show x
 
 
 ----- utility stuff
+
+dataDir :: IO FilePath
+dataDir = return "E:\\Neil\\paper\\data"
+
 
 paperDir, objDir :: FileData -> IO FilePath
 paperDir = ensureDir "paper"
