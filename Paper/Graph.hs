@@ -13,34 +13,20 @@ import System.Time
 import Graphics.Google.Chart
 
 
-graphDir = "paper"
-graphFile = graphDir </> "graph.txt"
-
-
-graphLog :: [(FilePath,Int)] -> IO ()
-graphLog xs = do
+graphLog :: FilePath -> [(String,Int)] -> IO ()
+graphLog dest xs = do
     t <- getClockTime
     t <- toCalendarTime t
-    mapM_ f $ group [(l, show (t,r,b)) | (a,b) <- xs, let (l,r) = splitFileName a]
-    where
-        f xs = do
-            let dir = fst $ head xs
-                txt = map snd xs
-            createDirectoryIfMissing True graphDir
-            appendFile (dir </> graphFile) (unlines txt)
+    appendFile dest $ unlines [show (t,a,b) | (a,b) <- xs]
+
 
 
 -- load the data
-graphLoad :: [FilePath] -> IO [(Date,FilePath,Int)]
-graphLoad xs =
-    liftM (sortBy (comparing fst3) . concat) $ mapM f $
-        group $ map splitFileName xs
-    where
-        f xs = do
-            let dir = fst (head xs)
-                files = map snd xs
-            src <- readFile $ dir </> graphFile
-            return [(date a,b,c) | s <- lines src, not $ null s, let (a,b,c) = read s, b `elem` files]
+graphLoad :: FilePath -> [String] -> IO [(Date,String,Int)]
+graphLoad src files = do
+    src <- readFile src
+    res <- return [(date a,b,c) | s <- lines src, not $ null s, let (a,b,c) = read s, b `elem` files]
+    return $ sortBy (comparing fst3) res
 
 fst3 (x,_,_) = x
 
@@ -71,9 +57,9 @@ totalCounts files xs = f (Map.fromList (zip files $ repeat 0)) xs steps
         dump s mp = (s, sum $ Map.elems mp)
 
 
-graphCreate :: [FilePath] -> FilePath -> IO ()
-graphCreate files dest = do
-    xs <- graphLoad files
+graphCreate :: FilePath -> FilePath -> [String] -> IO ()
+graphCreate src dest files = do
+    xs <- graphLoad src files
     let url = graphUrl $ totalCounts files xs
     system $ "wget \"" ++ url ++ "\" -O \"" ++ dest ++ "\""
     return ()

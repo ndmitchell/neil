@@ -1,13 +1,11 @@
 
 module Main(main) where
 
-import Control.Monad
-import Data.List
-import Data.Ord
 import System.Directory
 import System.Environment
 import System.FilePath
 
+import Paper.FileData
 import Paper.Graph
 import Paper.WordCount
 
@@ -27,6 +25,11 @@ all stored files go in paper/ directory
     the output from chart
     word count logs (used for charting)
     grammar checking logs
+
+all commands that take arguments take either:
+    nothing - use the current directory
+    a directory name - index.tex is the main file, all other *.tex files are extras
+    a list of files - first is the main file, all others are extras (all must be the same directory)
 -}
 
 main :: IO ()
@@ -34,52 +37,38 @@ main = do
     args <- getArgs
     case args of
         (cmd:files) -> do
-            files <- getFiles files
+            files <- getFileData files
             process cmd files
-        _ -> do process "" []
+        _ -> error "No arguments given"
 
 
-process :: String -> [FilePath] -> IO ()
+process :: String -> FileData -> IO ()
 process "wc" files = do
-    let shw = fixed ("total" : map takeBaseName files)
-    res <- flip mapM files $ \file -> do
-        putStr $ shw (takeBaseName file) ++ "  "
-        count <- wordCount file
+    let shw = fixed ("total" : map dropExtension (allFiles files))
+    res <- flip mapM (allFiles files) $ \file -> do
+        putStr $ shw (dropExtension file) ++ "  "
+        count <- wordCount (directory files </> file)
         putStrLn $ int count
         return (file,count)
     putStrLn $ shw "Total" ++ "  " ++ int (sum $ map snd res)
-    graphLog res
+    root <- paperDir files
+    graphLog (root </> "graph.txt") res
 
 process "graph" files = do
-    let res = dropFileName (getMainFile files) </> "paper" </> "graph.png"
-    graphCreate files res
+    root <- paperDir files
+    let res = root </> "graph.png"
+    graphCreate (root </> "graph.txt") res (allFiles files)
+    putStrLn $ "Written graph, " ++ res
 
 process x files = putStrLn $ "Error: Unknown action, " ++ show x
 
 
 
-
-getFiles :: [String] -> IO [FilePath]
-getFiles [] = do
-    d <- getCurrentDirectory
-    getFiles [d]
-getFiles x = liftM concat $ mapM (\x -> canonicalizePath x >>= getFile) x
-
-
-getFile :: String -> IO [FilePath]
-getFile x = do
-    b <- doesDirectoryExist x
-    if b then do
-        s <- getDirectoryContents x
-        return $ filter ((==) ".tex" . takeExtension) $ map (x </>) s
-     else do
-        b <- doesFileExist x
-        if b then return [x] else error $ "File not found: " ++ x
-
-
-getMainFile :: [FilePath] -> FilePath
-getMainFile xs = snd $ maximumBy (comparing fst) [(rank x, x) | x <- xs]
-    where rank x = liftM negate $ findIndex (== takeBaseName x) (reverse $ splitDirectories x)
+paperDir :: FileData -> IO FilePath
+paperDir files = do
+    let s = directory files </> "paper"
+    createDirectoryIfMissing True s
+    return s
 
 
 ----- mini formatting library
