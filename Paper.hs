@@ -7,6 +7,7 @@ import System.FilePath
 
 import Paper.FileData
 import Paper.Graph
+import Paper.Make
 import Paper.WordCount
 
 
@@ -60,13 +61,23 @@ process "graph" files = do
     graphCreate (root </> "graph.txt") res (allFiles files)
     putStrLn $ "Written graph, " ++ res
 
+process "make" files = do
+    root <- objDir files
+    make root files
+
 process x files = putStrLn $ "Error: Unknown action, " ++ show x
 
 
+----- utility stuff
 
-paperDir :: FileData -> IO FilePath
-paperDir files = do
-    let s = directory files </> "paper"
+paperDir, objDir :: FileData -> IO FilePath
+paperDir = ensureDir "paper"
+objDir   = ensureDir "obj"
+
+
+ensureDir :: FilePath -> FileData -> IO FilePath
+ensureDir name files = do
+    let s = directory files </> name
     createDirectoryIfMissing True s
     return s
 
