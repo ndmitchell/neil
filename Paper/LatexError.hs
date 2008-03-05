@@ -15,14 +15,26 @@ import System.FilePath
 -- attempt to diagnose something
 latexError :: [FilePath] -> FilePath -> String -> IO ()
 latexError texFiles logFile messages = do
-        mapM_ (uncurry showSection) $ nub $ concatMap getMsg $ lines messages
+        putStrLn "\nAnalysing Errors:\n"
+        src <- readFile logFile
+        let log = processLog src
+        mapM_ (f log) $ nub $ map (\(a,b,_) -> (a,b)) $ mapMaybe splitErrLine $ lines messages
         mapM_ checkFile texFiles
     where
         rep from to x = if x == from then to else x
 
-        getMsg s = [(file, read pos) | file:pos:_ <- [lines $ s1 ++ map (rep ':' '\n') s2]
-                                     , not $ null pos, all isDigit pos]
-            where (s1,s2) = splitAt 3 s
+        f log (file,line) = do
+                mapM_ putStr $ take 1 [c | (a,b,c) <- log, a == file2, b == line]
+                showSection file line
+            where file2 = takeBaseName file
+
+splitErrLine s
+    | null rest2 || null pos || not (all isDigit pos) = Nothing
+    | otherwise = Just (s1++file, read pos :: Int, drop 1 rest2)
+    where
+        (s1,s2) = splitAt 3 s
+        (file,rest1) = break (== ':') s2
+        (pos,rest2) = break (== ':') $ drop 1 rest1
 
 
 -- show a section of a file, centered around a particular point
@@ -31,8 +43,19 @@ showSection file pos = do
         b <- doesFileExist file
         when b $ do
             src <- readFile file
-            putStrLn $ unlines $ map f $ take 7 $ drop (pos - 3) $ zip [1..] $ lines src
-    where f (p,s) = show p ++ " : " ++ s
+            putStrLn $ unlines $ map f $ take 5 $ drop (pos - 3) $ zip [1..] $ lines src
+    where f (p,s) = show p ++ (if p == pos then ">  " else "   ") ++ s
+
+
+
+processLog :: String -> [(FilePath,Int,String)]
+processLog x = f (lines x)
+    where
+        f [] = []
+        f (x:xs) = case splitErrLine x of
+                       Nothing -> f xs
+                       Just (a,b,c) -> (takeBaseName a,b,unlines (c:d)) : f e
+                           where (d,e) = break null xs
 
 
 ---------------------------------------------------------------------
