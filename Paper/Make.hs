@@ -54,7 +54,6 @@ files dir ext = do
 system_ = systemThen_ (return ())
 
 systemThen_ cleanup dir cmd = do
-    print (dir,cmd)
     orig <- getCurrentDirectory
     bracket_ (setCurrentDirectory dir) (setCurrentDirectory orig) $ do
         putStrLn cmd
