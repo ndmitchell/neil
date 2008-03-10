@@ -72,7 +72,11 @@ process x files = putStrLn $ "Error: Unknown action, " ++ show x
 ----- utility stuff
 
 dataDir :: IO FilePath
-dataDir = return "E:\\Neil\\paper\\data"
+dataDir = do
+    x <- findExecutable "paper"
+    case x of
+        Nothing -> error "Couldn't find the data directory"
+        Just y -> return $ dropFileName y </> "data"
 
 
 paperDir, objDir :: FileData -> IO FilePath
