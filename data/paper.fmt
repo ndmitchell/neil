@@ -10,6 +10,7 @@
 %% OBVIOUS EXTRA SYMBOLS
 
 %format ... = "{\ldots}"
+%format ellipses = "{\ldots}"
 %format <=> = "\mathbin{\Leftrightarrow}"
 %format <> = "\mathbin{<\hspace{-0.7mm}>}"
 %format =<< = "\mathbin{=\mkern-6.7mu<\!\!\!<}"
@@ -64,6 +65,10 @@
 %format `mkQ` = "\backtick{mkQ}"
 %format `cons` = "\backtick{cons}"
 %format `seq` = "\backtick{seq}"
+%format `div` = "\backtick{div}"
+%format `mod` = "\backtick{mod}"
+%format `rem` = "\backtick{rem}"
+%format `quot` = "\backtick{quot}"
 
 %format _C = "\mathcal{C}"
 %format _D = "\mathcal{D}"
