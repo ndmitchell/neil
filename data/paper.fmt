@@ -38,6 +38,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% OTHER EXTRA SYMBOLS
 
+%format $ = "\mathbin{\text{\textsf{\$}}}"
+
 %format `o` = "\bullet{}"
 
 % hmm, i wish lhs2tex did [| semantic brackets
