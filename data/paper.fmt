@@ -84,6 +84,7 @@
 %format b'  = b "^{\prime}"
 %format e'  = e "^{\prime}"
 %format v'  = v "^{\prime}"
+%format k'  = k "^{\prime}"
 %format x'  = x "^{\prime}"
 %format xs' = xs "^{\prime}"
 %format main' = main "^{\prime}"
