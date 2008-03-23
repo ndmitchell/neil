@@ -33,14 +33,15 @@
 %format unions = "{\bigcup\!}"
 %format |--> = "\mathbin{\mapsto}"
 %format ~= = "\mathbin{\simeq}"
+%format $ = "\mathbin{\text{\textsf{\$}}}"
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% OTHER EXTRA SYMBOLS
 
-%format $ = "\mathbin{\text{\textsf{\$}}}"
-
 %format `o` = "\bullet{}"
+
+%format (brackets (x)) = x
 
 % hmm, i wish lhs2tex did [| semantic brackets
 %format $| = "[\!["
