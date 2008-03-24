@@ -31,6 +31,7 @@ endCode = isPrefixOf "\\end{code}"
 
 
 parseLine :: String -> [String]
+parseLine ('%':xs) = []
 parseLine ('|':'|':xs) = parseLine xs
 parseLine ('|':xs) = a : parseLine b
     where (a,b) = parseBar xs
