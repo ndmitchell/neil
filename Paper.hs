@@ -9,6 +9,7 @@ import Paper.FileData
 import Paper.Graph
 import Paper.Make
 import Paper.WordCount
+import Paper.Haskell
 
 
 {-
@@ -65,6 +66,10 @@ process "make" files = do
     dat <- dataDir
     obj <- objDir files
     make dat obj files
+
+process "haskell" files = do
+    obj <- objDir files
+    haskell obj files
 
 process x files = putStrLn $ "Error: Unknown action, " ++ show x
 

@@ -14,6 +14,7 @@ data FileData = FileData
     {directory :: String
     ,mainFile :: String
     ,extraFiles :: [String]
+    ,flags :: [String]
     }
     deriving Show
 
@@ -27,6 +28,10 @@ getFileData :: [String] -> IO FileData
 getFileData [] = do
     s <- getCurrentDirectory
     getFileData [s]
+
+getFileData (('-':flag):ss) = do
+    rest <- getFileData ss
+    return rest{flags = flag : flags rest}
 
 getFileData (s:ss) = do
     b <- doesDirectoryExist s
@@ -45,7 +50,7 @@ getFilesData files = do
             let (dirs,files2) = unzip $ map splitFileName files
                 dirs2 = nub dirs
             when (length dirs2 > 1) $ error $ "Files must all be in the same directory: " ++ show dirs2
-            return $ FileData (dropTrailingPathSeparator $ head dirs) (head files2) (tail files2)
+            return $ FileData (dropTrailingPathSeparator $ head dirs) (head files2) (tail files2) []
 
 
 getDirData dir = do
@@ -60,4 +65,4 @@ getDirData dir = do
         dirs = reverse $ splitDirectories dir
         rank x = liftM negate $ findIndex (== dropExtension x) dirs
 
-    return $ FileData dir mainFile (delete mainFile files)
+    return $ FileData dir mainFile (delete mainFile files) []
