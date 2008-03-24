@@ -3,6 +3,7 @@ module Paper.Haskell where
 
 import Data.Ix
 import Data.Char
+import Data.List
 import System.Directory
 import System.FilePath
 import Paper.FileData
@@ -16,27 +17,26 @@ haskell obj files = do
     pre <- if b then readFile incFile else return ""
 
     src <- readFile (directory files </> mainFile files)
-    checkFragments ("-d" `elem` flags files)
-                   (const True)
+    let (debug,ranges) = partition (== "d") $ flags files
+    checkFragments (not $ null debug)
+                   (checkRange $ parseRanges ranges)
                    pre (parseFragments src)
 
 
+-- ranges are one of:
+--   -from..to
+--   -from..          (where the .. is optional)
 
--- range,range,range
--- 1..  ,3    ,
-parseRange :: String -> [(Int,Int)]
-parseRange "" = [(minBound,maxBound)]
-parseRange xs = map f $ words $ rep ',' ' ' xs
+parseRanges :: [String] -> [(Int,Int)]
+parseRanges [] = [(minBound,maxBound)]
+parseRanges xs = map f xs
     where
-        f x = (fst,snd) 
+        f x = (read a, if null c then maxBound else read c)
             where
-                fst = read a
-                snd | null b = fst
-                    | null c = maxBound
-                    | otherwise = read c
                 (a,b) = span isDigit x
                 c = dropWhile (== '.') b
 
+-- a list of ranges, union'ed together
 checkRange :: [(Int,Int)] -> Int -> Bool
 checkRange []     i = False
 checkRange (x:xs) i = inRange x i || checkRange xs i
