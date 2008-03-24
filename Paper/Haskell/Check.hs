@@ -2,6 +2,7 @@
 module Paper.Haskell.Check where
 
 import Paper.Haskell.Fragment
+import Paper.Haskell.Haskell.Provides
 import System.Cmd
 import System.Exit
 import System.IO
@@ -46,7 +47,8 @@ checkFragments debug test prefix xs = mapM_ f xs
             case res of
                 Missing x -> g (Fail $ "Can't find: " ++ show x) s [t | Stmt _ has t <- xs, x `elem` has]
                 Instances x ->
-                    let add = unlines ["instance " ++ i | i <- x, i `elem` insts]
+                    let add = unlines ["instance " ++ z | i <- x, z <- filter (\j -> blur i == blur j) insts]
+                        blur = filter (isUpper . head) . lexemes
                     in g (Fail $ "No instance: " ++ show x) s [add | not $ null add]
                 _ -> return res
         

@@ -1,5 +1,5 @@
 
-module Paper.Haskell.Haskell.Provides(Provides(..), provides, fromProvides, isStmt) where
+module Paper.Haskell.Haskell.Provides(Provides(..), provides, fromProvides, isStmt, lexemes) where
 
 import Data.List
 import Data.Char
@@ -38,7 +38,7 @@ provider xs = case xs of
     "type":xs -> [ProvidesName $ headNote 1 con]
     "data":xs -> ProvidesName (headNote 2 con) : providerCtors (map (rep "=" "|") (tail con))
     "class":xs -> ProvidesName (headNote 3 con) : map asClass (concatMap provider (tail $ split ";" con))
-    _ | "::" `elem` (takeWhile (/= "where") xs) -> providesSig xs
+    _ | "::" `elem` (takeWhile (`notElem` ["where","="]) xs) -> providesSig xs
     _ -> providesBody xs
     where
         con = dropContext $ tail xs
@@ -55,7 +55,7 @@ providerCtors = map f . tail . split "|"
             where y = filter (\x -> ":" `isPrefixOf` x && x /= "::") xs
 
 
-providesSig = map ProvidesSig . filter (`notElem` [",","(",")"]) . takeWhile (/= "::")
+providesSig = map ProvidesSig . filter (`notElem` [",","(",")"]) . takeWhile (/= "::") . takeWhile (/= "=")
 
 
 -- approximation:
