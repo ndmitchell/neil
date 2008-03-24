@@ -25,8 +25,10 @@ indents (x:xs) = x : indents xs
 indents [] = []
 
 
-isStmt x = "=" `elem` xs || "::" `elem` xs
+isStmt x = "=" `elem` before "let" xs || "::" `elem` xs
     where xs = lexemes x
+
+before x xs = if x `elem` xs then takeWhile (/= x) xs else xs
 
 
 split on xs = a : if null b then [] else split on (tail b)
