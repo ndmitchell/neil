@@ -22,8 +22,10 @@ builtin = ["where"] ++
 checkFragments :: Bool -> (Int -> Bool) -> String -> [Frag] -> IO ()
 checkFragments debug test prefix xs = mapM_ f xs
     where
-        names = [drop 5 x | x <- lines prefix, "-- # " `isPrefixOf` x]
-        insts = [drop 12 x | x <- lines prefix, "-- instance " `isPrefixOf` x]
+        names = split [drop 5 x | x <- lines prefix, "-- # " `isPrefixOf` x]
+        insts = split [drop 12 x | x <- lines prefix, "-- instance " `isPrefixOf` x]
+        split = concatMap (map trim . lines . map (\x -> if x == ';' then '\n' else x))
+        trim = reverse . dropWhile isSpace . reverse . dropWhile isSpace
     
         f (Expr i s)
             | test i && s `elem` (names ++ builtin ++ concat [has | Stmt _ has _ <- xs])
