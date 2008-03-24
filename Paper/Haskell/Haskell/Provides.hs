@@ -66,11 +66,11 @@ providesSig = map ProvidesSig . filter (`notElem` [",","(",")"]) . takeWhile (/=
 -- ... symbol
 -- name
 providesBody [] = []
-providesBody xs = [ProvidesBody $ f xs]
+providesBody xs = map ProvidesBody $ f xs
     where
-        f (x:ys:xs) | isSymbol ys = getSymbol (ys:xs)
-        f ("(":xs) = dropWhile (/= ")") xs !! 1
-        f (x:xs) = x
+        f (x:ys:xs) | isSymbol ys = [getSymbol (ys:xs)]
+        f ("(":xs) = [a | _:a:_ <- [dropWhile (/= ")") xs]]
+        f (x:xs) = [x]
 
         isSymbol (y:ys) = not (isAlpha y) && y `notElem` "([" && (y:ys) /= "="
 
