@@ -73,6 +73,7 @@
 %format `rem` = "\backtick{rem}"
 %format `quot` = "\backtick{quot}"
 
+%format _A = "\mathcal{A}\!\!"
 %format _C = "\mathcal{C}"
 %format _D = "\mathcal{D}"
 %format _F = "\mathcal{F}"
@@ -80,6 +81,7 @@
 %format _O = "\mathcal{O}"
 %format _T = "\mathcal{T}"
 
+%format _A_ = "\mathcal{\overline{A}}\!\!"
 %format _C_ = "\mathcal{\overline{C}}"
 %format _T_ = "\mathcal{\overline{T}}"
 
@@ -97,10 +99,13 @@
 %format x_1' = "\Varid{x_1^\prime}"
 %format x_2' = "\Varid{x_2^\prime}"
 %format x_n' = "\Varid{x_n^\prime}"
+%format ys_'    = "\Varid{\overline{ys}^\prime}"
 
 %format alts_  = "\Varid{\overline{alts}}"
 %format binds_  = "\Varid{\overline{binds}}"
 %format c_     = "\Varid{\overline{c}}"
+%format s_     = "\Varid{\overline{s}}"
+%format e_     = "\Varid{\overline{e}}"
 %format t_     = "\Varid{\overline{t}}"
 %format rs_    = "\Varid{\overline{rs}}"
 %format vs_    = "\Varid{\overline{vs}}"
