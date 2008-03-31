@@ -1,5 +1,5 @@
 
-module Paper.FileData(FileData(..), allFiles, getFileData) where
+module Paper.FileData(FileData(..), allFiles, allFilesFull, getFileData) where
 
 import Control.Monad
 import Data.List
@@ -22,6 +22,9 @@ data FileData = FileData
 allFiles :: FileData -> [String]
 allFiles x = mainFile x : extraFiles x
 
+
+allFilesFull :: FileData -> [FilePath]
+allFilesFull x = map (directory x </>) $ allFiles x
 
 
 getFileData :: [String] -> IO FileData
