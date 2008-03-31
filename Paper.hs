@@ -8,6 +8,7 @@ import System.FilePath
 import Paper.FileData
 import Paper.Graph
 import Paper.Make
+import Paper.Talk
 import Paper.WordCount
 import Paper.Haskell
 
@@ -70,6 +71,10 @@ process "make" files = do
 process "haskell" files = do
     obj <- objDir files
     haskell obj files
+
+process "talk" files = do
+    obj <- objDir files
+    talk obj (allFilesFull files)
 
 process x files = putStrLn $ "Error: Unknown action, " ++ show x
 
