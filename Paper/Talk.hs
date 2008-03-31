@@ -56,6 +56,9 @@ text (x:xs) | x `elem` "|$" = case lex xs of
     _ -> "expression" ++ text (drop 1 $ dropWhile (/= x) xs)
 text ('\\':'$':xs) = '$' : text xs
 
+text ('`':'`':xs) = '\"' : text xs
+text (''':''':xs) = '\"' : text xs
+text ('`':xs) = '\'' : text xs
 
 -- Given an environment there are several behaviours:
 -- replace the entire environment with some alternative text (figure, code)
