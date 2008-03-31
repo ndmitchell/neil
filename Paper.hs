@@ -73,7 +73,7 @@ process "haskell" files = do
     haskell obj files
 
 process "talk" files = do
-    tlk <- ensureDir "talk" files
+    tlk <- ensureDir "obj/talk" files
     talk tlk (allFilesFull files) (flags files)
 
 process x files = putStrLn $ "Error: Unknown action, " ++ show x
