@@ -20,14 +20,14 @@ talk obj files flags = do
         r <- findExecutable prog
         case r of
             Nothing -> putStrLn $ "Can't find \"" ++ prog ++ "\" program, please install"
-            Just y -> speak prog out
+            Just y -> speak prog out (obj </> "talk.wav")
 
 
-speak "ptts" file = do
-    system $ "ptts -voice \"Microsoft Mary\" < \"" ++ file ++ "\""
+speak "ptts" input output = do
+    system $ "ptts -voice \"Microsoft Mary\" -w \"" ++ output ++ "\" < \"" ++ input ++ "\""
     return ()
 
-speak prog file = putStrLn $ "Don't know how to speak with " ++ prog
+speak prog input output = putStrLn $ "Don't know how to speak with " ++ prog
 
 
 -- compress \n\n\n -> \n
