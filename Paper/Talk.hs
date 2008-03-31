@@ -12,22 +12,25 @@ import System.Directory
 
 talk :: FilePath -> [FilePath] -> [String] -> IO ()
 talk obj files flags = do
-    ss <- mapM (liftM text . readFile) files
-    let out = obj </> "talk.txt"
-    writeFile out $ flatten $ concat $ intersperse "\n\n" ss
+    ss <- mapM readFile files
+    let txts = map (flatten . text) $ concatMap divide ss
+        files = take (length txts) [obj </> ("talk_" ++ show i ++ ".txt") | i <- [0..]]
+    sequence_ (zipWith writeFile files txts)
     when ("" `notElem` flags) $ do
         let prog = head (flags ++ ["ptts"])
         r <- findExecutable prog
         case r of
             Nothing -> putStrLn $ "Can't find \"" ++ prog ++ "\" program, please install"
-            Just y -> speak prog out (obj </> "talk.wav")
+            Just y -> mapM_ (speak prog) files
 
 
-speak "ptts" input output = do
-    system $ "ptts -voice \"Microsoft Mary\" -w \"" ++ output ++ "\" < \"" ++ input ++ "\""
+speak "ptts" file = do
+    let out = replaceExtension file "wav"
+    putStrLn $ "Writing " ++ takeFileName out
+    system $ "ptts -voice \"Microsoft Mary\" -w \"" ++ out ++ "\" < \"" ++ file ++ "\""
     return ()
 
-speak prog input output = putStrLn $ "Don't know how to speak with " ++ prog
+speak prog file = putStrLn $ "Don't know how to speak with " ++ prog
 
 
 -- compress \n\n\n -> \n
@@ -46,6 +49,9 @@ flatten = f . g
         f [] = []
 
 
+divide = splits "\\section"
+
+
 text :: String -> String
 
 text ('%':xs) = text $ dropWhile (/= '\n') xs
@@ -57,7 +63,7 @@ text (x:xs) | x `elem` "|$" = case lex xs of
 text ('\\':'$':xs) = '$' : text xs
 
 text ('`':'`':xs) = '\"' : text xs
-text (''':''':xs) = '\"' : text xs
+text ('\'':'\'':xs) = '\"' : text xs
 text ('`':xs) = '\'' : text xs
 
 -- Given an environment there are several behaviours:
@@ -142,3 +148,16 @@ skipTilEnd s = skipTil ("\\end{" ++ s ++ "}")
 skipTil s xs | s `isPrefixOf` xs = drop (length s) xs
 skipTil s (x:xs) = skipTil s xs
 skipTil s [] = []
+
+
+split s xs | s `isPrefixOf` xs = ("",xs)
+split s (x:xs) = (x:a,b)
+    where (a,b) = split s xs
+split s [] = ([],[])
+
+
+splits s [] = []
+splits s xs = a : case splits s (drop (length s) b) of
+                       [] -> []
+                       x:xs -> (s++x):xs
+    where (a,b) = split s xs
