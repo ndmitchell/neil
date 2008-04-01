@@ -1,0 +1,39 @@
+
+Permit people to fresh declare things with:
+
+\hsDef{xs,ys} -- some variables, introduced into expressions only
+\hsDef{instance Eq Foo} -- an instance
+\hsDef{type alpha} -- a type variable
+\hsDef{type Foo alpha} -- a type definition
+\hsDef{foo :: Int -> String} -- a top-level function
+\hsDef{import Prelude} -- an import that is always pulled in
+\hsDef{import Prelude hiding (map)} -- an import always used hiding stuff
+\hsDef{import Data.List(nub)} -- an import that is sometimes wanted
+
+Permit people to annotate things:
+
+By default |.| is an expression, and \begin{code} is a statement
+
+Each item is one of:
+
+expression
+type-expression
+statement
+list of expressions
+
+
+A statement must have a top-level = sign, or a top-level :: expression, on anything that
+starts left flush
+
+Given a list of lines, split into left-flush components, if all are expressions, then assume a list
+of expressions. If some are statements, assume they are all statements.
+
+If an expression refers to type variables, or things which cannot be provided by the value domain,
+then check it as a type expression.
+
+
+Split into piles of things with names to check:
+
+TypeDef: foo :: Int -> String 
+Expr: xs+ys
+TypeExpr: 
