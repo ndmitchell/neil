@@ -66,6 +66,11 @@ text ('`':'`':xs) = '\"' : text xs
 text ('\'':'\'':xs) = '\"' : text xs
 text ('`':xs) = '\'' : text xs
 
+-- change some constructs to insert pauses
+text (' ':'-':'-':xs) = " ; " ++ text (dropWhile (== '-') xs)
+text ('(':xs) = " ; " ++ text xs
+text (')':xs) = " ; " ++ text xs
+
 -- Given an environment there are several behaviours:
 -- replace the entire environment with some alternative text (figure, code)
 -- drop the begin/end bits
