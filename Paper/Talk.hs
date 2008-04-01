@@ -99,6 +99,7 @@ text ('\\':xs)
         | null a && "[" `isPrefixOf` b = "Code." ++ text (skipTil "\\]" b)
         | a == "url" = "url" ++ text (skipCurly b)
         | a == "citet" = "paper" ++ text (skipCurly b)
+        | a == "S" = "section " ++ text b
 
         | otherwise = text $ skippy (fromMaybe "" $ lookup a skip) b
     where
