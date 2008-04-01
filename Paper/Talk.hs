@@ -57,6 +57,8 @@ text :: String -> String
 text ('%':xs) = text $ dropWhile (/= '\n') xs
 text ('\\':'%':xs) = '%' : text xs
 
+text xs | "|(:)|" `isPrefixOf` xs = "cons" ++ text (drop 5 xs)
+text xs | "|[]|" `isPrefixOf` xs = "nil" ++ text (drop 4 xs)
 text (x:xs) | x `elem` "|$" = case lex xs of
     [(s,y:xs)] | x == y -> s ++ text xs
     _ -> "expression" ++ text (drop 1 $ dropWhile (/= x) xs)
