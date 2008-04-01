@@ -118,7 +118,7 @@ skip = let (*) = (,) in
         ["end","label","cite","vspace","hspace","footnote","documentclass"
         ,"include","title","author","institute","caption","usepackage"
         ,"copyrightyear","copyrightdata","titlebanner","title","subtitle"
-        ,"bibliographystyle"]
+        ,"bibliographystyle","citep"]
     ++ ["newenvironment" * "{{{", "newcommand" * "{[{", "conferenceinfo" * "{{"
        ,"authorinfo" * "{{{","category" * "{{{", "terms" * "\n\n", "keywords" * "\n\n"]
 
