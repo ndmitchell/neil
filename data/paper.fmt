@@ -193,3 +193,4 @@
 
 %format main_1 = "\Varid{main_1}"
 %format main_2 = "\Varid{main_2}"
+%format main_3 = "\Varid{main_3}"
