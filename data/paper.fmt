@@ -31,6 +31,7 @@
 %format phi = "{\phi}"
 %format psi = "{\psi}"
 %format rho = "{\rho}"
+%format tau = "{\tau}"
 %format unions = "{\bigcup\!}"
 %format |--> = "\mathbin{\mapsto}"
 %format ~= = "\mathbin{\simeq}"
