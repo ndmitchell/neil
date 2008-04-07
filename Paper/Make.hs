@@ -26,8 +26,11 @@ make dat obj src = do
     bib <- dat_ "paper.bib" $ files dir "bib"
     tex <- dat_ "paper.tex" $ return $ map (dir </>) (allFiles src)
 
-    for (eps1 ++ eps2 ++ fmt ++ cls) $
+    for (eps2 ++ fmt ++ cls) $
         \e -> replaceDirectory e obj <== [e] $ copyFile
+    when (not $ null eps1) $ createDirectoryIfMissing True (obj </> "graphics")
+    for eps1 $
+        \e -> replaceDirectory e (obj </> "graphics") <== [e] $ copyFile
     for bib $
         \b -> replaceDirectory b obj <== [b] $ \from to -> do
             copyFile from to
