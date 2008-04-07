@@ -130,6 +130,7 @@
 %format xs_    = "\Varid{\overline{xs}}"
 %format ys_    = "\Varid{\overline{ys}}"
 %format ns_    = "\Varid{\overline{ns}}"
+%format fs_    = "\Varid{\overline{fs}}"
 
 %format a_1  = "\Varid{a_1}"
 %format a_m  = "\Varid{a_m}"
