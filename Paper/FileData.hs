@@ -64,7 +64,7 @@ getDirData dir = do
 
     -- now pick the main file
     let mainFile = if "index.tex" `elem` files then "index.tex" else
-                   snd $ minimumBy (comparing fst) [(rank x, x) | x <- files]
+                   snd $ maximum [(rank x, x) | x <- files]
         dirs = reverse $ splitDirectories dir
         rank x = liftM negate $ findIndex (== dropExtension x) dirs
 
