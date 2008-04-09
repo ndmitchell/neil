@@ -131,6 +131,7 @@
 %format ys_    = "\Varid{\overline{ys}}"
 %format ns_    = "\Varid{\overline{ns}}"
 %format fs_    = "\Varid{\overline{fs}}"
+%format as_    = "\Varid{\overline{as}}"
 
 %format a_1  = "\Varid{a_1}"
 %format a_m  = "\Varid{a_m}"
@@ -163,6 +164,7 @@
 %format b_2  = "\Varid{b_2}"
 %format c_1  = "\Varid{c_1}"
 %format c_2  = "\Varid{c_2}"
+%format c_n  = "\Varid{c_n}"
 %format e_3  = "\Varid{e_3}"
 %format e_4  = "\Varid{e_4}"
 %format e_5  = "\Varid{e_5}"
@@ -198,3 +200,6 @@
 %format main_1 = "\Varid{main_1}"
 %format main_2 = "\Varid{main_2}"
 %format main_3 = "\Varid{main_3}"
+
+%format vs__1 = "\Varid{\overline{vs}_1}"
+%format vs__n = "\Varid{\overline{vs}_n}"
