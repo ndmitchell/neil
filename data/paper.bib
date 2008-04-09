@@ -16,7 +16,7 @@
 
 @book{erlang,
     author =        "Robert Virding and Claes Wikstrom and Mike Williams",
-    editor =        "Joe Armstrong",
+    _editor =        "Joe Armstrong",
     title =         "Concurrent programming in ERLANG",
     edition =       "Second",
     year =          "1996",
@@ -53,6 +53,23 @@
     note =          "\url{http://www.w3.org/TR/xslt}",
 }
 
+@book{ml,
+    author = {Robin Milner and Mads Tofte and Robert Harper and David MacQueen},
+    _isbn = {0262631814},
+    month = {May},
+    publisher = {The MIT Press},
+    title = {The Definition of Standard ML - Revised},
+    year = {1997}
+}
+
+@inproceedings{curry,
+    title = "Curry: A Truly Functional-logic Language",
+    booktitle = "ILPS'95 Post Conference Workshop on Declarative Languages for the Future",
+    organization = "Portland State University and ALP",
+    year = "1995",
+    publisher = "Melbourne University",
+    author = " M. Hanus and H. Kuchen and J.J. Moreno-Navarro"
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% TOOL REFERENCES
@@ -551,21 +568,15 @@
 @inproceedings{me:catch_icfp,
     title = "Not All Patterns, But Enough -- an automatic verifier for partial but sufficient pattern matching",
     author =        "Neil Mitchell and Colin Runciman",
-    _booktitle =     "Proceedings of the Sixth Symposium on Trends in Functional Programming",
-    _pages =         "313--328",
     year =          "2008",
-    _month =         sep,
-    note = "Submitted to ICFP 2008",
+    booktitle = "Submitted to ICFP 2008",
 }
 
 @inproceedings{me:firstify_icfp,
     title = "Losing functions without gaining data -- a new method for defunctionalisation",
     author =        "Neil Mitchell and Colin Runciman",
-    _booktitle =     "Proceedings of the Sixth Symposium on Trends in Functional Programming",
-    _pages =         "313--328",
+    booktitle =     "Submitted to ICFP 2008",
     year =          "2008",
-    _month =         sep,
-    note = "Submitted to ICFP 2008",
 }
 
 @inproceedings{me:catch_tfp_original,
@@ -596,6 +607,7 @@
     day =           "30",
     journal =       "The Monad.Reader",
     number =        "7",
+    volume =        "1",
     pages =         "45--61",
     pdf =           "http://www-users.cs.york.ac.uk/\~{}ndm/downloads/paper-yhc_core-30_apr_2007.pdf",
 }
@@ -694,8 +706,6 @@
     title =         "Scrap your boilerplate: a practical design pattern for generic programming",
     booktitle =     "Proc. TLDI '03",
     publisher =     "ACM Press",
-    volume =        "38",
-    number =        "3",
     pages =         "26--37",
     month =         mar,
     year =          "2003",
@@ -1150,7 +1160,7 @@
 }
 
 @Article{term:erlang,
-  author =       "J\"{u}rgen Giesl and Thomas Arts",
+  author =       {J\"{u}rgen Giesl and Thomas Arts},
   title =        "{V}erification of {E}rlang {P}rocesses by {D}ependency {P}airs",
   journal =      "Applicable Algebra in Engineering, Communication and Computing",
   volume =       "12",
@@ -1398,11 +1408,11 @@
 }
 
 @inproceedings{bakewell:space_semantics,
-   author = "Adam Bakewell and Colin Runciman"
-   title = "A Space Semantics for Core {H}askell"
-   booktitle = "Proc. Haskell Workshop 2000"
-   month = "September"
-   year = "2000"
+   author = "Adam Bakewell and Colin Runciman",
+   title = "A Space Semantics for Core {H}askell",
+   booktitle = "Proc. Haskell Workshop 2000",
+   month = "September",
+   year = "2000",
 }
 
 @phdthesis{stillman:computational_problems,
@@ -1410,7 +1420,7 @@
     title = {Computational problems in equational theorem proving},
     year = {1989},
     _order_no = {AAI9016549},
-    publisher = {State University of New York at Albany},
+    school = {State University of New York at Albany},
     address = {Albany, NY, USA},
 }
 
@@ -1449,7 +1459,7 @@
 }
 
 @InProceedings{term:orderings,
-  author =       "J\"{u}rgen Giesl",
+  author =       {J\"{u}rgen Giesl},
   title =        "{T}ermination {A}nalysis for {F}unctional {P}rograms using {T}erm {O}rderings",
   booktitle =    "SAS '95: Proceedings of the Second International
                  Symposium on Static Analysis",
