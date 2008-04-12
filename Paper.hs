@@ -11,6 +11,7 @@ import Paper.Make
 import Paper.Talk
 import Paper.WordCount
 import Paper.Haskell
+import Paper.Push
 
 
 {-
@@ -75,6 +76,9 @@ process "haskell" files = do
 process "talk" files = do
     tlk <- ensureDir "obj/talk" files
     talk tlk (allFilesFull files) (flags files)
+
+process "push" files = do
+    push (directory files)
 
 process x files = putStrLn $ "Error: Unknown action, " ++ show x
 
