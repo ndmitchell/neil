@@ -39,9 +39,20 @@ parseTex :: String -> [Tex]
 parseTex = joinEnviron . joinText . run tex
 
 
--- TODO
 joinEnviron :: [Tex] -> [Tex]
-joinEnviron = id
+joinEnviron = transformTexs f
+    where
+        f (Command "begin":Curly [Text s]:xs) = Environ s (f a) : f b
+            where (a,b) = g s xs
+        
+        f (Command "begin":xs) = error $ "\\begin not followed properly, " ++ take 25 (show xs)
+        f (Command "end":xs) = error $ "\\end not expected, " ++ take 25 (show xs)
+        f (x:xs) = x : f xs
+        f [] = []
+
+        g s (Command "end":Curly [Text s2]:xs) | s == s2 = ([], xs)
+        g s [] = error $ "Couldn't find \\end for " ++ show s
+        g s (x:xs) = let (a,b) = g s xs in (x:a,b)
 
 
 joinText = transformTexs f
