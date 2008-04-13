@@ -81,13 +81,15 @@ type Combiner = State -> [Tex] -> (State, [Tex])
 
 
 parserOne :: ([Tex] -> Tex) -> String -> String -> Parser -> Parser
-parserOne join start stop inner (s,n)
+parserOne join start stop inner (s,n0)
     | not $ start `isPrefixOf` s = Nothing
     | otherwise = Just (a, [join b])
     where
-        (a,b) = f (drops start s, n)
+        (a,b) = f (drops start s, n0)
 
         f (s,n) | stop `isPrefixOf` s = ((drops stop s,n), [])
+                | null s = error $ "Command started on line " ++ show n0 ++ " not finished, " ++
+                                   show start ++ " -> " ++ show stop
                 | otherwise = (s3, r1++r2)
             where
                 Just (s2,r1) = inner (s,n)
