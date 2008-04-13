@@ -107,7 +107,7 @@ parserStr res s1 (s2,n)
 
 
 run :: Parser -> String -> [Tex]
-run p s = Line 1 : f (s,2)
+run p s = Line 1 : f (s,1)
     where
         f ([],n) = []
         f s = r ++ f s2
@@ -133,7 +133,7 @@ text (c:cs, n) = Just ((cs,n), [Text [c]])
 text _ = Nothing
 
 
-line ('\n':cs,n) = Just ((cs,n+1), [Line n])
+line ('\n':cs,n) = Just ((cs,n+1), [Line (n+1)])
 line _ = Nothing
 
 
