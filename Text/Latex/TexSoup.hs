@@ -135,7 +135,7 @@ drops s = drop (length s)
 
 
 tex = escape += line += curly += comment +=
-      mathBlock += mathExpr +=
+      mathBlock += mathExpr += codeExpr +=
       code += verb += commentEnv +=
       command += text
 
@@ -179,6 +179,7 @@ curly = parserOne Curly "{" "}" tex
 square = parserOne Square "[" "]" tex
 
 mathExpr = parserOne MathExpr "$" "$" tex
+codeExpr = parserOne CodeExpr "|" "|" text
 
 newline = parserStr Newline "\\\\"
 
