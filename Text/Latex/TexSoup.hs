@@ -1,6 +1,20 @@
 
-module Text.Latex.TexSoup where
+module Text.Latex.TexSoup(parseTex, parseTexFile) where
 
+{-
+Tricky points:
+Need to deal with not lexing inside verbatim
+And only lexing inside comments in \begin{code}
+-}
+
+import Control.Monad
+import Data.Char
+import Data.List
+import Data.Maybe
+
+
+---------------------------------------------------------------------
+-- RESULT DATA TYPE AND DRIVER
 
 data Tex
     = Command String           -- \foo
@@ -14,115 +28,147 @@ data Tex
     | Text String              -- foo
     | Newline                  -- \\
     | Line Int                 -- a line number
-
-{-
-Tricky points:
-Need to deal with not lexing inside verbatim
-And only lexing inside comments in \begin{code}
-
-Need to maintain a parse stack, and push/pop from it
--}
+      deriving Show
 
 
-data S = S {file :: FilePath, line :: Int, text :: String, stack :: [(Bracket,[Tex])]}
-
-lineInc = do s <- get; put s{line = line s + 1}; return (line s+1)
-strGet = liftM text get
-strPut x = modify $ \s -> s{text = x}
+parseTexFile :: FilePath -> IO [Tex]
+parseTexFile = liftM parseTex . readFile
 
 
--- Environ's are put together afterwards
--- Text's are joined up afterwards
+parseTex :: String -> [Tex]
+parseTex = joinEnviron . joinText . run tex
 
 
-parseTex :: FilePath -> [Tex]
-parseTex = f 0
+-- TODO
+joinEnviron :: [Tex] -> [Tex]
+joinEnviron = id
+
+
+joinText = transformTexs f
     where
-        -- line number, stack
-        f i 
+        f (Text s:xs) = Text (s++a) : f b
+            where (a,b) = g xs
+        f (x:xs) = x : f xs
+        f [] = []
+
+        g (Text s:xs) = (s ++ a, b)
+            where (a,b) = g xs
+        g xs = ([], xs)
 
 
+transformTexs :: ([Tex] -> [Tex]) -> [Tex] -> [Tex]
+transformTexs f xs = f $ map g xs
+    where
+        g x = case x of
+            Curly xs -> fs Curly xs
+            Square xs -> fs Square xs
+            MathExpr xs -> fs MathExpr xs
+            CodeExpr xs -> fs CodeExpr xs
+            Environ s xs -> fs (Environ s) xs
+            x -> x
 
--- bracket/tex is stored in reverse
-parse :: FilePath -> Int -> [(Bracket,[Tex])] -> [Lex] -> [Tex]
-parse file n xs ys = f xs ys
-  where
-    f xs (LToggle b:ys) | is xs b = shut xs ys
-                        | otherwise = open b xs ys
-    f xs (LShut b:ys) | is xs b = shut xs ys
-                      | otherwise = error $ "Unexpected closing lump, more info available"             
-    f xs (LOpen b:ys) = open b xs ys
-    f xs (y:ys) = add y xs ys
-
-    is ((b1,_):_) b2 = b1 == b2
-    is _ _ = False
-
-    shut ((b1,x):[]) ys = bracket b1 (reverse x) : f [] ys
-    shut ((b1,x1):(b2,x2):xs) ys = f ((b2,bracket b1 (reverse x1):x2):xs) ys
-
-    add (f x xs
-
-
-    -- open a bracket
-    add b xs ys = 
-  
-
-((b1,as):xs) (LToggle b2:ys) | b1 == b2 = add xs ys
+        fs c xs = c $ transformTexs f xs
 
 
 ---------------------------------------------------------------------
--- LEXING
+-- COMBINATOR DATA TYPES AND OPERATIONS
 
-data Bracket
-    = BCurly
-    | BSquare
-    | BDollar
-    | BDollarDollar
-    | BSlashSquare
-    | BBar
+-- text and line number
+type State = (String,Int)
 
-bracket BCurly = Curly
-bracket BSquare = Square
-bracket BDollar = MathExpr
+type Parser = State -> Maybe (State, [Tex])
+type Combiner = State -> [Tex] -> (State, [Tex])
 
 
-data Lex
-    = LText Char
-    | LComment String
-    | LCommand String
-    | LLine Int
-    | LNewline
-    | LOpen Bracket
-    | LShut Bracket
-    | LToggle Bracket
+parserOne :: ([Tex] -> Tex) -> String -> String -> Parser -> Parser
+parserOne join start stop inner (s,n)
+    | not $ start `isPrefixOf` s = Nothing
+    | otherwise = Just (a, [join b])
+    where
+        (a,b) = f (drops start s, n)
+
+        f (s,n) | stop `isPrefixOf` s = ((drops stop s,n), [])
+                | otherwise = (s3, r1++r2)
+            where
+                Just (s2,r1) = inner (s,n)
+                (s3,r2) = f s2
 
 
-lexeme :: State S (Maybe Lex)
-lexeme = do
-  let a & b = strPut b >> return (Just a)
-  xs <- strGet 
-  case xs of
-    -- escapes first
-    '|':'|':xs -> LText "|" & xs
-    '\\':'%':xs -> LText "%" & xs
-    '\\':'\\':xs -> LNewline & xs
-    
-    -- brackets
-    '{':xs -> LOpen BCurly & xs
-    '}':xs -> LShut BCurly & xs
-    '[':xs -> LOpen BSquare & xs
-    ']':xs -> LShut BSquare & xs
-    '$':'$':xs -> LToggle BDollarDollar & xs
-    '$':xs -> LToggle BDollar & xs
-    '\\':'[':xs -> LOpen BSlashSquare & xs
-    '\\':']':xs -> LShut BSlashSquare & xs
-    '|':xs -> LToggle BBar & xs
-    
-    -- rest
-    '%':xs -> LComment a & b
-        where (a,b) = break (== '\n') xs
-    '\\':xs -> LCommand a & b
-        where (a,b) = span isAlpha xs
-    '\n':xs -> do i <- incLine ; LLine i & xs
-    x:xs -> LText x & xs
-    [] -> return Nothing
+parserStr :: Tex -> String -> Parser
+parserStr res s1 (s2,n)
+    | not $ s1 `isPrefixOf` s2 = Nothing
+    | otherwise = Just ((drops s1 s2, n), [res])
+
+
+(+=) :: Parser -> Parser -> Parser
+(+=) f g x = case f x of
+                 Nothing -> g x
+                 Just y -> Just y
+
+
+run :: Parser -> String -> [Tex]
+run p s = Line 1 : f (s,2)
+    where
+        f ([],n) = []
+        f s = r ++ f s2
+            where Just (s2,r) = p s
+
+
+drops s = drop (length s)
+
+---------------------------------------------------------------------
+-- COMBINATION PARSERS
+
+
+tex = escape += line += curly += comment +=
+      mathBlock += mathExpr +=
+      code += verb += commentEnv +=
+      command += text
+
+
+---------------------------------------------------------------------
+-- RAW PARSERS
+
+text (c:cs, n) = Just ((cs,n), [Text [c]])
+text _ = Nothing
+
+
+line ('\n':cs,n) = Just ((cs,n+1), [Line n])
+line _ = Nothing
+
+
+command ('\\':cs,n) = Just (s, Command a : r)
+    where
+        (a,b) = span isAlpha cs
+        (s,r) = fromMaybe ((b,n),[]) $ square (b,n)
+command _ = Nothing
+
+
+comment ('%':cs,n) = Just ((b,n), [Comment a])
+    where (a,b) = break (== '\n') cs
+comment _= Nothing
+
+---------------------------------------------------------------------
+-- HIGH LEVEL PARSERS
+
+commentEnv = parserOne (Environ "comment") "\\begin{comment}" "\\end{comment}" text 
+
+verb = parserOne (Environ "verbatim") "\\begin{verbatim}" "\\end{verbatim}" text
+
+-- TODO: not quite correct, need an internal comment/tex parser
+code = parserOne (Environ "code") "\\begin{code}" "\\end{code}" text
+
+mathBlock = parserOne MathBlock "$$" "$$" tex +=
+            parserOne MathBlock "\\[" "\\]" tex
+
+curly = parserOne Curly "{" "}" tex
+square = parserOne Square "[" "]" tex
+
+mathExpr = parserOne MathExpr "$" "$" tex
+
+newline = parserStr Newline "\\\\"
+
+escape = parserStr (Text "|") "||" +=
+         parserStr (Text "@") "@@" +=
+         parserStr (Text "%") "\\%" +=
+         parserStr (Text "\\") "\\\\"
