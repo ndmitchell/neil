@@ -1,5 +1,5 @@
 
-module Text.Latex.TexSoup(parseTex, parseTexFile) where
+module Text.Latex.TexSoup(Tex(..), parseTex, parseTexFile) where
 
 {-
 Tricky points:
