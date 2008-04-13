@@ -87,6 +87,7 @@ parserOne join start stop inner (s,n0)
     where
         (a,b) = f (drops start s, n0)
 
+        -- note: could be made lazy, but isn't
         f (s,n) | stop `isPrefixOf` s = ((drops stop s,n), [])
                 | null s = error $ "Command started on line " ++ show n0 ++ " not finished, " ++
                                    show start ++ " -> " ++ show stop
