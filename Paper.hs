@@ -5,7 +5,7 @@ import System.Directory
 import System.Environment
 import System.FilePath
 
-import Paper.FileData
+import Paper.Util.FileData
 import Paper.Graph
 import Paper.Make
 import Paper.Talk

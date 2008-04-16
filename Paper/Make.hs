@@ -9,7 +9,7 @@ import System.Directory
 import System.Exit
 import System.FilePath
 
-import Paper.FileData
+import Paper.Util.FileData
 import Paper.LatexError
 
 
