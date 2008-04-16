@@ -199,4 +199,5 @@ newline = parserStr Newline "\\\\"
 escape = parserStr (Text "|") "||" +=
          parserStr (Text "@") "@@" +=
          parserStr (Text "%") "\\%" +=
+         parserStr (Text "$") "\\$" +=
          parserStr (Text "\\") "\\\\"
