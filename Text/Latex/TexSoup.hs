@@ -1,5 +1,8 @@
 
-module Text.Latex.TexSoup(Tex(..), parseTex, parseTexFile) where
+module Text.Latex.TexSoup(
+    Tex(..), parseTex, parseTexFile,
+    universeCommands
+    ) where
 
 {-
 Tricky points:
@@ -24,7 +27,7 @@ data Tex
     | MathBlock [Tex]          -- \[foo\]   OR   $$foo$$
     | CodeExpr [Tex]           -- |foo|
     | Comment String           -- %foo
-    | Environ String [Tex]     -- \begin{foo}bar\end{foo}
+    | Environ String [Tex]     -- \begin{foo}bar\end{foo}, only code/comment/verbatim
     | Text String              -- foo
     | Newline                  -- \\
     | Line Int                 -- a line number
@@ -36,7 +39,7 @@ parseTexFile = liftM parseTex . readFile
 
 
 parseTex :: String -> [Tex]
-parseTex = joinEnviron . joinText . run tex
+parseTex = {- joinEnviron . -} joinText . run tex
 
 
 joinEnviron :: [Tex] -> [Tex]
@@ -92,6 +95,24 @@ transformTexs f xs = f $ map g xs
 
         fs c xs = c $ transformTexs f xs
 
+universeCommands :: [Tex] -> [(String,[Tex])]
+universeCommands (Command x:xs) = (x,a) : universeCommands b
+    where (a,b) = span isSquareCurly xs
+universeCommands (x:rest) = case x of
+    Curly xs -> fs xs
+    Square xs -> fs xs
+    MathExpr xs -> fs xs
+    CodeExpr xs -> fs xs
+    Environ s xs -> fs xs
+    x -> fs []
+    where
+        fs xs = universeCommands xs ++ universeCommands rest
+universeCommands [] = []
+
+
+isSquareCurly (Square{}) = True
+isSquareCurly (Curly{}) = True
+isSquareCurly _ = False
 
 ---------------------------------------------------------------------
 -- COMBINATOR DATA TYPES AND OPERATIONS
