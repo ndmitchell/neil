@@ -5,7 +5,7 @@ import Control.Monad
 import Data.Char
 import Data.List
 import qualified Data.Map as Map
-
+import Paper.Util.Error
 
 data Ref = Ref FilePath Int Bool -- True = ref, False = label
 type Refs = Map.Map String [Ref]
@@ -17,7 +17,7 @@ ref :: [FilePath] -> IO ()
 ref files = do
     r <- mapM readRefs files
     let errs = checkRefs $ foldl addRef Map.empty $ concat r
-    putStr $ unlines errs
+    sequence errs
     when (not $ null errs) $
         error $ "Error: " ++ show (length errs) ++ " references failed"
     putStrLn "All references are correct"
@@ -39,14 +39,14 @@ readRefs file = liftM (f 1) $ readFile file
         g n b xs = f n xs
 
 
-checkRefs :: Refs -> [String]
+checkRefs :: Refs -> [IO ()]
 checkRefs = concatMap f . Map.toList
     where
-        f (s,xs) | null b = err "used but not defined" a
-                 | length b > 1 = err "defined mulitple times" b
+        f (s,xs) | null b = err (head a) "Reference used but not defined"
+                 | length b > 1 = err (head b) "Reference defined multiple times"
                  | otherwise = []
             where
                 (a,b) = partition (\(Ref a b c) -> c) xs
-                err msg cs = ["Ref " ++ s ++ ", " ++ msg ++ ": " ++ unwords (map g cs)]
+                err (Ref file line _) msg = [errorMsg file line msg ("{" ++ s ++ "}")]
 
         g (Ref a b c) = a ++ "(" ++ show b ++ ")"
