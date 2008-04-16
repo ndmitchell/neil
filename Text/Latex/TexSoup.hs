@@ -154,7 +154,8 @@ line _ = Nothing
 command ('\\':cs,n) = Just (s, Command a : r)
     where
         (a,b) = span isAlpha cs
-        (s,r) = fromMaybe ((b,n),[]) $ square (b,n)
+        b2 = dropWhile isSpace b
+        (s,r) = fromMaybe ((b2,n),[]) $ square (b2,n)
 command _ = Nothing
 
 
