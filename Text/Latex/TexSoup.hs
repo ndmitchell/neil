@@ -40,19 +40,31 @@ parseTex = joinEnviron . joinText . run tex
 
 
 joinEnviron :: [Tex] -> [Tex]
-joinEnviron = transformTexs f
+joinEnviron = transformTexs f2
     where
-        f (Command "begin":Curly [Text s]:xs) = Environ s (f a) : f b
-            where (a,b) = g s xs
-        
-        f (Command "begin":xs) = error $ "\\begin not followed properly, " ++ take 25 (show xs)
-        f (Command "end":xs) = error $ "\\end not expected, " ++ take 25 (show xs)
-        f (x:xs) = x : f xs
-        f [] = []
+        f2 xs = a ++ (if b == Nothing then [] else error $ "Unexpected end: " ++ show b)
+            where (a,b,c) = f xs
 
-        g s (Command "end":Curly [Text s2]:xs) | s == s2 = ([], xs)
-        g s [] = error $ "Couldn't find \\end for " ++ show s
-        g s (x:xs) = let (a,b) = g s xs in (x:a,b)
+        -- return (inner,end,rest)
+        f :: [Tex] -> ([Tex],Maybe String,[Tex])
+        f (Command "begin":xs) = (Environ text inner : a ++ err, b, c)
+            where
+                err = if Just text == end then [] else
+                      error $ "Environment started with " ++ text ++ " but ended with " ++ show end
+                (text,rest) = g xs
+                (inner,end,post) = f rest
+                (a,b,c) = f post
+
+        f (Command "end":xs) = ([], Just text, rest)
+            where (text,rest) = g xs
+
+        f (x:xs) = (x:a,b,c)
+            where (a,b,c) = f xs
+        f [] = ([],Nothing,[])
+
+        g (Curly [Text s]:xs) = (s,xs)
+        g xs = error $ "\\begin or \\end not properly ended, " ++ take 25 (show xs)
+
 
 
 joinText = transformTexs f
