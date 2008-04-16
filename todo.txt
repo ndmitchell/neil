@@ -1,0 +1,20 @@
+* Add generalised error reporting framework:
+
+err :: FilePath -> Int -> String -> String -> IO ()
+
+Then any call to err makes all commands fail. Means that something like check
+can just compose things and check for error.
+
+* Fix bibtex so it runs enough times after paper.aux changes
+
+* Add paper check
+
+Run all checks in parallel
+
+* Update paper haskell
+
+* Add paper bibtex
+
+* Add paper overfill hbox
+
+* Add a manual
