@@ -2,37 +2,41 @@
 module Paper.Ref(ref) where
 
 import Control.Monad
+import Data.Char
 import Data.List
 import qualified Data.Map as Map
-import Text.Latex.TexSoup
 
 
-data Ref = Ref !FilePath !Int !Bool -- True = ref, False = label
+data Ref = Ref FilePath Int Bool -- True = ref, False = label
 type Refs = Map.Map String [Ref]
 
-addRef s ref m = ref `seq` Map.insertWith (++) s [ref] m
+addRef m (s,ref) = Map.insertWith (++) s [ref] m
 
 
 ref :: [FilePath] -> IO ()
 ref files = do
-    r <- liftM (Map.unionsWith (++)) $ mapM readRefs files
-    let errs = checkRefs r
+    r <- mapM readRefs files
+    let errs = checkRefs $ foldl addRef Map.empty $ concat r
     putStr $ unlines errs
     when (not $ null errs) $
         error $ "Error: " ++ show (length errs) ++ " references failed"
     putStrLn "All references are correct"
 
 
-readRefs :: FilePath -> IO Refs
-readRefs file = liftM (f Map.empty 1 . universeCommands) $ parseTexFile file
+readRefs :: FilePath -> IO [(String,Ref)]
+readRefs file = liftM (f 1) $ readFile file
     where
-        f r n _ | r `seq` False = undefined
-        f r n ((x, Curly [Text s]:_): xs)
-            | x == "label" = g False
-            | x == "ref"   = g True
-            where g b = f (addRef s (Ref file n b) r) n xs
-        f r n (x:xs) = f r n xs
-        f r n [] = r
+        f n ('\n':xs) = f (n+1) xs
+        f n ('\\':'r':'e':'f':xs) = g n True xs
+        f n ('\\':'l':'a':'b':'e':'l':xs) = g n False xs
+        f n (x:xs) = f n xs
+        f n [] = []
+
+        g n b ('{':xs) | "}" `isPrefixOf` post = (pre, Ref file n b) : f n (tail post) 
+            where (pre,post) = span (`notElem` "\n}") xs
+        g n b (x:xs) | isSpace x || x == '{' =
+            error $ file ++ "(" ++ show n ++ ") Unrecognised label: " ++ take 25 xs
+        g n b xs = f n xs
 
 
 checkRefs :: Refs -> [String]
