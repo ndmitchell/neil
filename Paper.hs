@@ -82,6 +82,10 @@ process "push" files = push (directory files)
 
 process "ref" files = ref (allFilesFull files)
 
+process "check" files = do
+    mapM_ (`process` files) ["ref"]
+    putStrLn "All checks succeeded"
+
 process x files = putStrLn $ "Error: Unknown action, " ++ show x
 
 
