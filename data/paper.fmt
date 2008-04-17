@@ -76,6 +76,7 @@
 %format `mod` = "\backtick{mod}"
 %format `rem` = "\backtick{rem}"
 %format `quot` = "\backtick{quot}"
+%format `Two` = "\backtick{Two}"
 
 %format _A = "\mathcal{A}\!\!"
 %format _C = "\mathcal{C}"
