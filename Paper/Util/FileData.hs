@@ -26,6 +26,7 @@ getFileData args = do
     let (opt,files) = partition ("-" `isPrefixOf`) args
     files <- if null files then liftM (:[]) getCurrentDirectory else return files
     (dirs,explicit,implicit) <- liftM unzip3 $ mapM f files
+    (explicit,implicit) <- return (concat explicit, concat implicit)
 
     when (length (nub dirs) > 1) $
         error "All files must be from the same directory"
@@ -33,9 +34,9 @@ getFileData args = do
     let snub = nub . sort
     return $ FileData
         (head dirs)
-        (head $ concat explicit ++ concat implicit)
-        (snub $ concat explicit)
-        (snub $ concat implicit)
+        (head $ explicit ++ implicit)
+        (snub $ explicit)
+        (snub $ explicit ++ implicit)
         opt
     where
         -- return (directory, explicit, implicit)
