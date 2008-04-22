@@ -99,7 +99,7 @@ text ('\\':xs)
 
         -- special
         | a == "ref" = "1" ++ text (skipCurly b)
-        | null a && "[" `isPrefixOf` b = "Code." ++ text (skipTil "\\]" b)
+        | null a && "[" `isPrefixOf` b = "Code." ++ text (dropUntilStr "\\]" b)
         | a == "url" = "url" ++ text (skipCurly b)
         | a == "citet" = "paper" ++ text (skipCurly b)
         | a == "S" = "section " ++ text b
@@ -152,8 +152,4 @@ spanPair start stop xs = ([],xs)
 
 
 
-skipTilEnd s = skipTil ("\\end{" ++ s ++ "}")
-
-skipTil s xs | s `isPrefixOf` xs = drop (length s) xs
-skipTil s (x:xs) = skipTil s xs
-skipTil s [] = []
+skipTilEnd s = dropUntilStr ("\\end{" ++ s ++ "}")
