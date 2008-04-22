@@ -5,6 +5,7 @@ import Control.Monad
 import Data.List
 import Data.Char
 import Data.Maybe
+import Paper.Util.String
 import System.FilePath
 import System.Cmd
 import System.Directory
@@ -49,7 +50,7 @@ flatten = f . g
         f [] = []
 
 
-divide = splits "\\section"
+divide = splitStr "\\section"
 
 
 text :: String -> String
@@ -156,16 +157,3 @@ skipTilEnd s = skipTil ("\\end{" ++ s ++ "}")
 skipTil s xs | s `isPrefixOf` xs = drop (length s) xs
 skipTil s (x:xs) = skipTil s xs
 skipTil s [] = []
-
-
-split s xs | s `isPrefixOf` xs = ("",xs)
-split s (x:xs) = (x:a,b)
-    where (a,b) = split s xs
-split s [] = ([],[])
-
-
-splits s [] = []
-splits s xs = a : case splits s (drop (length s) b) of
-                       [] -> []
-                       x:xs -> (s++x):xs
-    where (a,b) = split s xs
