@@ -65,8 +65,14 @@ h3 {
 
 <h2>General Commands</h2>
 
+<h3>Files</h3>
 <p>
 	All commands can be given either a list of .tex files, or a directory containing .tex files. If no files or directories are specified the command defaults to the current directory.
+</p>
+
+<h3>Numeric Parameters</h3>
+<p>
+	Commands that take numeric parameters can be given them in the form <tt>-n</tt>, <tt>-n..</tt> or <tt>-n..m</tt>, with the usual Haskell meanings.
 </p>
 
 
@@ -86,7 +92,7 @@ h3 {
 
 <h2>paper talk</h2>
 <p>
-	Create the directory <tt>obj/talk</tt> containing spoken versions of the files, divided up into section chunks. This command requires <a href="http://jampal.sourceforge.net/ptts.html">ptts</a> to do the text-to-speech conversion. If <a href="http://lame.sourceforge.net/">lame</a> is available, the resulting files will be compressed into MP3 format. No parameters.
+	Create the directory <tt>obj/talk</tt> containing spoken versions of the files, divided up into section chunks. This command requires <a href="http://jampal.sourceforge.net/ptts.html">ptts</a> to do the text-to-speech conversion. If <a href="http://lame.sourceforge.net/">lame</a> is available, the resulting files will be compressed into MP3 format. Accepts numeric ranges.
 </p>
 
 <h2>paper ref</h2>
