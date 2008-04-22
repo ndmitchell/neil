@@ -5,14 +5,15 @@ import Control.Monad
 import Data.List
 import Data.Char
 import Data.Maybe
+import Paper.Util.CmdNumber
 import Paper.Util.String
 import System.FilePath
 import System.Cmd
 import System.Directory
 
 
-talk :: FilePath -> [FilePath] -> IO ()
-talk objDir files = do
+talk :: FilePath -> [FilePath] -> [String] -> IO ()
+talk objDir files args = do
     rPtts <- findExecutable "ptts"
     when (isNothing rPtts) $
         error $ "Can't find ptts executable, please install"
@@ -23,11 +24,14 @@ talk objDir files = do
 
     mapM_ (f (isJust rLame)) files
     where
+        permit = cmdNumber args
+
         f lame file = do
             src <- readFileSpeach file
             mapM_ (g lame file) $ zip [0..] src
 
-        g lame file (n,s) = do
+        g lame file (n,s) | not $ permit n = return ()
+                          | otherwise = do
             let name ext = objDir </> (takeBaseName file ++ "_" ++ show n) <.> ext
             writeFile (name "txt") s
             putStrLn $ "Writing " ++ name "wav"

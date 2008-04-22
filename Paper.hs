@@ -76,7 +76,7 @@ process "haskell" files = do
 
 process "talk" files = do
     tlk <- objDir "talk" files
-    talk tlk (argFiles files)
+    talk tlk (argFiles files) (flags files)
 
 process "push" files = push (directory files)
 
