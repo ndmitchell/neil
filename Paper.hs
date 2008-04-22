@@ -56,26 +56,26 @@ process "wc" files = do
         putStrLn $ int count
         return (file,count)
     putStrLn $ shw "Total" ++ "  " ++ int (sum $ map snd res)
-    root <- paperDir files
+    root <- settingsDir files
     graphLog (root </> "graph.txt") res
 
 process "graph" files = do
-    root <- paperDir files
+    root <- settingsDir files
     let res = root </> "graph.png"
     graphCreate (root </> "graph.txt") res (allFiles files)
     putStrLn $ "Written graph, " ++ res
 
 process "make" files = do
     dat <- dataDir
-    obj <- objDir files
-    make dat obj files
+    obj <- objDir "make" files
+    make dat obj (directory files) (mainFile files) (allFiles files)
 
 process "haskell" files = do
-    obj <- objDir files
+    obj <- objDir "haskell" files
     haskell obj files
 
 process "talk" files = do
-    tlk <- ensureDir "obj/talk" files
+    tlk <- objDir "talk" files
     talk tlk (argFiles files) (flags files)
 
 process "push" files = push (directory files)
@@ -91,6 +91,7 @@ process x files = putStrLn $ "Error: Unknown action, " ++ show x
 
 ----- utility stuff
 
+-- the directory where data files (paper.bib/paper.fmt) live
 dataDir :: IO FilePath
 dataDir = do
     x <- findExecutable "paper"
@@ -98,10 +99,11 @@ dataDir = do
         Nothing -> error "Couldn't find the data directory"
         Just y -> return $ dropFileName y </> "data"
 
+settingsDir :: FileData -> IO FilePath
+settingsDir = ensureDir "paper"
 
-paperDir, objDir :: FileData -> IO FilePath
-paperDir = ensureDir "paper"
-objDir   = ensureDir "obj"
+objDir :: String -> FileData -> IO String
+objDir cmd = ensureDir ("obj" </> cmd)
 
 
 ensureDir :: FilePath -> FileData -> IO FilePath

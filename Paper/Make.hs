@@ -9,34 +9,32 @@ import System.Directory
 import System.Exit
 import System.FilePath
 
-import Paper.Util.FileData
 import Paper.LatexError
 
 
-make :: FilePath -> FilePath -> FileData -> IO ()
-make dat obj src = do
-    let dir = directory src
-        dat_ x = liftM ((dat </> x) :)
-        sys = System (return ()) (const $ return ()) obj
+make :: FilePath -> FilePath -> FilePath -> FilePath -> [FilePath] -> IO ()
+make dataDir objDir srcDir mainFile allFiles = do
+    let dataFile x = liftM ((dataDir </> x) :)
+        sys = System (return ()) (const $ return ()) objDir
 
-    eps1 <- files (dir </> "graphics") "eps"
-    eps2 <- files dir "eps"
-    fmt <- dat_ "paper.fmt" $ files dir "fmt"
-    cls <- files dir "cls"
-    bib <- dat_ "paper.bib" $ files dir "bib"
-    tex <- dat_ "paper.tex" $ return $ map (dir </>) (allFiles src)
+    eps1 <- files (srcDir </> "graphics") "eps"
+    eps2 <- files srcDir "eps"
+    fmt <- dataFile "paper.fmt" $ files srcDir "fmt"
+    cls <- files srcDir "cls"
+    bib <- dataFile "paper.bib" $ files srcDir "bib"
+    tex <- dataFile "paper.tex" $ return allFiles
 
     for (eps2 ++ fmt ++ cls) $
-        \e -> replaceDirectory e obj <== [e] $ copyFile
-    when (not $ null eps1) $ createDirectoryIfMissing True (obj </> "graphics")
+        \e -> replaceDirectory e objDir <== [e] $ copyFile
+    when (not $ null eps1) $ createDirectoryIfMissing True (objDir </> "graphics")
     for eps1 $
-        \e -> replaceDirectory e (obj </> "graphics") <== [e] $ copyFile
+        \e -> replaceDirectory e (objDir </> "graphics") <== [e] $ copyFile
     for bib $
-        \b -> replaceDirectory b obj <== [b] $ \from to -> do
+        \b -> replaceDirectory b objDir <== [b] $ \from to -> do
             copyFile from to
             system_ sys $ "bibtex -quiet " ++ takeBaseName b
     for tex $
-        \t -> replaceDirectory t obj <== (t:fmt) $ \from to -> do
+        \t -> replaceDirectory t objDir <== (t:fmt) $ \from to -> do
             -- intermediate copy step because lhs2tex has bugs
             -- which means the input can't be an absolute path
             let temp = to <.> "lhs"
@@ -44,11 +42,10 @@ make dat obj src = do
             system_ sys{cleanup=removeFile to} $
                 "lhs2tex " ++ takeFileName temp ++ " -o " ++ to
 
-    let log = obj </> replaceExtension (mainFile src) "log"
-    system_ sys{errorMsg=latexError (tex++fmt) log} $
-        "texify --quiet " ++ mainFile src
-    let dvi = replaceExtension (mainFile src) "dvi"
-    copyFile (obj </> dvi) (dir </> dvi)
+    let base = takeBaseName mainFile
+    system_ sys{errorMsg=latexError (tex++fmt) (objDir </> base <.> "log")} $
+        "texify --quiet " ++ (base <.> "tex")
+    copyFile (objDir </> base <.> "dvi") (srcDir </> base <.> "dvi")
 
 
 for x = flip mapM x
