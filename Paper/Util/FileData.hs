@@ -1,7 +1,6 @@
 
 module Paper.Util.FileData(
-    FileData(..),
-    allFiles, allFilesFull, getFileData
+    FileData(..), getFileData
     ) where
 
 import Control.Monad
@@ -11,56 +10,46 @@ import System.Directory
 import System.FilePath
 
 
--- | Each mainFile/extraFiles must be a pure file name, no directory.
---   All have directory appended to them first.
 data FileData = FileData
-    {directory :: String
-    ,mainFile :: String
-    ,extraFiles :: [String]
-    ,flags :: [String]
+    {directory :: FilePath       -- ^ All files must reside in one directory
+    ,mainFile  :: FilePath       -- ^ The main file
+    ,argFiles  :: [FilePath]     -- ^ Files given on the command line
+    ,allFiles  :: [FilePath]     -- ^ All files in the directory
+    ,flags     :: [String]       -- ^ Any flags given
     }
     deriving Show
 
 
-allFiles :: FileData -> [String]
-allFiles x = mainFile x : extraFiles x
-
-
-allFilesFull :: FileData -> [FilePath]
-allFilesFull x = map (directory x </>) $ allFiles x
-
 
 getFileData :: [String] -> IO FileData
-getFileData [] = do
-    s <- getCurrentDirectory
-    getFileData [s]
+getFileData args = do
+    let (opt,files) = partition ("-" `isPrefixOf`) args
+    files <- if null files then liftM (:[]) getCurrentDirectory else return files
+    (dirs,explicit,implicit) <- liftM unzip3 $ mapM f files
 
-getFileData (('-':flag):ss) = do
-    rest <- getFileData ss
-    return rest{flags = flag : flags rest}
+    when (length (nub dirs) > 1) $
+        error "All files must be from the same directory"
 
-getFileData (s:ss) = do
-    b <- doesDirectoryExist s
-    if b then
-        if null ss then getDirData s
-        else error "If you specify a directory you may give only one argument"
-     else getFilesData (s:ss)
-
-
-getFilesData files = do
-    files <- mapM canonicalizePath files
-    found <- mapM doesFileExist files
-    case filter snd $ zip files found of
-        x:_ -> error $ "File not found, " ++ fst x
-        [] -> do
-            let (dirs,files2) = unzip $ map splitFileName files
-                dirs2 = nub dirs
-            when (length dirs2 > 1) $ error $ "Files must all be in the same directory: " ++ show dirs2
-            return $ FileData (dropTrailingPathSeparator $ head dirs) (head files2) (tail files2) []
+    let snub = nub . sort
+    return $ FileData
+        (head dirs)
+        (head $ concat explicit ++ concat implicit)
+        (snub $ concat explicit)
+        (snub $ concat implicit)
+        opt
+    where
+        -- return (directory, explicit, implicit)
+        f file = do
+            file <- canonicalizePath file
+            bDir <- doesDirectoryExist file
+            bFile <- doesFileExist file
+            if bDir then getDir file
+             else if bFile then getFile file
+             else error $ "Could not find file: " ++ file
 
 
-getDirData dir = do
-    dir <- canonicalizePath dir
+
+getDir dir = do
     files <- getDirectoryContents dir
     files <- return $ filter ((==) ".tex" . takeExtension) files
     when (null files) $ error $ "No files found in directory, " ++ dir
@@ -70,5 +59,9 @@ getDirData dir = do
                    snd $ maximum [(rank x, x) | x <- files]
         dirs = reverse $ splitDirectories dir
         rank x = liftM negate $ findIndex (== dropExtension x) dirs
+    return (dir, mainFile : files, [])
 
-    return $ FileData dir mainFile (delete mainFile files) []
+
+getFile file = do
+    (a,b,[]) <- getDir $ takeDirectory file
+    return (a, [file], b)

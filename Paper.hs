@@ -76,11 +76,11 @@ process "haskell" files = do
 
 process "talk" files = do
     tlk <- ensureDir "obj/talk" files
-    talk tlk (allFilesFull files) (flags files)
+    talk tlk (argFiles files) (flags files)
 
 process "push" files = push (directory files)
 
-process "ref" files = ref (allFilesFull files)
+process "ref" files = ref (argFiles files)
 
 process "check" files = do
     mapM_ (`process` files) ["ref"]
