@@ -11,27 +11,41 @@ import System.Cmd
 import System.Directory
 
 
-talk :: FilePath -> [FilePath] -> [String] -> IO ()
-talk obj files flags = do
-    ss <- mapM readFile files
-    let txts = map (flatten . text) $ concatMap divide ss
-        files = take (length txts) [obj </> ("talk_" ++ show i ++ ".txt") | i <- [0..]]
-    sequence_ (zipWith writeFile files txts)
-    when ("" `notElem` flags) $ do
-        let prog = head (flags ++ ["ptts"])
-        r <- findExecutable prog
-        case r of
-            Nothing -> putStrLn $ "Can't find \"" ++ prog ++ "\" program, please install"
-            Just y -> mapM_ (speak prog) files
+talk :: FilePath -> [FilePath] -> IO ()
+talk objDir files = do
+    rPtts <- findExecutable "ptts"
+    when (isNothing rPtts) $
+        error $ "Can't find ptts executable, please install"
+
+    rLame <- findExecutable "lame"
+    when (isNothing rLame) $
+        putStrLn "Warning: lame not found, .wav files will be generated"
+
+    mapM_ (f (isJust rLame)) files
+    where
+        f lame file = do
+            src <- readFileSpeach file
+            mapM_ (g lame file) $ zip [0..] src
+
+        g lame file (n,s) = do
+            let name ext = objDir </> (takeBaseName file ++ "_" ++ show n) <.> ext
+            writeFile (name "txt") s
+            putStrLn $ "Writing " ++ name "wav"
+            system $ "ptts -voice \"Microsoft Mary\" -w \"" ++ name "wav" ++ "\" < \"" ++ name "txt" ++ "\""
+            putStrLn $ "Writing " ++ name "mp3"
+            system $ "lame -b 64 --quiet \"" ++ name "wav" ++ "\" \"" ++ name "mp3" ++ "\""
+            removeFile (name "wav")
 
 
-speak "ptts" file = do
-    let out = replaceExtension file "wav"
-    putStrLn $ "Writing " ++ takeFileName out
-    system $ "ptts -voice \"Microsoft Mary\" -w \"" ++ out ++ "\" < \"" ++ file ++ "\""
-    return ()
+---------------------------------------------------------------------
+-- TEXT PROCESSING BIT
 
-speak prog file = putStrLn $ "Don't know how to speak with " ++ prog
+
+-- read a file and split it into text chunks
+readFileSpeach :: FilePath -> IO [String]
+readFileSpeach file = do
+    src <- readFile file
+    return $ map (flatten . text) $ divide src
 
 
 -- compress \n\n\n -> \n
