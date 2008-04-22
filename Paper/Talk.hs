@@ -139,7 +139,8 @@ skip = let (*) = (,) in
         ,"copyrightyear","copyrightdata","titlebanner","title","subtitle"
         ,"bibliographystyle","citep"]
     ++ ["newenvironment" * "{{{", "newcommand" * "{[{", "conferenceinfo" * "{{"
-       ,"authorinfo" * "{{{","category" * "{{{", "terms" * "\n\n", "keywords" * "\n\n"]
+       ,"authorinfo" * "{{{","category" * "{{{", "terms" * "\n\n", "keywords" * "\n\n"
+       ,"setcounter" * "{{"]
 
 
 skippy ('{':xs) t = skippy xs $ skipCurly t
