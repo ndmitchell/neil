@@ -37,7 +37,7 @@ getFileData args = do
         (head $ explicit ++ implicit)
         (snub $ explicit)
         (snub $ explicit ++ implicit)
-        opt
+        (map tail opt)
     where
         -- return (directory, explicit, implicit)
         f file = do
