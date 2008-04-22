@@ -124,7 +124,8 @@ text ('\\':xs)
 
         | otherwise = text $ skippy (fromMaybe "" $ lookup a skip) b
     where
-        (a,b) = span isAlpha xs
+        (a,b2) = span isAlpha xs
+        b = if "*" `isPrefixOf` b2 then tail b2 else b2
 
 text (x:xs) | x `elem` "{}" =  text xs
 text (x:xs) = x : text xs
