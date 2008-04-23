@@ -32,11 +32,14 @@ getFileData args = do
         error "All files must be from the same directory"
 
     let snub = nub . sort
+        nullErr x | null explicit = error $ "Error: No Latex files found in " ++ show (head dirs)
+                  | otherwise = x
+
     return $ FileData
         (head dirs)
-        (head $ explicit ++ implicit)
-        (snub $ explicit)
-        (snub $ explicit ++ implicit)
+        (nullErr $ head $ explicit)
+        (nullErr $ snub $ explicit)
+        (nullErr $ snub $ explicit ++ implicit)
         (map tail opt)
     where
         -- return (directory, explicit, implicit)
@@ -46,21 +49,20 @@ getFileData args = do
             bFile <- doesFileExist file
             if bDir then getDir file
              else if bFile then getFile file
-             else error $ "Could not find file: " ++ file
+             else error $ "Error: Could not find file " ++ show file
 
 
 
 getDir dir = do
     files <- getDirectoryContents dir
     files <- return $ filter ((==) ".tex" . takeExtension) files
-    when (null files) $ error $ "No files found in directory, " ++ dir
 
     -- now pick the main file
     let mainFile = if "index.tex" `elem` files then "index.tex" else
                    snd $ maximum [(rank x, x) | x <- files]
         dirs = reverse $ splitDirectories dir
         rank x = liftM negate $ findIndex (== dropExtension x) dirs
-    return (dir, mainFile : files, [])
+    return (dir, [mainFile | not $ null files] ++ files, [])
 
 
 getFile file = do
