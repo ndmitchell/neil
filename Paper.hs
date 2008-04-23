@@ -13,6 +13,7 @@ import Paper.WordCount
 import Paper.Haskell
 import Paper.Push
 import Paper.Ref
+import Paper.Todo
 
 
 {-
@@ -82,8 +83,10 @@ process "push" files = push (directory files)
 
 process "ref" files = ref (argFiles files)
 
+process "todo" files = todo (argFiles files)
+
 process "check" files = do
-    mapM_ (`process` files) ["ref"]
+    mapM_ (`process` files) ["ref","todo"]
     putStrLn "All checks succeeded"
 
 process x files = putStrLn $ "Error: Unknown action, " ++ show x
