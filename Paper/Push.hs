@@ -16,9 +16,10 @@ push x = do
 
     src <- readFile $ fromJust r </> "_darcs" </> "prefs" </> "repos"
     () <- length src `seq` return ()
-    let ans = filter (not . ("http://" `isPrefixOf`)) $ lines src
-    when (null ans) $ error "No non-http repos in the prefs/repos file"
-    system $ "darcs push --no-set-default \"" ++ (head ans) ++ "\""
+    let r = pick $ lines src
+    when (isNothing r) $ error "No non-http repos in the prefs/repos file"
+
+    system $ "darcs push --no-set-default \"" ++ (fromJust r) ++ "\""
     return ()
 
 
@@ -27,3 +28,8 @@ repo [] = return Nothing
 repo (x:xs) = do
     b <- doesDirectoryExist (x </> "_darcs")
     if b then return $ Just x else repo xs
+
+
+-- pick the ssh address
+pick :: [String] -> Maybe String
+pick = listToMaybe . filter (not . ("http://" `isPrefixOf`))
