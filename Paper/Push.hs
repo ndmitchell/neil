@@ -32,4 +32,9 @@ repo (x:xs) = do
 
 -- pick the ssh address
 pick :: [String] -> Maybe String
-pick = listToMaybe . filter (not . ("http://" `isPrefixOf`))
+pick xs = listToMaybe $ ssh ++ [b ++ drop (length a) h | h <- http, (a,b) <- mapping, a `isPrefixOf` h]
+    where (http,ssh) = partition ("http://" `isPrefixOf`) xs
+
+
+mapping = [("http://www.cs.york.ac.uk/fp/darcs/","ndm@venice.cs.york.ac.uk:/n/www/cs/fp/darcs/")]
+
