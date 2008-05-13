@@ -6,10 +6,6 @@ import Data.List
 import Paper.Util.String
 
 
-data HsLow = HsDef String
-           | HsCheck Int Bool String String
-           deriving Show
-
 -- HsCheck a b c d
 --     a: line number 
 --     b: True is Expr, False is Stmt
@@ -18,10 +14,12 @@ data HsLow = HsDef String
 --     d: code
 
 
-latexParser :: String -> [HsLow]
-latexParser = f 1 ""
+latexParser :: FilePath -> String -> [HsLow]
+latexParser file = f 1 ""
     where
-        f i cmd xs | "\\hsDef{" `isPrefixOf` xs = HsDef a : f (i + newlines a) "" b
+        pos = Pos file
+
+        f i cmd xs | "\\hsDef{" `isPrefixOf` xs = HsDef (pos i) a : f (i + newlines a) "" b
             where (a,b) = break (== '}') $ drop 7 xs
 
         f i cmd xs | "\\ignore" `isPrefixOf` xs = f i "ignore" $ drop 7 xs
@@ -31,11 +29,11 @@ latexParser = f 1 ""
 
         f i cmd ('|':'|':xs) = f i "" xs
         f i cmd ('|':xs) | '\n' `elem` a = error "Failed to parse | lines"
-                         | otherwise = HsCheck i True cmd a : f i "" b
+                         | otherwise = HsCheck (pos i) True cmd a : f i "" b
             where (a,b) = spanExpr xs
 
         f i cmd xs | "\\begin{code}" `isPrefixOf` xs
-                   = HsCheck i False cmd a : f (i + newlines a) "" b
+                   = HsCheck (pos i) False cmd a : f (i + newlines a) "" b
             where (a,b) = breakStr "\\end{code}" $ drop 12 xs
 
         f i cmd (x:xs) | x == '\n' = f (i+1) cmd xs
