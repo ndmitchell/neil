@@ -1,17 +1,10 @@
 
-module Paper.Haskell2.LatexParser(HsLow(..), latexParser) where
+module Paper.Haskell2.LatexParser(latexParser) where
 
 import Data.Char
 import Data.List
 import Paper.Util.String
-
-
--- HsCheck a b c d
---     a: line number 
---     b: True is Expr, False is Stmt
---     c: any proceeding command, possibly none
---        \ignore, or \hs{command}
---     d: code
+import Paper.Haskell2.Type
 
 
 latexParser :: FilePath -> String -> [HsLow]
