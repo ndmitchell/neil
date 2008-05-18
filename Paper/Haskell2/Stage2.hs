@@ -5,22 +5,24 @@ import Data.Char
 import Data.List
 import Paper.Util.String
 import Paper.Haskell2.Type
+import Paper.Haskell2.Haskell
 
 
 stage2 :: [HsLow] -> [HsItem]
-stage2 = concatMap f . nub
+stage2 = concat . zipWith f [1..] . nub
     where
-        f (HsDef pos x) | "instance " `isPrefixOf` x 
+        f n (HsDef pos x) | "instance " `isPrefixOf` x 
                         || "import " `isPrefixOf` x  = [HsItem Stmt pos x Always]
                         | null x = []
 
-        f (HsCheck pos expr cmd x) | cmd == "ignore" = []
-                                   | otherwise = [HsItem typ pos x $ parseWhere files]
+        f n (HsCheck pos expr cmd x) | cmd == "ignore" = []
+            | expr = [HsItem Expr pos (fixExpr n x) whr]
+            | otherwise = [HsItem Stmt pos (fakeImplement x) whr]
             where
+                whr = parseWhere files
                 (files,_) = readCmd cmd
-                typ = if expr then Expr else Stmt    
 
-        f x = error $ "Stage2, todo: " ++ show x
+        f n x = error $ "Stage2, todo: " ++ show x
 
 
 readCmd :: String -> ([String], String)
@@ -31,23 +33,5 @@ readCmd ('@':xs) =  (a:c,d)
 readCmd xs = ([], xs)
 
 
-
-{-
-
-\hsDef{xs,ys} -- some variables, introduced into expressions only
-\hsDef{instance Eq Foo} -- an instance
-\hsDef{type alpha} -- a type variable
-\hsDef{type Foo alpha} -- a type definition
-\hsDef{foo :: Int -> String} -- a top-level function
-\hsDef{import Prelude} -- an import that is always pulled in
-\hsDef{import Prelude hiding (map)} -- an import always used hiding stuff
-\hsDef{import Data.List(nub)} -- an import that is sometimes wanted
-
-
-
-expression
-type-expression
-statement
-list of expressions
-
--}
+fixExpr n x | all isHaskellSymbol $ trim x = fixExpr n ("(" ++ x ++ ")")
+            | otherwise = "auto_" ++ show n ++ " = " ++ x
