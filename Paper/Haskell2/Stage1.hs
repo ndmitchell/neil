@@ -23,11 +23,11 @@ stage1 file = f 1 ""
 
         f i cmd ('|':'|':xs) = f i "" xs
         f i cmd ('|':xs) | '\n' `elem` a = errorDie file i "Failed to parse | lines" a
-                         | otherwise = HsCheck (pos i) Expr cmd a : f i "" b
+                         | otherwise = hsCheck (pos i) Expr cmd a ++ f i "" b
             where (a,b) = spanExpr xs
 
         f i cmd xs | "\\begin{code}" `isPrefixOf` xs
-                   = HsCheck (pos i) Stmt cmd a : f (i + newlines a) "" b
+                   = hsCheck (pos i) Stmt cmd a ++ f (i + newlines a) "" b
             where (a,b) = breakStr "\\end{code}" $ drop 12 xs
 
         f i cmd ('%':xs) = f i "" $ dropWhile (/= '\n') xs
@@ -49,3 +49,18 @@ spanExpr [] = ("","")
 newlines :: String -> Int
 newlines = length . filter (== '\n')
 
+
+readCmd :: String -> ([String], String)
+readCmd ('@':xs) =  (a:c,d)
+    where
+        (a,b) = break (== ' ') xs
+        (c,d) = readCmd $ drop 1 b
+readCmd xs = ([], xs)
+
+
+hsCheck pos typ cmd x
+        | b == "ignore" = []
+        | b /= "" = error $ "Stage 1, todo: " ++ show b 
+        | otherwise = [HsCheck pos typ (parseWhere a) x]
+    where
+        (a,b) = readCmd cmd

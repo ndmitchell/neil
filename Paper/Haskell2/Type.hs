@@ -12,7 +12,7 @@ linePragma (Pos file line) = "{- # LINE " ++ show line ++ " " ++ show file ++ " 
 
 
 data HsLow = HsDef   {lowPos :: Pos, lowText :: String}
-           | HsCheck {lowPos :: Pos, lowType :: HsType, lowCmd :: String, lowText :: String}
+           | HsCheck {lowPos :: Pos, lowType :: HsType, lowWhere :: Where, lowText :: String}
              deriving Show
 
 
@@ -41,7 +41,7 @@ data HsType = Stmt
 data Where = Always
            | Only [String]
            | OnlyNot [String]
-             deriving Show
+             deriving (Show,Eq)
 
 
 parseWhere :: [String] -> Where
