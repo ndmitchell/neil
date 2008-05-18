@@ -22,8 +22,9 @@ stage3 file xs = (filename "", importer) : [(filename n, text n) | n <- need]
         modname n = capital (takeBaseName file) ++ ['_'| n/=""] ++ n
         need = allWhere $ map itemWhere xs
 
-        importer = unlines $ ("module " ++ modname "" ++ " where") :
-                             ["import " ++ modname n | n <- need]
+        importer = unlines $ ("module Main where") :
+                             ["import " ++ modname n | n <- need] ++
+                             ["main = putStrLn \"Successfully checked\""]
 
         text n = unlines $ prefix :
                            ("module " ++ modname n ++ " where") :
