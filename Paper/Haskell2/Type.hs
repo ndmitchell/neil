@@ -15,6 +15,13 @@ data HsLow = HsDef   {lowPos :: Pos, lowText :: String}
            | HsCheck {lowPos :: Pos, lowExpr :: Bool, lowCmd :: String, lowText :: String}
              deriving Show
 
+
+instance Eq HsLow where
+    (HsDef a1 b1) == (HsDef a2 b2) = b1 == b2
+    (HsCheck a1 b1 c1 d1) == (HsCheck a2 b2 c2 d2) = b1 == b2 && c1 == c2 && d1 == d2
+    _ == _ = False
+
+
 --     lowExpr: True is Expr, False is Stmt
 --     lowCmd: any proceeding command, possibly none
 --             \ignore, or \hs{command}
