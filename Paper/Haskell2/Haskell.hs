@@ -1,5 +1,8 @@
 
-module Paper.Haskell2.Haskell(isHaskellSymbol, defines, rename, fakeImplement) where
+module Paper.Haskell2.Haskell(
+    isHaskellSymbol, lexer,
+    defines, rename, fakeImplement
+    ) where
 
 import Data.Char
 import Data.List
