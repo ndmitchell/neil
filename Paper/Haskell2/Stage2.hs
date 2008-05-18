@@ -15,11 +15,9 @@ stage2 xs = concat defStmts ++ reverse stmts2 ++ exprs2
         (defNames,defStmts) = unzip $ map parseDefs defs
         (stmts,exprs) = partition ((==) Stmt . lowType) checks
         (useNames,stmts2) = unzip $ map parseStmt stmts
-        exprs2 = zipWith parseExpr [1..] exprs
+        names = concat $ defNames ++ useNames
+        exprs2 = concat $ zipWith (parseExpr names) [1..] exprs
 
-
-fixExpr n x | all isHaskellSymbol $ trim x = fixExpr n ("(" ++ x ++ ")")
-            | otherwise = "auto_" ++ show n ++ " = " ++ x
 
 
 parseDefs :: HsLow -> ([String], [HsItem])
@@ -32,5 +30,12 @@ parseStmt :: HsLow -> ([String],HsItem)
 parseStmt (HsCheck pos Stmt whr x) = ([], HsItem Stmt pos (fakeImplement x) whr)
 
 
-parseExpr :: Int -> HsLow -> HsItem
-parseExpr n (HsCheck pos expr whr x) = HsItem Stmt pos (fixExpr n x) whr
+parseExpr :: [String] -> Int -> HsLow -> [HsItem]
+parseExpr names n (HsCheck pos expr whr x) =
+    case lexer x of
+        [y] | y `elem` names -> []
+        ["(",y,")"] | y `elem` names -> []
+        [y] | all isHaskellSymbol y -> f ("(" ++ y ++ ")")
+        _ -> f x
+    where
+        f x = [HsItem Stmt pos ("auto_" ++ show n ++ " = " ++ x) whr]
