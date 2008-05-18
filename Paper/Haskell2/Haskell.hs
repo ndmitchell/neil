@@ -15,7 +15,7 @@ defines = nub . filter validName . concatMap f . map lexer2 . classLeft . lines
 
 
 validName x = isAlpha (head x) && x `notElem` keyword
-keyword = ["class","instance","where","data","type"]
+keyword = ["class","instance","where","data","type","import"]
 
 
 flushLeft (x:xs) = not $ isSpace x
