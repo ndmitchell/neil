@@ -16,6 +16,6 @@ stage3 = map f
 
 fixStmt = fakeImplement . unlines . map f . lines
     where
-        f x | "module" `isPrefixOf` x = "-- " ++ x
+        f x | "module" `isPrefixOf` x = "-- HIDE " ++ x
             | otherwise = x
 
