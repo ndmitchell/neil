@@ -28,7 +28,7 @@ stage4 file xs = (filename "", importer) : [(filename n, text n) | n <- need]
             where items = filter (matchWhere n . itemFiles) xs
 
 
-render = f [] . zip [1..] . reverse
+render = collectImports . f [] . zip [1..] . reverse
     where
         f seen [] = []
         f seen ((n,HsItem Stmt pos x _) : xs) =
@@ -41,6 +41,13 @@ render = f [] . zip [1..] . reverse
                 seen2 = def `union` seen
 
         f seen (x:xs) = f seen xs -- TODO: Hiding errors here
+
+
+collectImports xs = filter isImport xs ++ map f xs
+    where
+        isImport x = "import " `isPrefixOf` x
+        f x = (if isImport x then "-- HIDE " else "") ++ x
+
 
 capital (x:xs) = toUpper x : xs
 
