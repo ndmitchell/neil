@@ -40,7 +40,7 @@ render = collectImports . f [] . zip [1..] . reverse
                 x2 = rename [(b, prime n b) | b <- bad] x
                 seen2 = def `union` seen
 
-        f seen (x:xs) = f seen xs -- TODO: Hiding errors here
+        f seen (x:xs) = error $ "Stage 4, todo: " ++ show x
 
 
 collectImports xs = filter isImport xs ++ map f xs
