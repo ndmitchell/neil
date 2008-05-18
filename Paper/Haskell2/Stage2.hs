@@ -16,7 +16,7 @@ stage2 = concat . zipWith f [1..] . nub
                         | null x = []
 
         f n (HsCheck pos expr cmd x) | cmd == "ignore" = []
-            | expr = [HsItem Expr pos (fixExpr n x) whr]
+            | expr =      [HsItem Stmt pos (fixExpr n x) whr]
             | otherwise = [HsItem Stmt pos (fakeImplement x) whr]
             where
                 whr = parseWhere files
