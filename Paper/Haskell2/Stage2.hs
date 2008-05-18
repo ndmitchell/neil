@@ -12,6 +12,10 @@ stage2 = concatMap f
     where
         f (HsDef pos x) | "instance" `isPrefixOf` x 
                         || "import" `isPrefixOf` x  = [Stmt pos x []]
+
+        f (HsCheck pos False cmd x) = [Stmt pos x []]
+        f (HsCheck pos True  cmd x) = [Expr pos x]
+
         f x = error $ "Stage2, todo: " ++ show x
 
 
