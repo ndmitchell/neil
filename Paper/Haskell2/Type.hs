@@ -29,7 +29,7 @@ isHsDef (HsDef{}) = True; isHsDef _ = False
 --             \ignore, or \hs{command}
 
 
-data HsItem = HsItem {itemType :: HsType, itemPos :: Pos, itemText :: String, itemFiles :: Where}
+data HsItem = HsItem {itemType :: HsType, itemPos :: Pos, itemText :: String, itemWhere :: Where}
               deriving Show
 
 data HsType = Stmt

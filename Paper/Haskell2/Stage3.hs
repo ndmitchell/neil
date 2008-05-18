@@ -17,7 +17,7 @@ stage3 file xs = (filename "", importer) : [(filename n, text n) | n <- need]
     where
         filename n = dropFileName file </> modname n <.> "hs"
         modname n = capital (takeBaseName file) ++ ['_'| n/=""] ++ n
-        need = allWhere $ map itemFiles xs
+        need = allWhere $ map itemWhere xs
 
         importer = unlines $ ("module " ++ modname "" ++ " where") :
                              ["import " ++ modname n | n <- need]
@@ -25,7 +25,7 @@ stage3 file xs = (filename "", importer) : [(filename n, text n) | n <- need]
         text n = unlines $ prefix :
                            ("module " ++ modname n ++ " where") :
                            render items
-            where items = filter (matchWhere n . itemFiles) xs
+            where items = filter (matchWhere n . itemWhere) xs
 
 
 render = collectImports . f [] . zip [1..]
