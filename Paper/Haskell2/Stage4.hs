@@ -5,6 +5,7 @@ import Data.Char
 import Data.List
 import System.FilePath
 import Paper.Haskell2.Type
+import Paper.Haskell2.Haskell
 
 
 stage4 :: FilePath -> [HsItem] -> [(FilePath,String)]
@@ -18,18 +19,23 @@ stage4 file xs = (filename "", importer) : [(filename n, text n) | n <- need]
                              ["import " ++ modname n | n <- need]
 
         text un@('_':n) = unlines $ ("module " ++ modname un ++ " where") :
-                                    concatMap f items
+                                    render items
             where items = filter ((\i -> null i || n `elem` i) . itemFiles) xs
 
-        f (HsItem Stmt pos x _) = [linePragma pos, fixStmt x, ""]
-        f _ = [] -- TODO: Hides wrong answers!
 
-
-
-fixStmt = unlines . map f . lines
+render = f [] . zip [1..] . reverse
     where
-        f x | "module" `isPrefixOf` x = "-- " ++ x
-            | otherwise = x
+        f seen [] = []
+        f seen ((n,HsItem Stmt pos x _) : xs) = linePragma pos : x2 : "" : f seen2 xs
+            where
+                def = defines x
+                bad = def `intersect` seen
+                x2 = rename [(b, prime n b) | b <- bad] x
+                seen2 = def `union` seen
 
+        f seen (x:xs) = f seen xs -- TODO: Hiding errors here
 
 capital (x:xs) = toUpper x : xs
+
+
+prime n name = name ++ "''" ++ show n
