@@ -9,11 +9,13 @@ import Paper.Haskell2.Haskell
 
 
 stage2 :: [HsLow] -> [HsItem]
-stage2 xs = concat $ defStmts ++ zipWith parseChecks [1..] checks
+stage2 xs = concat defStmts ++ reverse stmts2 ++ exprs2
     where
         (defs,checks) = partition isHsDef $ nub xs
         (defNames,defStmts) = unzip $ map parseDefs defs
-
+        (exprs,stmts) = partition lowExpr $ filter ((==) "ignore" . lowCmd) checks
+        (useNames,stmts2) = unzip $ map parseStmt stmts
+        exprs2 = zipWith parseExpr [1..] exprs
 
 
 readCmd :: String -> ([String], String)
@@ -34,11 +36,15 @@ parseDefs (HsDef pos x) | "instance " `isPrefixOf` x  || "import " `isPrefixOf` 
                         | null x = ([],[])
 
 
-parseChecks :: Int -> HsLow -> [HsItem]
-parseChecks n (HsCheck pos expr cmd x)
-    | cmd == "ignore" = []
-    | expr =      [HsItem Stmt pos (fixExpr n x) whr]
-    | otherwise = [HsItem Stmt pos (fakeImplement x) whr]
+parseStmt :: HsLow -> ([String],HsItem)
+parseStmt (HsCheck pos expr cmd x) = ([], HsItem Stmt pos (fakeImplement x) whr)
+    where
+        whr = parseWhere files
+        (files,_) = readCmd cmd
+
+
+parseExpr :: Int -> HsLow -> HsItem
+parseExpr n (HsCheck pos expr cmd x) = HsItem Stmt pos (fixExpr n x) whr
     where
         whr = parseWhere files
         (files,_) = readCmd cmd

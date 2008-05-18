@@ -28,7 +28,7 @@ stage3 file xs = (filename "", importer) : [(filename n, text n) | n <- need]
             where items = filter (matchWhere n . itemFiles) xs
 
 
-render = collectImports . f [] . zip [1..] . reverse
+render = collectImports . f [] . zip [1..]
     where
         f seen [] = []
         f seen ((n,HsItem Stmt pos x _) : xs) =
