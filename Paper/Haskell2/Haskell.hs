@@ -11,7 +11,7 @@ isHaskellSymbol = flip elem "|+-*"
 
 
 defines :: String -> [String]
-defines = nub . filter validName . concatMap f . map lexer2 . classLeft . lines
+defines = nub . filter validName . concatMap f . map lexer . classLeft . lines
     where
         f ("(":name:")":_) = [name]
         f (name:_) = [name]
@@ -35,7 +35,7 @@ classLeft [] = []
 
 rename :: [(String, String)] -> String -> String
 rename [] = id
-rename ren = concat . map f . lexer
+rename ren = concat . map f . lexerSpace
     where f x = fromMaybe x $ lookup x ren
 
 
@@ -51,7 +51,7 @@ fakeImplement xs = unlines $
 -- more a "this function is definately defined"
 -- as conservative
 typesigFunction :: String -> [String]
-typesigFunction = nub . concatMap (f . lexer2) . filter flushLeft . lines
+typesigFunction = nub . concatMap (f . lexer) . filter flushLeft . lines
     where
         f ("(":x:")":"::":_) = [x]
         f (x:"::":_) = [x]
@@ -61,7 +61,7 @@ typesigFunction = nub . concatMap (f . lexer2) . filter flushLeft . lines
 -- more a "this function is possibly implemented"
 -- as conservative
 implementsFunction :: String -> [String]
-implementsFunction = nub . concatMap (f . lexer2) . lines
+implementsFunction = nub . concatMap (f . lexer) . lines
     where
         f (x:"::":xs) = []
         f (x:xs) = [x]
@@ -72,13 +72,15 @@ operator (x:xs) | isAlpha x = x:xs
 operator x = "(" ++ x ++ ")"
 
 
--- concat . lexer == id
-lexer :: String -> [String]
-lexer [] = []
-lexer xs@(x:_) | isSpace x = a : lexer b
+-- concat . lexerSpace == id
+lexerSpace :: String -> [String]
+lexerSpace [] = []
+lexerSpace xs@(x:_) | isSpace x = a : lexer b
     where (a,b) = span isSpace xs
-lexer xs = case lex xs of
+lexerSpace xs = case lex xs of
+                [(a,xs@('.':x:_))] | isUpper x -> (a++b) : c
+                    where b:c = lexerSpace xs
                 [(a,b)] -> a : lexer b
 
 
-lexer2 = filter (not . isSpace . head) . lexer
+lexer = filter (not . isSpace . head) . lexerSpace
