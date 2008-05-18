@@ -11,6 +11,7 @@ import Paper.Make
 import Paper.Talk
 import Paper.WordCount
 import Paper.Haskell
+import Paper.Haskell2.All
 import Paper.Push
 import Paper.Ref
 import Paper.Todo
@@ -74,6 +75,10 @@ process "make" files = do
 process "haskell" files = do
     obj <- objDir "haskell" files
     haskell obj files
+
+process "haskell2" files = do
+    obj <- objDir "haskell2" files
+    haskell2 obj (argFiles files)
 
 process "talk" files = do
     tlk <- objDir "talk" files
