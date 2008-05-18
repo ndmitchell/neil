@@ -23,8 +23,7 @@ data HsLow = HsDef   {lowPos :: Pos, lowText :: String}
 data HsItem = HsItem {itemType :: HsType, itemPos :: Pos, itemText :: String, itemFiles :: Where}
               deriving Show
 
-data HsType = Import
-            | Stmt
+data HsType = Stmt
             | Expr
             | TExpr
             | Variable
