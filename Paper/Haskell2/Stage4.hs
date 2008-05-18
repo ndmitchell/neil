@@ -30,9 +30,11 @@ stage4 file xs = (filename "", importer) : [(filename n, text n) | n <- need]
 render = f [] . zip [1..] . reverse
     where
         f seen [] = []
-        f seen ((n,HsItem Stmt pos x _) : xs) = linePragma pos : x2 : "" : f seen2 xs
+        f seen ((n,HsItem Stmt pos x _) : xs) =
+                linePragma pos : defNote : x2 : "" : f seen2 xs
             where
                 def = defines x
+                defNote = "-- !defines " ++ show def
                 bad = def `intersect` seen
                 x2 = rename [(b, prime n b) | b <- bad] x
                 seen2 = def `union` seen
