@@ -28,7 +28,7 @@ parseDefs (HsDef pos x) | "instance " `isPrefixOf` x  || "import " `isPrefixOf` 
 
 
 parseStmt :: HsLow -> ([String],HsItem)
-parseStmt (HsCheck pos Stmt whr x) = ([], HsItem Stmt pos (fakeImplement x) whr)
+parseStmt (HsCheck pos Stmt whr x) = (lexer x, HsItem Stmt pos (fakeImplement x) whr)
 
 
 parseExpr :: (String -> Bool) -> Int -> HsLow -> [HsItem]
