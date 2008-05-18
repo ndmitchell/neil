@@ -18,35 +18,10 @@ data HsLow = HsDef   Pos String
 --     d: code
 
 
-data HsItem = Item {pos :: Pos, typ :: Type, code :: String, give :: [String], want :: [String]}
-
-
-data Type = Stmt -- a statement
-          | Expr -- an expression
-          | Variable -- a variable
-          | TypeVariable -- a type variable
-          | TypeExpr -- a type expression
-          | Import -- an import statement
-          | Instance -- an instance definition
-
-
-
-{-
-
-\hsDef{xs,ys} -- some variables, introduced into expressions only
-\hsDef{instance Eq Foo} -- an instance
-\hsDef{type alpha} -- a type variable
-\hsDef{type Foo alpha} -- a type definition
-\hsDef{foo :: Int -> String} -- a top-level function
-\hsDef{import Prelude} -- an import that is always pulled in
-\hsDef{import Prelude hiding (map)} -- an import always used hiding stuff
-\hsDef{import Data.List(nub)} -- an import that is sometimes wanted
-
-
-
-expression
-type-expression
-statement
-list of expressions
-
--}
+data HsItem = Import Pos String
+            | Stmt   Pos String [String]
+            | Expr   Pos String
+            | TExpr  Pos String
+            | Variable   String
+            | TVariable  String
+              deriving Show
