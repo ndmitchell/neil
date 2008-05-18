@@ -11,11 +11,11 @@ stage2 :: [HsLow] -> [HsItem]
 stage2 = concatMap f
     where
         f (HsDef pos x) | "instance" `isPrefixOf` x 
-                        || "import" `isPrefixOf` x  = [HsItem Stmt pos x]
+                        || "import" `isPrefixOf` x  = [HsItem Stmt pos x []]
 
         f (HsCheck pos expr cmd x) | cmd == "ignore" = []
-                                   | expr = [HsItem Expr pos x]
-                                   | otherwise = [HsItem Stmt pos x]
+                                   | expr = [HsItem Expr pos x []]
+                                   | otherwise = [HsItem Stmt pos x []]
 
         f x = error $ "Stage2, todo: " ++ show x
 

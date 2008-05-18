@@ -21,7 +21,7 @@ data HsLow = HsDef   Pos String
 --     d: code
 
 
-data HsItem = HsItem HsType Pos String 
+data HsItem = HsItem HsType Pos String [Int]
 
 data HsType = Import
             | Stmt
