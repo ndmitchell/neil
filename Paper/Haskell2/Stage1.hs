@@ -4,6 +4,7 @@ module Paper.Haskell2.Stage1(stage1) where
 import Data.Char
 import Data.List
 import Paper.Util.String
+import Paper.Util.Error
 import Paper.Haskell2.Type
 
 
@@ -21,7 +22,7 @@ stage1 file = f 1 ""
             where (a,b) = break (== '}') $ drop 4 xs
 
         f i cmd ('|':'|':xs) = f i "" xs
-        f i cmd ('|':xs) | '\n' `elem` a = error "Failed to parse | lines"
+        f i cmd ('|':xs) | '\n' `elem` a = errorDie file i "Failed to parse | lines" a
                          | otherwise = HsCheck (pos i) True cmd a : f i "" b
             where (a,b) = spanExpr xs
 
