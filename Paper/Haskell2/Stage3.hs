@@ -3,6 +3,7 @@ module Paper.Haskell2.Stage3(stage3) where
 
 import Data.Char
 import Data.List
+import Paper.Util.String
 import Paper.Haskell2.Type
 import Paper.Haskell2.Haskell
 
@@ -19,6 +20,4 @@ stage3 = zipWith f [1..]
 fixExpr n x | all isHaskellSymbol $ trim x = fixExpr n ("(" ++ x ++ ")")
             | otherwise = "auto_" ++ show n ++ " = " ++ x
 
-
-trim = reverse . dropWhile isSpace . reverse . dropWhile isSpace
 

@@ -25,3 +25,6 @@ splitStr s xs = a : case splitStr s (drop (length s) b) of
                          x:xs -> (s++x):xs
     where (a,b) = breakStr s xs
 
+
+
+trim = reverse . dropWhile isSpace . reverse . dropWhile isSpace
