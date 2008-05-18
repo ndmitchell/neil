@@ -12,6 +12,7 @@ stage2 = concatMap f
     where
         f (HsDef pos x) | "instance " `isPrefixOf` x 
                         || "import " `isPrefixOf` x  = [HsItem Stmt pos x Always]
+                        | null x = []
 
         f (HsCheck pos expr cmd x) | cmd == "ignore" = []
                                    | otherwise = [HsItem typ pos x $ parseWhere files]
