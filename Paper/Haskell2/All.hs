@@ -5,7 +5,6 @@ import System.FilePath
 
 import Paper.Haskell2.Stage1
 import Paper.Haskell2.Stage2
-import Paper.Haskell2.Stage3
 import Paper.Haskell2.Stage4
 
 
@@ -15,5 +14,5 @@ haskell2 obj files = mapM_ f files
         f file = do
             src <- readFile file
             let dest = obj </> takeFileName file
-                res = stage4 dest $ stage3 $ stage2 $ stage1 file src
+                res = stage4 dest $ stage2 $ stage1 file src
             mapM_ (uncurry writeFile) res
