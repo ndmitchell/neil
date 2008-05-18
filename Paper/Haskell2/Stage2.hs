@@ -3,6 +3,7 @@ module Paper.Haskell2.Stage2(stage2) where
 
 import Data.Char
 import Data.List
+import qualified Data.Set as Set
 import Paper.Util.String
 import Paper.Haskell2.Type
 import Paper.Haskell2.Haskell
@@ -15,7 +16,7 @@ stage2 xs = concat defStmts ++ reverse stmts2 ++ exprs2
         (defNames,defStmts) = unzip $ map parseDefs defs
         (stmts,exprs) = partition ((==) Stmt . lowType) checks
         (useNames,stmts2) = unzip $ map parseStmt stmts
-        names = concat $ defNames ++ useNames
+        names = flip Set.member $ Set.fromList $ concat $ defNames ++ useNames
         exprs2 = concat $ zipWith (parseExpr names) [1..] exprs
 
 
@@ -30,11 +31,11 @@ parseStmt :: HsLow -> ([String],HsItem)
 parseStmt (HsCheck pos Stmt whr x) = ([], HsItem Stmt pos (fakeImplement x) whr)
 
 
-parseExpr :: [String] -> Int -> HsLow -> [HsItem]
-parseExpr names n (HsCheck pos expr whr x) =
+parseExpr :: (String -> Bool) -> Int -> HsLow -> [HsItem]
+parseExpr seen n (HsCheck pos expr whr x) =
     case lexer x of
-        [y] | y `elem` names -> []
-        ["(",y,")"] | y `elem` names -> []
+        [y] | seen y -> []
+        ["(",y,")"] | seen y -> []
         [y] | all isHaskellSymbol y -> f ("(" ++ y ++ ")")
         _ -> f x
     where
