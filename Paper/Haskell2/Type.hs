@@ -22,6 +22,8 @@ instance Eq HsLow where
     _ == _ = False
 
 
+isHsDef (HsDef{}) = True; isHsDef _ = False
+
 --     lowExpr: True is Expr, False is Stmt
 --     lowCmd: any proceeding command, possibly none
 --             \ignore, or \hs{command}
