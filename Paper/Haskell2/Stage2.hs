@@ -8,7 +8,7 @@ import Paper.Haskell2.Type
 
 
 stage2 :: [HsLow] -> [HsItem]
-stage2 = concatMap f
+stage2 = concatMap f . nub
     where
         f (HsDef pos x) | "instance " `isPrefixOf` x 
                         || "import " `isPrefixOf` x  = [HsItem Stmt pos x Always]
