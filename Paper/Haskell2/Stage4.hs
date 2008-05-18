@@ -8,6 +8,9 @@ import Paper.Haskell2.Type
 import Paper.Haskell2.Haskell
 
 
+prefix = "{-# LANGUAGE MultiParamTypeClasses #-}"
+
+
 stage4 :: FilePath -> [HsItem] -> [(FilePath,String)]
 stage4 file xs = (filename "", importer) : [(filename n, text n) | n <- need]
     where
@@ -18,7 +21,8 @@ stage4 file xs = (filename "", importer) : [(filename n, text n) | n <- need]
         importer = unlines $ ("module " ++ modname "" ++ " where") :
                              ["import " ++ modname n | n <- need]
 
-        text n = unlines $ ("module " ++ modname n ++ " where") :
+        text n = unlines $ prefix :
+                           ("module " ++ modname n ++ " where") :
                            render items
             where items = filter (matchWhere n . itemFiles) xs
 
