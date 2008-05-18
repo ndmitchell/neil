@@ -13,8 +13,11 @@ stage1 file = f 1 ""
     where
         pos = Pos file
 
-        f i cmd xs | "\\hsDef{" `isPrefixOf` xs = map (HsDef (pos i)) (lines a) ++ f (i + newlines a) "" b
+        f i cmd xs | "\\hsdef{" `isPrefixOf` xs = map (HsDef (pos i)) (lines a) ++ f (i + newlines a) "" b
             where (a,b) = break (== '}') $ drop 7 xs
+
+        f i cmd xs | "\\begin{hsdef}" `isPrefixOf` xs = map (HsDef (pos i)) (lines a) ++ f (i + newlines a) "" b
+            where (a,b) = breakStr "\\end{hsdef}" $ drop 13 xs
 
         f i cmd xs | "\\ignore" `isPrefixOf` xs = f i "ignore" $ drop 7 xs
 
