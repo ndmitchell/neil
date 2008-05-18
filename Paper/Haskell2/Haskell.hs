@@ -1,9 +1,13 @@
 
-module Paper.Haskell2.Haskell(defines, rename, fakeImplement) where
+module Paper.Haskell2.Haskell(isHaskellSymbol, defines, rename, fakeImplement) where
 
 import Data.Char
 import Data.List
 import Data.Maybe
+
+
+isHaskellSymbol :: Char -> Bool
+isHaskellSymbol = flip elem "|+-*"
 
 
 defines :: String -> [String]

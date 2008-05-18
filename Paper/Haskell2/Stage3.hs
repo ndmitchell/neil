@@ -20,7 +20,5 @@ fixExpr n x | all isHaskellSymbol $ trim x = fixExpr n ("(" ++ x ++ ")")
             | otherwise = "auto_" ++ show n ++ " = " ++ x
 
 
-isHaskellSymbol = flip elem "|+-*"
-
 trim = reverse . dropWhile isSpace . reverse . dropWhile isSpace
 
