@@ -22,10 +22,15 @@ stage2 = concatMap f
         f x = error $ "Stage2, todo: " ++ show x
 
 
-readCmd :: String -> ([Int], String)
-readCmd (x:xs) | isDigit x = (map read $ splitStr "," a, drop 1 b)
-    where (a,b) = break (== ' ') (x:xs)
-readCmd xs = ([1], xs)
+readCmd :: String -> ([String], String)
+readCmd xs@('@':_) = f xs
+    where
+        f ('@':xs) = (a:c,d)
+            where
+                (a,b) = break (== ' ') xs
+                (c,d) = f $ drop 1 b
+        f xs = ([], xs)
+readCmd xs = (["default"], xs)
 
 
 

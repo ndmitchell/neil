@@ -8,20 +8,21 @@ import Paper.Haskell2.Type
 
 
 stage4 :: FilePath -> [HsItem] -> [(FilePath,String)]
-stage4 file xs = (filename "", importer) : [(filename (show n), text n) | n <- need]
+stage4 file xs = (filename "", importer) : [(filename n, text n) | n <- need]
     where
         filename n = dropFileName file </> modname n <.> "hs"
         modname n = capital (takeBaseName file) ++ n
-        need = nub $ sort $ concatMap itemFiles xs
+        need = map ('_':) $ nub $ sort $ concatMap itemFiles xs
 
         importer = unlines $ ("module " ++ modname "" ++ " where") :
-                             ["import " ++ modname (show n) | n <- need]
+                             ["import " ++ modname n | n <- need]
 
-        text n = unlines $ ("module " ++ modname (show n) ++ " where") :
-                           concatMap (f n) xs
+        text un@('_':n) = unlines $ ("module " ++ modname un ++ " where") :
+                                    concatMap f items
+            where items = filter ((\i -> null i || n `elem` i) . itemFiles) xs
 
-        f n (HsItem Stmt pos x files) | null files || n `elem` files = [linePragma pos, fixStmt x, ""]
-        f n _ = [] -- TODO: Hides wrong answers!
+        f (HsItem Stmt pos x _) = [linePragma pos, fixStmt x, ""]
+        f _ = [] -- TODO: Hides wrong answers!
 
 
 

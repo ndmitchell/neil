@@ -18,7 +18,8 @@ data HsLow = HsDef   {lowPos :: Pos, lowText :: String}
 --             \ignore, or \hs{command}
 
 
-data HsItem = HsItem {itemType :: HsType, itemPos :: Pos, itemText :: String, itemFiles :: [Int]}
+data HsItem = HsItem {itemType :: HsType, itemPos :: Pos, itemText :: String, itemFiles :: [String]}
+              deriving Show
 
 data HsType = Import
             | Stmt
