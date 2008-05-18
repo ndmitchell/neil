@@ -10,8 +10,8 @@ import Paper.Haskell2.Type
 stage2 :: [HsLow] -> [HsItem]
 stage2 = concatMap f
     where
-        f (HsDef pos x) | "instance" `isPrefixOf` x 
-                        || "import" `isPrefixOf` x  = [HsItem Stmt pos x Always]
+        f (HsDef pos x) | "instance " `isPrefixOf` x 
+                        || "import " `isPrefixOf` x  = [HsItem Stmt pos x Always]
 
         f (HsCheck pos expr cmd x) | cmd == "ignore" = []
                                    | otherwise = [HsItem typ pos x $ parseWhere files]
