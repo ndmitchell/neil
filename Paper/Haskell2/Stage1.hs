@@ -8,21 +8,27 @@ import Paper.Util.Error
 import Paper.Haskell2.Type
 
 
+defs = [("\\hsdef{\\begin{comment}","\\end{comment}}")
+       ,("\\begin{hsdef}","\\end{hsdef}")
+       ,("\\hsdef\\begin{comment}","\\end{comment}")
+       ,("\\hsdef{","}")
+       ]
+
 stage1 :: FilePath -> String -> [HsLow]
 stage1 file = f 1 ""
     where
         pos = Pos file
 
-        f i cmd xs | "\\hsdef{" `isPrefixOf` xs = map (HsDef (pos i)) (lines a) ++ f (i + newlines a) "" b
-            where (a,b) = break (== '}') $ drop 7 xs
-
-        f i cmd xs | "\\begin{hsdef}" `isPrefixOf` xs = map (HsDef (pos i)) (lines a) ++ f (i + newlines a) "" b
-            where (a,b) = breakStr "\\end{hsdef}" $ drop 13 xs
+        f i cmd xs | match /= [] = map (HsDef (pos i)) (lines a) ++ f (i + newlines a) "" b
+            where
+                match = filter ((`isPrefixOf` xs) . fst) defs
+                (start,end):_ = match
+                (a,b) = breakStr end $ drop (length start) xs
 
         f i cmd xs | "\\ignore" `isPrefixOf` xs = f i "ignore" $ drop 7 xs
 
-        f i cmd xs | "\\hs{" `isPrefixOf` xs = f (i + newlines a) a $ drop 1 b
-            where (a,b) = break (== '}') $ drop 4 xs
+        f i cmd xs | "\\h{" `isPrefixOf` xs = f (i + newlines a) a $ drop 1 b
+            where (a,b) = break (== '}') $ drop 3 xs
 
         f i cmd ('|':'|':xs) = f i "" xs
         f i cmd ('|':xs) | '\n' `elem` a = errorDie file i "Failed to parse | lines" a
@@ -54,7 +60,7 @@ newlines = length . filter (== '\n')
 
 
 readCmd :: String -> ([String], String)
-readCmd ('@':xs) =  (a:c,d)
+readCmd ('#':xs) =  (a:c,d)
     where
         (a,b) = break (== ' ') xs
         (c,d) = readCmd $ drop 1 b
@@ -63,7 +69,7 @@ readCmd xs = ([], xs)
 
 hsCheck pos typ cmd x
         | b == "ignore" = []
-        | b /= "" && b `notElem` known = error $ "Stage 1, todo: " ++ show b 
+        | b /= "" && b `notElem` known = error $ "Stage 1, todo: " ++ show pos ++ " " ++ show b 
         | otherwise = [HsCheck pos typ2 (parseWhere a) x]
     where
         typ2 = if cmd == "stmt" then Stmt else typ
