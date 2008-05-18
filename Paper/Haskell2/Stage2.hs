@@ -17,13 +17,13 @@ stage2 xs = concat defStmts ++ reverse stmts2 ++ exprs2
         (stmts,exprs) = partition ((==) Stmt . lowType) checks
         (useNames,stmts2) = unzip $ map parseStmt stmts
         names = flip Set.member $ Set.fromList $ concat $ defNames ++ useNames
-        exprs2 = concat $ zipWith (parseExpr (concat defNames) names) [1..] exprs
+        exprs2 = concat $ zipWith (parseExpr (nub $ concat defNames) names) [1..] exprs
 
 
 
 parseDefs :: HsLow -> ([String], [HsItem])
 parseDefs (HsDef pos x) | "instance " `isPrefixOf` x  || "import " `isPrefixOf` x
-                            = (lexer x,[HsItem Stmt pos x Always])
+    = (filter (isAlpha . head) $ lexer x,[HsItem Stmt pos x Always])
                         | otherwise = (map (dropWhile (== ',')) $ splitStr "," x, [])
 
 
@@ -39,5 +39,5 @@ parseExpr names seen n (HsCheck pos expr whr x) =
         [y] | all isHaskellSymbol y -> f [y] ("(" ++ y ++ ")")
         lexed -> f lexed x
     where
-        f lexed x = [HsItem Stmt pos ("auto_" ++ show n ++ " " ++ unwords want ++ " = " ++ x) whr]
-            where want = names `intersect` lexed
+        f lexed x = [HsItem Stmt pos ("auto_" ++ show n ++ " = " ++ x ++ "\n" ++ want) whr]
+            where want = unlines $ " where" : [" " ++ w ++ " = undefined" | w <- names `intersect` lexed]

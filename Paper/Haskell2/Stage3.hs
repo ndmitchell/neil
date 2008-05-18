@@ -8,7 +8,10 @@ import Paper.Haskell2.Type
 import Paper.Haskell2.Haskell
 
 
-prefix = "{-# LANGUAGE MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, UndecidableInstances, Rank2Types #-}\n" ++
+exts = "NoMonomorphismRestriction, MultiParamTypeClasses, FlexibleContexts, " ++
+       "FlexibleInstances, UndecidableInstances, Rank2Types"
+
+prefix = "{-# LANGUAGE " ++ exts ++ " #-}\n" ++
          "{-# OPTIONS_GHC -fno-warn-missing-methods #-}\n"
 
 
