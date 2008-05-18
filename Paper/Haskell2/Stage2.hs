@@ -14,12 +14,18 @@ stage2 = concatMap f
                         || "import" `isPrefixOf` x  = [HsItem Stmt pos x []]
 
         f (HsCheck pos expr cmd x) | cmd == "ignore" = []
-                                   | expr = [HsItem Expr pos x []]
-                                   | otherwise = [HsItem Stmt pos x []]
+                                   | otherwise = [HsItem typ pos x files]
+            where
+                (files,_) = readCmd cmd
+                typ = if expr then Expr else Stmt    
 
         f x = error $ "Stage2, todo: " ++ show x
 
 
+readCmd :: String -> ([Int], String)
+readCmd (x:xs) | isDigit x = (map read $ splitStr "," a, drop 1 b)
+    where (a,b) = break (== ' ') (x:xs)
+readCmd xs = ([1], xs)
 
 
 
