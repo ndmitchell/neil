@@ -81,8 +81,8 @@ lexerSpace [] = []
 lexerSpace xs@(x:_) | isSpace x = a : lexerSpace b
     where (a,b) = span isSpace xs
 lexerSpace xs = case lex xs of
-                [(a,xs@('.':x:_))] | isUpper x -> (a++b) : c
-                    where b:c = lexerSpace xs
+                [(a,'.':x:xs)] | isUpper x -> (a++'.':b) : c
+                    where b:c = lexerSpace (x:xs)
                 [(a,b)] -> a : lexerSpace b
 
 
