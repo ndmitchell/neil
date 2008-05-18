@@ -35,8 +35,6 @@ data HsItem = HsItem {itemType :: HsType, itemPos :: Pos, itemText :: String, it
 data HsType = Stmt
             | Expr
             | TExpr
-            | Variable
-            | TVariable
               deriving (Eq,Show)
 
 
