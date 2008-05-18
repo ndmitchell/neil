@@ -9,19 +9,16 @@ linePragma :: Pos -> String
 linePragma (Pos file line) = "{- # LINE " ++ show line ++ " " ++ show file ++ " # -}"
 
 
-data HsLow = HsDef   Pos String
-           | HsCheck Pos Bool String String
+data HsLow = HsDef   {lowPos :: Pos, lowText :: String}
+           | HsCheck {lowPos :: Pos, lowExpr :: Bool, lowCmd :: String, lowText :: String}
              deriving Show
 
--- HsCheck a b c d
---     a: line number 
---     b: True is Expr, False is Stmt
---     c: any proceeding command, possibly none
---        \ignore, or \hs{command}
---     d: code
+--     lowExpr: True is Expr, False is Stmt
+--     lowCmd: any proceeding command, possibly none
+--             \ignore, or \hs{command}
 
 
-data HsItem = HsItem HsType Pos String [Int]
+data HsItem = HsItem {itemType :: HsType, itemPos :: Pos, itemText :: String, itemFiles :: [Int]}
 
 data HsType = Import
             | Stmt
