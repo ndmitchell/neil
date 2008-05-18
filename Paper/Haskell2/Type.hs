@@ -1,6 +1,8 @@
 
 module Paper.Haskell2.Type where
 
+import Data.List
+
 
 data Pos = Pos FilePath !Int
            deriving Show
@@ -18,7 +20,7 @@ data HsLow = HsDef   {lowPos :: Pos, lowText :: String}
 --             \ignore, or \hs{command}
 
 
-data HsItem = HsItem {itemType :: HsType, itemPos :: Pos, itemText :: String, itemFiles :: [String]}
+data HsItem = HsItem {itemType :: HsType, itemPos :: Pos, itemText :: String, itemFiles :: Where}
               deriving Show
 
 data HsType = Import
@@ -28,3 +30,22 @@ data HsType = Import
             | Variable
             | TVariable
               deriving Show
+
+
+data Where = Always
+           | Only [String]
+             deriving Show
+
+
+parseWhere :: [String] -> Where
+parseWhere [] = Only ["default"]
+parseWhere xs = Only xs
+
+
+allWhere :: [Where] -> [String]
+allWhere xs = nub $ sort $ concat [x | Only x <- xs]
+
+
+matchWhere :: String -> Where -> Bool
+matchWhere x Always = True
+matchWhere x (Only xs) = x `elem` xs

@@ -11,10 +11,10 @@ stage2 :: [HsLow] -> [HsItem]
 stage2 = concatMap f
     where
         f (HsDef pos x) | "instance" `isPrefixOf` x 
-                        || "import" `isPrefixOf` x  = [HsItem Stmt pos x []]
+                        || "import" `isPrefixOf` x  = [HsItem Stmt pos x Always]
 
         f (HsCheck pos expr cmd x) | cmd == "ignore" = []
-                                   | otherwise = [HsItem typ pos x files]
+                                   | otherwise = [HsItem typ pos x $ parseWhere files]
             where
                 (files,_) = readCmd cmd
                 typ = if expr then Expr else Stmt    
@@ -23,14 +23,11 @@ stage2 = concatMap f
 
 
 readCmd :: String -> ([String], String)
-readCmd xs@('@':_) = f xs
+readCmd ('@':xs) =  (a:c,d)
     where
-        f ('@':xs) = (a:c,d)
-            where
-                (a,b) = break (== ' ') xs
-                (c,d) = f $ drop 1 b
-        f xs = ([], xs)
-readCmd xs = (["default"], xs)
+        (a,b) = break (== ' ') xs
+        (c,d) = readCmd $ drop 1 b
+readCmd xs = ([], xs)
 
 
 

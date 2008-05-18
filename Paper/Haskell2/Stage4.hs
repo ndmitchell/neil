@@ -12,15 +12,15 @@ stage4 :: FilePath -> [HsItem] -> [(FilePath,String)]
 stage4 file xs = (filename "", importer) : [(filename n, text n) | n <- need]
     where
         filename n = dropFileName file </> modname n <.> "hs"
-        modname n = capital (takeBaseName file) ++ n
-        need = map ('_':) $ nub $ sort $ concatMap itemFiles xs
+        modname n = capital (takeBaseName file) ++ ['_'| n/=""] ++ n
+        need = allWhere $ map itemFiles xs
 
         importer = unlines $ ("module " ++ modname "" ++ " where") :
                              ["import " ++ modname n | n <- need]
 
-        text un@('_':n) = unlines $ ("module " ++ modname un ++ " where") :
-                                    render items
-            where items = filter ((\i -> null i || n `elem` i) . itemFiles) xs
+        text n = unlines $ ("module " ++ modname n ++ " where") :
+                           render items
+            where items = filter (matchWhere n . itemFiles) xs
 
 
 render = f [] . zip [1..] . reverse
