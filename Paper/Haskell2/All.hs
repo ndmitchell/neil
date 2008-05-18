@@ -14,5 +14,6 @@ haskell2 obj files = mapM_ f files
     where
         f file = do
             src <- readFile file
-            let res = stage4 $ stage3 $ stage2 $ stage1 file src
-            writeFile (obj </> takeBaseName file <.> "hs") res
+            let dest = obj </> takeFileName file
+                res = stage4 dest $ stage3 $ stage2 $ stage1 file src
+            mapM_ (uncurry writeFile) res
