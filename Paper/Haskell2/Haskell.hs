@@ -78,12 +78,12 @@ operator x = "(" ++ x ++ ")"
 -- concat . lexerSpace == id
 lexerSpace :: String -> [String]
 lexerSpace [] = []
-lexerSpace xs@(x:_) | isSpace x = a : lexer b
+lexerSpace xs@(x:_) | isSpace x = a : lexerSpace b
     where (a,b) = span isSpace xs
 lexerSpace xs = case lex xs of
                 [(a,xs@('.':x:_))] | isUpper x -> (a++b) : c
                     where b:c = lexerSpace xs
-                [(a,b)] -> a : lexer b
+                [(a,b)] -> a : lexerSpace b
 
 
 lexer = filter (not . isSpace . head) . lexerSpace
