@@ -32,7 +32,7 @@ render = f [] . zip [1..] . reverse
     where
         f seen [] = []
         f seen ((n,HsItem Stmt pos x _) : xs) =
-                linePragma pos : defNote : x2 : "" : f seen2 xs
+                linePragma pos : defNote : lines x2 ++ "" : f seen2 xs
             where
                 def = defines x
                 defNote = "-- !defines " ++ show def
