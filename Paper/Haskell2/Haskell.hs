@@ -7,12 +7,26 @@ import Data.Maybe
 
 
 defines :: String -> [String]
-defines = f . map lexer2 . lines
+defines = nub . filter validName . concatMap f . map lexer2 . classLeft . lines
     where
-        f ((x:"::":_):rest) = x : f rest
-        f (("(":x:")":"::":_):rest) = x : f rest
-        f (_:rest) = f rest
-        f [] = []
+        f ("(":name:")":_) = [name]
+        f (name:_) = [name]
+        f _ = []
+
+
+validName x = isAlpha (head x) && x `notElem` keyword
+keyword = ["class","instance","where","data","type"]
+
+
+flushLeft (x:xs) = not $ isSpace x
+flushLeft [] = False
+
+
+classLeft (x:xs) | "class" `isPrefixOf` x = x : a ++ classLeft xs
+    where (a,b) = span (\x -> null x || isSpace (head x)) xs
+classLeft ((x:_):xs) | isSpace x = classLeft xs
+classLeft (x:xs) = x : classLeft xs
+classLeft [] = []
 
 
 rename :: [(String, String)] -> String -> String
@@ -24,16 +38,16 @@ rename ren = concat . map f . lexer
 -- figure out which definitions have a type signature
 -- but no associated body, and make one up
 fakeImplement :: String -> String
-fakeImplement xs = xs ++ "\n" ++ unlines (
-    [operator x ++ " = undefined -- stub" | x <- def \\ imp] ++
-    ["-- " ++ show def, "-- " ++ show imp])
-    where (def,imp) = (definesFunction xs, implementsFunction xs)
+fakeImplement xs = unlines $
+    ["-- !typesigFunction " ++ show typ, "-- !implementsFunction " ++ show imp, xs] ++
+    [operator x ++ " = undefined -- stub" | x <- typ \\ imp]
+    where (typ,imp) = (typesigFunction xs, implementsFunction xs)
 
 
 -- more a "this function is definately defined"
 -- as conservative
-definesFunction :: String -> [String]
-definesFunction = concatMap (f . lexer2) . filter (not . isSpace . head) . filter (not .null) . lines
+typesigFunction :: String -> [String]
+typesigFunction = nub . concatMap (f . lexer2) . filter flushLeft . lines
     where
         f ("(":x:")":"::":_) = [x]
         f (x:"::":_) = [x]
@@ -43,7 +57,7 @@ definesFunction = concatMap (f . lexer2) . filter (not . isSpace . head) . filte
 -- more a "this function is possibly implemented"
 -- as conservative
 implementsFunction :: String -> [String]
-implementsFunction = concatMap (f . lexer2) . lines
+implementsFunction = nub . concatMap (f . lexer2) . lines
     where
         f (x:"::":xs) = []
         f (x:xs) = [x]
