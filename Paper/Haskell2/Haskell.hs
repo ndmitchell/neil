@@ -7,6 +7,7 @@ module Paper.Haskell2.Haskell(
 import Data.Char
 import Data.List
 import Data.Maybe
+import Paper.Util.String
 
 
 isHaskellSymbol :: Char -> Bool
@@ -80,10 +81,13 @@ lexerSpace :: String -> [String]
 lexerSpace [] = []
 lexerSpace xs@(x:_) | isSpace x = a : lexerSpace b
     where (a,b) = span isSpace xs
+lexerSpace ('{':'-':'\"':xs) = ("{-\"" ++ a ++ c) : lexerSpace d
+    where (a,b) = breakStr "\"-}" xs
+          (c,d) = splitAt 3 b
 lexerSpace xs = case lex xs of
                 [(a,'.':x:xs)] | isUpper x -> (a++'.':b) : c
                     where b:c = lexerSpace (x:xs)
                 [(a,b)] -> a : lexerSpace b
-
+                other -> error $ "lexerSpace, unexpected: " ++ show (xs, other)
 
 lexer = filter (not . isSpace . head) . lexerSpace
