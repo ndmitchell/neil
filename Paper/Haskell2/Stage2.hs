@@ -13,8 +13,9 @@ stage2 = concatMap f
         f (HsDef pos x) | "instance" `isPrefixOf` x 
                         || "import" `isPrefixOf` x  = [Stmt pos x []]
 
-        f (HsCheck pos False cmd x) = [Stmt pos x []]
-        f (HsCheck pos True  cmd x) = [Expr pos x]
+        f (HsCheck pos expr cmd x) | cmd == "ignore" = []
+                                   | expr = [Expr pos x]
+                                   | otherwise = [Stmt pos x []]
 
         f x = error $ "Stage2, todo: " ++ show x
 
