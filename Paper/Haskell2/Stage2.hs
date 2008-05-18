@@ -17,7 +17,7 @@ stage2 xs = concat defStmts ++ reverse stmts2 ++ exprs2
         (stmts,exprs) = partition ((==) Stmt . lowType) checks
         (useNames,stmts2) = unzip $ map parseStmt stmts
         names = flip Set.member $ Set.fromList $ concat $ defNames ++ useNames
-        exprs2 = concat $ zipWith (parseExpr names) [1..] exprs
+        exprs2 = concat $ zipWith (parseExpr (concat defNames) names) [1..] exprs
 
 
 
@@ -31,12 +31,13 @@ parseStmt :: HsLow -> ([String],HsItem)
 parseStmt (HsCheck pos Stmt whr x) = (lexer x, HsItem Stmt pos (fakeImplement x) whr)
 
 
-parseExpr :: (String -> Bool) -> Int -> HsLow -> [HsItem]
-parseExpr seen n (HsCheck pos expr whr x) =
+parseExpr :: [String] -> (String -> Bool) -> Int -> HsLow -> [HsItem]
+parseExpr names seen n (HsCheck pos expr whr x) =
     case lexer x of
         [y] | seen y -> []
         ["(",y,")"] | seen y -> []
-        [y] | all isHaskellSymbol y -> f ("(" ++ y ++ ")")
-        _ -> f x
+        [y] | all isHaskellSymbol y -> f [y] ("(" ++ y ++ ")")
+        lexed -> f lexed x
     where
-        f x = [HsItem Stmt pos ("auto_" ++ show n ++ " = " ++ x) whr]
+        f lexed x = [HsItem Stmt pos ("auto_" ++ show n ++ " " ++ unwords want ++ " = " ++ x) whr]
+            where want = names `intersect` lexed
