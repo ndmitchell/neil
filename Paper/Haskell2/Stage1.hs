@@ -60,7 +60,10 @@ readCmd xs = ([], xs)
 
 hsCheck pos typ cmd x
         | b == "ignore" = []
-        | b /= "" = error $ "Stage 1, todo: " ++ show b 
-        | otherwise = [HsCheck pos typ (parseWhere a) x]
+        | b /= "" && b `notElem` known = error $ "Stage 1, todo: " ++ show b 
+        | otherwise = [HsCheck pos typ2 (parseWhere a) x]
     where
+        typ2 = if cmd == "stmt" then Stmt else typ
         (a,b) = readCmd cmd
+
+known = ["stmt"]
