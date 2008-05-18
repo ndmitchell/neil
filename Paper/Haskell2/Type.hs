@@ -40,6 +40,7 @@ data Where = Always
 
 parseWhere :: [String] -> Where
 parseWhere [] = Only ["default"]
+parseWhere ["*"] = Always
 parseWhere xs | null neg = Only xs
               | otherwise = OnlyNot $ map tail neg
     where neg = filter ("!" `isPrefixOf`) xs
