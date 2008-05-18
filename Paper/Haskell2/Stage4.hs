@@ -8,7 +8,7 @@ import Paper.Haskell2.Type
 stage4 :: [HsItem] -> String
 stage4 xs = unlines $ "module Temp where" : concatMap f xs
     where
-        f (Stmt pos x _) = [linePragma pos, fixStmt x, ""]
+        f (HsItem pos x Stmt) = [linePragma pos, fixStmt x, ""]
         f _ = [] -- TODO: Hides wrong answers!
 
 

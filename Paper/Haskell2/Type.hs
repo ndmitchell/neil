@@ -21,10 +21,12 @@ data HsLow = HsDef   Pos String
 --     d: code
 
 
-data HsItem = Import Pos String
-            | Stmt   Pos String [String]
-            | Expr   Pos String
-            | TExpr  Pos String
-            | Variable   String
-            | TVariable  String
+data HsItem = HsItem Pos String HsType
+
+data HsType = Import
+            | Stmt
+            | Expr
+            | TExpr
+            | Variable
+            | TVariable
               deriving Show
