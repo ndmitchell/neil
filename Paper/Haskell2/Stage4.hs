@@ -8,7 +8,8 @@ import Paper.Haskell2.Type
 import Paper.Haskell2.Haskell
 
 
-prefix = "{-# LANGUAGE MultiParamTypeClasses #-}"
+prefix = "{-# LANGUAGE MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, UndecidableInstances #-}\n" ++
+         "{-# OPTIONS_GHC -fno-warn-missing-methods #-}\n"
 
 
 stage4 :: FilePath -> [HsItem] -> [(FilePath,String)]
