@@ -43,10 +43,10 @@ render = collectImports . f [] . zip [1..] . reverse
         f seen (x:xs) = error $ "Stage 4, todo: " ++ show x
 
 
-collectImports xs = filter isImport xs ++ map f xs
+collectImports xs = filter ("import " `isPrefixOf`) xs ++ map f xs
     where
-        isImport x = "import " `isPrefixOf` x
-        f x = (if isImport x then "-- HIDE " else "") ++ x
+        f x | any (`isPrefixOf` x) ["import ","module "] = "-- HIDE " ++ x
+            | otherwise = x
 
 
 capital (x:xs) = toUpper x : xs

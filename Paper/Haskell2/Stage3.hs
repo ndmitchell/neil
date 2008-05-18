@@ -11,14 +11,8 @@ import Paper.Haskell2.Haskell
 stage3 :: [HsItem] -> [HsItem]
 stage3 = zipWith f [1..]
     where
-        f n (HsItem Stmt pos x files) = HsItem Stmt pos (fixStmt x) files
+        f n (HsItem Stmt pos x files) = HsItem Stmt pos (fakeImplement x) files
         f n (HsItem Expr pos x files) = HsItem Stmt pos (fixExpr n x) files
-
-
-fixStmt = fakeImplement . unlines . map f . lines
-    where
-        f x | "module" `isPrefixOf` x = "-- HIDE " ++ x
-            | otherwise = x
 
 
 
