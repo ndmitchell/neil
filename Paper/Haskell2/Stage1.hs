@@ -23,11 +23,11 @@ stage1 file = f 1 ""
 
         f i cmd ('|':'|':xs) = f i "" xs
         f i cmd ('|':xs) | '\n' `elem` a = errorDie file i "Failed to parse | lines" a
-                         | otherwise = HsCheck (pos i) True cmd a : f i "" b
+                         | otherwise = HsCheck (pos i) Expr cmd a : f i "" b
             where (a,b) = spanExpr xs
 
         f i cmd xs | "\\begin{code}" `isPrefixOf` xs
-                   = HsCheck (pos i) False cmd a : f (i + newlines a) "" b
+                   = HsCheck (pos i) Stmt cmd a : f (i + newlines a) "" b
             where (a,b) = breakStr "\\end{code}" $ drop 12 xs
 
         f i cmd ('%':xs) = f i "" $ dropWhile (/= '\n') xs

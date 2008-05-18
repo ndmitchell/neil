@@ -12,7 +12,7 @@ linePragma (Pos file line) = "{- # LINE " ++ show line ++ " " ++ show file ++ " 
 
 
 data HsLow = HsDef   {lowPos :: Pos, lowText :: String}
-           | HsCheck {lowPos :: Pos, lowExpr :: Bool, lowCmd :: String, lowText :: String}
+           | HsCheck {lowPos :: Pos, lowType :: HsType, lowCmd :: String, lowText :: String}
              deriving Show
 
 
@@ -37,7 +37,7 @@ data HsType = Stmt
             | TExpr
             | Variable
             | TVariable
-              deriving Show
+              deriving (Eq,Show)
 
 
 data Where = Always

@@ -13,7 +13,7 @@ stage2 xs = concat defStmts ++ reverse stmts2 ++ exprs2
     where
         (defs,checks) = partition isHsDef $ nub xs
         (defNames,defStmts) = unzip $ map parseDefs defs
-        (exprs,stmts) = partition lowExpr $ filter ((==) "ignore" . lowCmd) checks
+        (stmts,exprs) = partition ((==) Stmt . lowType) $ filter ((==) "ignore" . lowCmd) checks
         (useNames,stmts2) = unzip $ map parseStmt stmts
         exprs2 = zipWith parseExpr [1..] exprs
 
