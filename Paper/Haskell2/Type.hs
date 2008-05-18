@@ -2,9 +2,12 @@
 module Paper.Haskell2.Type where
 
 
-
 data Pos = Pos FilePath !Int
            deriving Show
+
+linePragma :: Pos -> String
+linePragma (Pos file line) = "{- # LINE " ++ show line ++ " " ++ show file ++ " # -}"
+
 
 data HsLow = HsDef   Pos String
            | HsCheck Pos Bool String String
