@@ -30,6 +30,7 @@ stage1 file = f 1 ""
                    = HsCheck (pos i) False cmd a : f (i + newlines a) "" b
             where (a,b) = breakStr "\\end{code}" $ drop 12 xs
 
+        f i cmd ('%':xs) = f i "" $ dropWhile (/= '\n') xs
         f i cmd (x:xs) | x == '\n' = f (i+1) cmd xs
                        | isSpace x = f i cmd xs
                        | otherwise = f i "" xs
