@@ -22,8 +22,8 @@ stage2 xs = concat defStmts ++ reverse stmts2 ++ exprs2
 
 
 parseDefs :: HsLow -> ([String], [HsItem])
-parseDefs (HsDef pos x) | "instance " `isPrefixOf` x  || "import " `isPrefixOf` x
-    = (filter (isAlpha . head) $ lexer x,[HsItem Stmt pos x Always])
+parseDefs (HsDef pos x) | "instance " `isPrefixOf` x = ([], [HsItem Stmt pos x Always])
+                        | "import " `isPrefixOf` x = ([lexer x !! 1], [HsItem Stmt pos x Always])
                         | otherwise = (map (dropWhile (== ',')) $ splitStr "," x, [])
 
 
