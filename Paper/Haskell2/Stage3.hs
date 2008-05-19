@@ -61,7 +61,5 @@ prime n xs | length pos == length (nub pos) = pos
            | otherwise = map (++ end) xs
     where
         end = "''" ++ show n
-        pos = map ((++ end) . reverse1 . drop1 (length end) . reverse1) xs
-        drop1 n (x:xs) = x : drop n xs
-        reverse1 (x:xs) = x : reverse xs
-
+        pos = map f xs
+        f (x:xs) = x : (reverse $ drop (length end) $ reverse xs) ++ end
