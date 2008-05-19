@@ -78,7 +78,10 @@ implementsFunction :: String -> [String]
 implementsFunction = nub . concatMap (f . lexer) . lines
     where
         f xs | not $ null $ typesigs xs = []
-        f ("(":x:_) = [x]
+        f (_:"`":x:"`":_) = [x]
+        f (_:x:_) | all isHaskellSymbol x = [x]
+        f ("(":xs) | all isHaskellSymbol b = [b]
+            where b:_ = drop 1 $ dropWhile (/= ")") xs
         f (x:xs) = [x]
         f [] = []
 
