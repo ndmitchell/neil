@@ -26,25 +26,9 @@
 \ifdefined\citep\let\cite=\citep\fi
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% HIDING BITS OF THE THESIS
-
-\newcommand{\theonly}
-    {\ifdefined\only\only\fi}
-
-\let\oldinclude\include
-\renewcommand{\include}[1]
-    {\ifthenelse{\equal{#1}{\theonly}\or\equal{\theonly}{}}
-        {\oldinclude{#1}}
-        {}
-    }
-
+% bibliography
 \let\oldbibliography\bibliography
-\renewcommand{\bibliography}
-    {\ifthenelse{\equal{\theonly}{}}
-        {\oldbibliography{paper}}
-        {}
-    }
+\renewcommand{\bibliography}{\oldbibliography{paper}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
