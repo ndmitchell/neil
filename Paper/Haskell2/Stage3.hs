@@ -41,7 +41,7 @@ render = collectImports . f [] . zip [1..]
                 def = defines x
                 defNote = "-- !defines " ++ show def
                 bad = def `intersect` seen
-                x2 = rename [(b, prime n b) | b <- bad] x
+                x2 = rename (zip bad $ prime n bad) x
                 seen2 = def `union` seen
 
         f seen (x:xs) = error $ "Stage 4, todo: " ++ show x
@@ -56,4 +56,5 @@ collectImports xs = filter ("import " `isPrefixOf`) xs ++ map f xs
 capital (x:xs) = toUpper x : xs
 
 
-prime n name = name ++ "''" ++ show n
+prime :: Int -> [String] -> [String]
+prime n xs = map (\x -> x ++ "''" ++ show n) xs
