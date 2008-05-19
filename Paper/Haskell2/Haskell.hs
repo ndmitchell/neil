@@ -14,16 +14,21 @@ isHaskellSymbol :: Char -> Bool
 isHaskellSymbol = flip elem "|+-*<>"
 
 haskellKeywords = ["class","instance","where","data","type","import","in","let","do"]
+haskellKeySymbols = ["--"]
 
 defines :: String -> [String]
 defines = nub . filter validName . concatMap f . map lexer . classLeft . lines
     where
-        f ("(":name:")":_) = [name]
+        f ("(":name:")":_) | all isHaskellSymbol name = [name]
+        f ("(":xs) | all isHaskellSymbol name = [name]
+            where name:_ = drop 1 $ dropWhile (/= ")") xs
+        f (_:name:_) | name /= "=" && all isHaskellSymbol name = [name]
         f (name:_) = [name]
         f _ = []
 
 
-validName x = isAlpha (head x) && x `notElem` haskellKeywords
+validName x = (all isHaskellSymbol x && x `notElem` haskellKeySymbols) ||
+              (isAlpha (head x) && x `notElem` haskellKeywords)
 
 
 flushLeft (x:xs) = not $ isSpace x
