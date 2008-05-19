@@ -3,6 +3,7 @@ module Paper.Haskell2.Stage3(stage3) where
 
 import Data.Char
 import Data.List
+import Data.Maybe
 import System.FilePath
 import Paper.Haskell2.Type
 import Paper.Haskell2.Haskell
@@ -32,7 +33,7 @@ stage3 file xs = (filename "", importer) : [(filename n, text n) | n <- need]
             where items = filter (matchWhere n . itemWhere) xs
 
 
-render = collectImports . f [] . zip (uniques ())
+render = collectImports . f [] . zip [0..]
     where
         f seen [] = []
         f seen ((n,HsItem Stmt pos x _) : xs) =
@@ -56,16 +57,24 @@ collectImports xs = filter ("import " `isPrefixOf`) xs ++ map f xs
 capital (x:xs) = toUpper x : xs
 
 
-prime :: String -> [String] -> [String]
+prime :: Int -> [String] -> [String]
 prime n xs | length pos == length (nub pos) = pos
-           | otherwise = map (++ end) xs
+           | otherwise = def
     where
-        end = "''" ++ n
-        pos = map f xs
-        f (x:xs) = x : (reverse $ drop (length end) $ reverse xs) ++ end
+        end = "''" ++ (uniqueStr !! n)
+        sym = uniqueSym !! n
+        (pos,def) = unzip $ map f xs
+
+        f (x:xs) | isHaskellSymbol x = (x:xs ++ "++" ++ sym, x:xs ++ "++" ++ sym)
+                 | otherwise = (x : (reverse $ drop (length end) $ reverse xs) ++ end, x:xs ++ end)
 
 
-uniques _ = map (:[]) one ++ two ++ error "Stage3, uniques exhausted"
+
+uniqueStr = map (:[]) one ++ two ++ error "Stage3, uniqueStr exhausted"
     where
         one = ['0'..'9'] ++ ['a'..'z'] ++ ['A'..'Z']
         two = [[a,b] | a <- one, b <- one]
+
+
+uniqueSym = [[a,b] | a <- syms, b <- syms] ++ error "Stage3, uniqueSym exhausted"
+    where syms = "!+-<>=*&^%$"
