@@ -55,11 +55,16 @@ fakeImplement xs = unlines $
 -- more a "this function is definately defined"
 -- as conservative
 typesigFunction :: String -> [String]
-typesigFunction = nub . concatMap (f . lexer) . filter flushLeft . lines
+typesigFunction = nub . concatMap (typesigs . lexer) . filter flushLeft . lines
+
+
+typesigs :: [String] -> [String]
+typesigs = f []
     where
-        f ("(":x:")":"::":_) = [x]
-        f (x:"::":_) = [x]
-        f _ = []
+        f seen ("(":x:")":xs) = f seen (x:xs)
+        f seen (x:"::":xs) = x:seen
+        f seen (x:",":xs) = f (x:seen) xs
+        f _ _ = []
 
 
 -- more a "this function is possibly implemented"
@@ -67,8 +72,9 @@ typesigFunction = nub . concatMap (f . lexer) . filter flushLeft . lines
 implementsFunction :: String -> [String]
 implementsFunction = nub . concatMap (f . lexer) . lines
     where
-        f ("(":xs) = f xs
-        f (x:xs) = [x | not $ ["::"] `isPrefixOf` xs]
+        f xs | not $ null $ typesigs xs = []
+        f ("(":x:_) = [x]
+        f (x:xs) = [x]
         f [] = []
 
 
