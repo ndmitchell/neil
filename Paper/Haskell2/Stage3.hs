@@ -57,4 +57,11 @@ capital (x:xs) = toUpper x : xs
 
 
 prime :: Int -> [String] -> [String]
-prime n xs = map (\x -> x ++ "''" ++ show n) xs
+prime n xs | length pos == length (nub pos) = pos
+           | otherwise = map (++ end) xs
+    where
+        end = "''" ++ show n
+        pos = map ((++ end) . reverse1 . drop1 (length end) . reverse1) xs
+        drop1 n (x:xs) = x : drop n xs
+        reverse1 (x:xs) = x : reverse xs
+
