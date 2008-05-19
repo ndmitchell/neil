@@ -10,21 +10,19 @@ import Paper.Haskell2.Haskell
 
 
 stage2 :: [HsLow] -> [HsItem]
-stage2 xs = concat defStmts ++ reverse stmts2 ++ exprs2
+stage2 xs = reverse stmts2 ++ exprs2
     where
         (defs,checks) = partition isHsDef $ nub xs
-        (defNames,defStmts) = unzip $ map parseDefs defs
+        defNames = nub $ concatMap parseDefs defs
         (stmts,exprs) = partition ((==) Stmt . lowType) checks
         (useNames,stmts2) = unzip $ map parseStmt stmts
-        names = flip Set.member $ Set.fromList $ haskellKeywords ++ concat (defNames ++ useNames)
-        exprs2 = concat $ zipWith (parseExpr (nub $ concat defNames) names) [1..] exprs
+        names = flip Set.member $ Set.fromList $ haskellKeywords ++ defNames ++ concat useNames
+        exprs2 = concat $ zipWith (parseExpr defNames names) [1..] exprs
 
 
 
-parseDefs :: HsLow -> ([String], [HsItem])
-parseDefs (HsDef pos x) | "instance " `isPrefixOf` x = ([], [HsItem Stmt pos x Always])
-                        | "import " `isPrefixOf` x = ([lexer x !! 1], [HsItem Stmt pos x Always])
-                        | otherwise = (map (dropWhile (== ',')) $ splitStr "," x, [])
+parseDefs :: HsLow -> [String]
+parseDefs (HsDef pos x) = map (dropWhile (== ',')) $ splitStr "," x
 
 
 parseStmt :: HsLow -> ([String],HsItem)
