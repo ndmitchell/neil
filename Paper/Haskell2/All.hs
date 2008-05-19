@@ -15,6 +15,7 @@ haskell2 :: FilePath -> [FilePath] -> IO ()
 haskell2 obj files = mapM_ f files
     where
         f file = do
+            putStrLn $ "Checking " ++ takeBaseName file
             src <- readFile file
             let dest = obj </> takeFileName file
                 res = stage3 dest $ stage2 $ stage1 file src
