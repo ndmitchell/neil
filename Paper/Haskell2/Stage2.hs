@@ -16,7 +16,7 @@ stage2 xs = concat defStmts ++ reverse stmts2 ++ exprs2
         (defNames,defStmts) = unzip $ map parseDefs defs
         (stmts,exprs) = partition ((==) Stmt . lowType) checks
         (useNames,stmts2) = unzip $ map parseStmt stmts
-        names = flip Set.member $ Set.fromList $ concat $ defNames ++ useNames
+        names = flip Set.member $ Set.fromList $ haskellKeywords ++ concat (defNames ++ useNames)
         exprs2 = concat $ zipWith (parseExpr (nub $ concat defNames) names) [1..] exprs
 
 
