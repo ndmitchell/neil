@@ -11,7 +11,7 @@ import Paper.Util.String
 
 
 isHaskellSymbol :: Char -> Bool
-isHaskellSymbol = flip elem "|+-*"
+isHaskellSymbol = flip elem "|+-*<>"
 
 haskellKeywords = ["class","instance","where","data","type","import","in","let","do"]
 
