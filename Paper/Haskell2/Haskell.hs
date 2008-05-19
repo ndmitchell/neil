@@ -90,14 +90,16 @@ operator (x:xs) | isAlpha x = x:xs
 operator x = "(" ++ x ++ ")"
 
 
--- concat . lexerSpace == id
+-- concat . lexerSpace == id (nearly, just comments)
 lexerSpace :: String -> [String]
 lexerSpace [] = []
 lexerSpace xs@(x:_) | isSpace x = a : lexerSpace b
     where (a,b) = span isSpace xs
-lexerSpace ('{':'-':'\"':xs) = ("{-\"" ++ a ++ c) : lexerSpace d
+lexerSpace ('{':'-':'\"':xs) = (" {-\"" ++ a ++ c) : lexerSpace d
     where (a,b) = breakStr "\"-}" xs
           (c,d) = splitAt 3 b
+lexerSpace ('-':'-':x:xs) | isAlphaNum x || isSpace x = (" --" ++ a) : lexerSpace b
+    where (a,b) = break (== '\n') (x:xs)
 lexerSpace xs = case lex xs of
                 [(a,'.':x:xs)] | isUpper x -> (a++'.':b) : c
                     where b:c = lexerSpace (x:xs)
