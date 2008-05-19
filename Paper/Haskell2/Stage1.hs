@@ -39,6 +39,9 @@ stage1 file = f 1 ""
                    = hsCheck (pos i) Stmt cmd a ++ f (i + newlines a) "" b
             where (a,b) = breakStr "\\end{code}" $ drop 12 xs
 
+        f i cmd xs | "%if 0" `isPrefixOf` xs = f (i + newlines a) "" b
+            where (a,b) = breakStr "%endif" xs
+
         f i cmd ('%':xs) = f i "" $ dropWhile (/= '\n') xs
         f i cmd (x:xs) | x == '\n' = f (i+1) cmd xs
                        | isSpace x = f i cmd xs
