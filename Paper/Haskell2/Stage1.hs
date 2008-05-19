@@ -69,10 +69,24 @@ readCmd xs = ([], xs)
 
 hsCheck pos typ cmd x
         | b == "ignore" = []
-        | b /= "" && b `notElem` known = error $ "Stage 1, todo: " ++ show pos ++ " " ++ show b 
-        | otherwise = [HsCheck pos typ2 (parseWhere a) x]
+        | b == "" = cont [(typ,x)]
+        | otherwise = cont $ hsCustom b x
     where
-        typ2 = if cmd == "stmt" then Stmt else typ
+        cont tx = [HsCheck pos t (parseWhere a) x | (t,x) <- tx]
         (a,b) = readCmd cmd
 
-known = ["stmt"]
+
+-- @ foo = bar
+-- @     = def
+-- implicitly insert foo before each =
+hsCustom "deflist" x = [(Stmt,unlines $ map f ls)]
+    where
+        ls = lines x
+        prefix = takeWhile (/= '=') $ head $ dropWhile (all isSpace) ls
+        f x | "=" `isPrefixOf` dropWhile isSpace x = prefix ++ x
+            | otherwise = x
+
+
+hsCustom "stmt" x = [(Stmt,x)]
+hsCustom "expr" x = [(Expr,unlines $ map (' ':) $ lines x)]
+hsCustom name _ = error $ "Stage1 todo: " ++ show name
