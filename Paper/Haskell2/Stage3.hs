@@ -32,7 +32,7 @@ stage3 file xs = (filename "", importer) : [(filename n, text n) | n <- need]
             where items = filter (matchWhere n . itemWhere) xs
 
 
-render = collectImports . f [] . zip [1..]
+render = collectImports . f [] . zip (uniques ())
     where
         f seen [] = []
         f seen ((n,HsItem Stmt pos x _) : xs) =
@@ -56,10 +56,16 @@ collectImports xs = filter ("import " `isPrefixOf`) xs ++ map f xs
 capital (x:xs) = toUpper x : xs
 
 
-prime :: Int -> [String] -> [String]
+prime :: String -> [String] -> [String]
 prime n xs | length pos == length (nub pos) = pos
            | otherwise = map (++ end) xs
     where
-        end = "''" ++ show n
+        end = "''" ++ n
         pos = map f xs
         f (x:xs) = x : (reverse $ drop (length end) $ reverse xs) ++ end
+
+
+uniques _ = map (:[]) one ++ two ++ error "Stage3, uniques exhausted"
+    where
+        one = ['0'..'9'] ++ ['a'..'z'] ++ ['A'..'Z']
+        two = [[a,b] | a <- one, b <- one]
