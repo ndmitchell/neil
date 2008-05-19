@@ -1,6 +1,6 @@
 
 module Paper.Haskell2.Haskell(
-    isHaskellSymbol, lexer,
+    isHaskellSymbol, haskellKeywords, lexer,
     defines, rename, fakeImplement
     ) where
 
@@ -13,6 +13,7 @@ import Paper.Util.String
 isHaskellSymbol :: Char -> Bool
 isHaskellSymbol = flip elem "|+-*"
 
+haskellKeywords = ["class","instance","where","data","type","import","in"]
 
 defines :: String -> [String]
 defines = nub . filter validName . concatMap f . map lexer . classLeft . lines
@@ -22,8 +23,7 @@ defines = nub . filter validName . concatMap f . map lexer . classLeft . lines
         f _ = []
 
 
-validName x = isAlpha (head x) && x `notElem` keyword
-keyword = ["class","instance","where","data","type","import"]
+validName x = isAlpha (head x) && x `notElem` haskellKeywords
 
 
 flushLeft (x:xs) = not $ isSpace x
