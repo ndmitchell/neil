@@ -32,6 +32,7 @@ parseStmt (HsCheck pos Stmt whr x) = (lexer x, HsItem Stmt pos (fakeImplement x)
 parseExpr :: [String] -> (String -> Bool) -> Int -> HsLow -> [HsItem]
 parseExpr names seen n (HsCheck pos expr whr x) =
     case lexer x of
+        [] -> []
         [y] | seen y -> []
         ["(",y,")"] | seen y -> []
         [y] | all isHaskellSymbol y -> f [y] ("(" ++ y ++ ")")

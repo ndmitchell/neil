@@ -86,6 +86,12 @@ hsCustom "deflist" x = [(Stmt,unlines $ map f ls)]
         f x | "=" `isPrefixOf` dropWhile isSpace x = prefix ++ x
             | otherwise = x
 
+-- each line started at column 1 is a new expr
+hsCustom "exprlist" x = map ((,) Expr) $ f $ lines x
+    where
+        f (x:(y:ys):z) | isSpace y = f ((x ++ '\n':y:ys) : z)
+        f (x:xs) = x : f xs
+        f [] = []
 
 hsCustom "stmt" x = [(Stmt,x)]
 hsCustom "expr" x = [(Expr,unlines $ map (' ':) $ lines x)]
