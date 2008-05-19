@@ -67,8 +67,8 @@ typesigFunction = nub . concatMap (f . lexer) . filter flushLeft . lines
 implementsFunction :: String -> [String]
 implementsFunction = nub . concatMap (f . lexer) . lines
     where
-        f (x:"::":xs) = []
-        f (x:xs) = [x]
+        f ("(":xs) = f xs
+        f (x:xs) = [x | not $ ["::"] `isPrefixOf` xs]
         f [] = []
 
 
