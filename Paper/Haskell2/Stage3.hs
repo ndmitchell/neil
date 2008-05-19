@@ -12,7 +12,7 @@ exts = "NoMonomorphismRestriction, MultiParamTypeClasses, FlexibleContexts, " ++
        "FlexibleInstances, UndecidableInstances, Rank2Types"
 
 prefix = "{-# LANGUAGE " ++ exts ++ " #-}\n" ++
-         "{-# OPTIONS_GHC -fno-warn-missing-methods #-}\n"
+         "{-# OPTIONS_GHC -fno-warn-missing-methods -fno-warn-overlapping-patterns #-}\n"
 
 
 stage3 :: FilePath -> [HsItem] -> [(FilePath,String)]
