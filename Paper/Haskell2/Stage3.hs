@@ -23,7 +23,7 @@ stage3 file xs = (filename "", importer) : [(filename n, text n) | n <- need]
         need = allWhere $ map itemWhere xs
 
         importer = unlines $ ("module Main where") :
-                             ["import " ++ modname n | n <- need] ++
+                             ["import " ++ modname n ++ "()" | n <- need] ++
                              ["main = putStrLn \"Successfully checked\""]
 
         text n = unlines $ prefix :
