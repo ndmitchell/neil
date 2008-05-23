@@ -38,5 +38,5 @@ parseExpr names seen n (HsCheck pos expr whr x) =
         [y] | all isHaskellSymbol y -> f [y] ("(" ++ y ++ ")")
         lexed -> f lexed x
     where
-        f lexed x = [HsItem Stmt pos ("auto_" ++ show n ++ " = " ++ x ++ "\n" ++ want) whr]
-            where want = unlines $ " where" : [" " ++ w ++ " = undefined" | w <- names `intersect` lexed]
+        f lexed x = [HsItem Stmt pos (unwords (("auto_" ++ show n) : free) ++ " = " ++ x ++ "\n") whr]
+            where free = names `intersect` lexed
