@@ -36,7 +36,7 @@ stage1 file = f 1 ""
             where (a,b) = spanExpr xs
 
         f i cmd xs | "\\begin{code}" `isPrefixOf` xs
-                   = hsCheck (pos i) Stmt cmd a ++ f (i + newlines a) "" b
+                   = hsCheck (pos i) Stmt cmd a ++ concatMap (f i "") (comments a) ++ f (i + newlines a) "" b
             where (a,b) = breakStr "\\end{code}" $ drop 12 xs
 
         f i cmd xs | "%if 0" `isPrefixOf` xs = f (i + newlines a) "" b
@@ -47,6 +47,13 @@ stage1 file = f 1 ""
                        | isSpace x = f i cmd xs
                        | otherwise = f i "" xs
         f i cmd [] = []
+
+
+comments :: String -> [String]
+comments = concatMap f . lines
+    where
+        f xs = [drop 2 b | not $ null b]
+            where (a,b) = breakStr "--" xs
 
 
 spanExpr :: String -> (String, String)
