@@ -70,11 +70,10 @@ newlines = length . filter (== '\n')
 
 
 readCmd :: String -> ([String], String)
-readCmd ('#':xs) = (a:c,d)
+readCmd ('.':xs) = (a:c,d)
     where
         (a,b) = break (== ' ') xs
         (c,d) = readCmd $ drop 1 b
-readCmd ('.':xs) = readCmd ('#':xs)
 readCmd xs = ([], xs)
 
 
