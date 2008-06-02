@@ -36,7 +36,6 @@
 %format |--> = "\mathbin{\mapsto}"
 %format ~= = "\mathbin{\simeq}"
 %format $ = "\mathbin{\text{\textsf{\$}}}"
-%format bottom = "\bot{}"
 %format undefined = "\Varid{undefined}"
 
 
