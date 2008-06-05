@@ -38,6 +38,6 @@ pick xs = listToMaybe $ ssh ++ [b ++ drop (length a) h | h <- http, (a,b) <- map
 
 
 mapping = [("http://www.cs.york.ac.uk/fp/darcs/","ndm@venice.cs.york.ac.uk:/n/www/cs/fp/darcs/")
-          ,("http://code.haskell.org/","neil@code.haskell.org:/srv/code/")
+          ,("http://code.haskell.org/","ndm@code.haskell.org:/srv/code/")
           ]
 
