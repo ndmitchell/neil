@@ -19,6 +19,7 @@ push x = do
     let r = pick $ lines src
     when (isNothing r) $ error "No non-http repos in the prefs/repos file"
 
+    putStrLn $ "Pushing to " ++ show (fromJust r) ++ "..."
     system $ "darcs push --no-set-default \"" ++ (fromJust r) ++ "\""
     return ()
 
@@ -36,5 +37,7 @@ pick xs = listToMaybe $ ssh ++ [b ++ drop (length a) h | h <- http, (a,b) <- map
     where (http,ssh) = partition ("http://" `isPrefixOf`) xs
 
 
-mapping = [("http://www.cs.york.ac.uk/fp/darcs/","ndm@venice.cs.york.ac.uk:/n/www/cs/fp/darcs/")]
+mapping = [("http://www.cs.york.ac.uk/fp/darcs/","ndm@venice.cs.york.ac.uk:/n/www/cs/fp/darcs/")
+          ,("http://code.haskell.org/","neil@code.haskell.org:/srv/code/")
+          ]
 
