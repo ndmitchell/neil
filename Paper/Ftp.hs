@@ -28,6 +28,7 @@ ftp darcs = do
         writeFile ftpfile $ unlines
             ["ndm500"
             ,password
+            ,"lcd " ++ darcs
             ,"cd web/patches"
             ,"binary"
             ,"put " ++ (name <.> "patch" <.> "send")
