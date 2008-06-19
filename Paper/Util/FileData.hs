@@ -80,6 +80,6 @@ getDarcs = f . reverse . map joinPath . tail . inits . splitDirectories
         f [] = return $ error "Darcs repo not found"
         f (x:xs) = do
             b <- doesDirectoryExist (x </> "_darcs")
-            if b then return x else f xs
+            if b then return $ dropTrailingPathSeparator x else f xs
 
 
