@@ -13,6 +13,7 @@ import Paper.WordCount
 import Paper.Haskell
 import Paper.Haskell2.All
 import Paper.Push
+import Paper.Ftp
 import Paper.Ref
 import Paper.Todo
 
@@ -89,6 +90,8 @@ process "push" files = push (darcs files)
 process "ref" files = ref (argFiles files)
 
 process "todo" files = todo (argFiles files)
+
+process "ftp" files = ftp (darcs files)
 
 process "check" files = do
     mapM_ (`process` files) ["ref","todo"]
