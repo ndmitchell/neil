@@ -13,13 +13,16 @@ ftp darcs = do
     let name = takeFileName darcs
         out = darcs </> name <.> "patch"
         ftpfile = out <.> "ftp"
+
     b <- doesFileExist out
     when b $ removeFile out
+    b <- doesFileExist (out <.> "send")
+    when b $ removeFile (out <.> "send")
 
     system $ "darcs send" ++
                  " --repodir=\"" ++ darcs ++ "\"" ++
-                 " --output=\"" ++ out ++ "\""
-    b <- doesFileExist out
+                 " --output=\"" ++ (out <.> "send") ++ "\""
+    b <- doesFileExist (out <.> "send")
     when b $ do
         password <- getPassword
         writeFile ftpfile $ unlines
@@ -27,24 +30,40 @@ ftp darcs = do
             ,password
             ,"cd web/patches"
             ,"binary"
-            ,"put " ++ (name <.> "patch")
+            ,"put " ++ (name <.> "patch" <.> "send")
+            ,"rename " ++ (name <.> "patch" <.> "send") ++ " " ++ (name <.> "patch")
+            ,"get " ++ (name <.> "patch")
             ,"quit"]
-        system $ "ftp -s:" ++ ftpfile ++ " ftp.york.ac.uk"
+        system $ "ftp -s:" ++ ftpfile ++ " ftp.york.ac.uk > nul"
+        check out (out <.> "send")
         removeFile ftpfile
         removeFile out
+        removeFile (out <.> "send")
         return ()
 
 
 getPassword = do
-        e <- hGetEcho stdin
+        hSetBuffering stdout NoBuffering
+        hSetBuffering stdin NoBuffering
+        hSetEcho stdout False
         hSetEcho stdin False
         putStr "Enter password: "
-        r <- f
-        hSetEcho stdin e
-        return r
-    where
-        f = do x <- getChar
-               if x == '\n' then return [] else do
-                   putStr "\b*"
-                   xs <- f
-                   return (x:xs)
+        s <- getLine
+        putStrLn ""
+        return s
+
+
+check x y = do
+    x1 <- readFile' x
+    y1 <- readFile' y
+    if x1 == y1
+        then putStrLn "Success"
+        else putStrLn "ERROR: FTP was unsuccessful"
+
+
+readFile' x = do
+    h <- openFile x ReadMode
+    s <- hGetContents h
+    seq (length s) $ do
+        hClose h
+        return s
