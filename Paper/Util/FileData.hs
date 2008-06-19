@@ -77,7 +77,7 @@ getFile file = do
 
 getDarcs = f . reverse . map joinPath . tail . inits . splitDirectories
     where
-        f [] = return ""
+        f [] = return $ error "Darcs repo not found"
         f (x:xs) = do
             b <- doesDirectoryExist (x </> "_darcs")
             if b then return x else f xs
