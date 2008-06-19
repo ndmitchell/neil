@@ -10,11 +10,8 @@ import System.FilePath
 
 
 push :: FilePath -> IO ()
-push x = do
-    r <- repo $ reverse $ map joinPath $ tail $ inits $ splitDirectories x
-    when (isNothing r) $ error $ "Repo not found above: " ++ x
-
-    src <- readFile $ fromJust r </> "_darcs" </> "prefs" </> "repos"
+push darcs = do
+    src <- readFile $ darcs </> "_darcs" </> "prefs" </> "repos"
     () <- length src `seq` return ()
     let r = pick $ lines src
     when (isNothing r) $ error "No non-http repos in the prefs/repos file"
@@ -22,13 +19,6 @@ push x = do
     putStrLn $ "Pushing to " ++ show (fromJust r) ++ "..."
     system $ "darcs push --no-set-default \"" ++ (fromJust r) ++ "\""
     return ()
-
-
-repo :: [FilePath] -> IO (Maybe FilePath)
-repo [] = return Nothing
-repo (x:xs) = do
-    b <- doesDirectoryExist (x </> "_darcs")
-    if b then return $ Just x else repo xs
 
 
 -- pick the ssh address

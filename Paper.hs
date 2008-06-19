@@ -84,7 +84,7 @@ process "talk" files = do
     tlk <- objDir "talk" files
     talk tlk (argFiles files) (flags files)
 
-process "push" files = push (directory files)
+process "push" files = push (darcs files)
 
 process "ref" files = ref (argFiles files)
 
