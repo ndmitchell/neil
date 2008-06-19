@@ -16,6 +16,7 @@ data FileData = FileData
     ,argFiles  :: [FilePath]     -- ^ Files given on the command line
     ,allFiles  :: [FilePath]     -- ^ All files in the directory
     ,flags     :: [String]       -- ^ Any flags given
+    ,darcs     :: FilePath       -- ^ The location of the _darcs directory
     }
     deriving Show
 
@@ -35,12 +36,16 @@ getFileData args = do
         nullErr x | null explicit = error $ "Error: No Latex files found in " ++ show (head dirs)
                   | otherwise = x
 
+    let dir = head dirs
+    darcs <- getDarcs dir
+    
     return $ FileData
-        (head dirs)
+        dir
         (nullErr $ head $ explicit)
         (nullErr $ snub $ explicit)
         (nullErr $ snub $ explicit ++ implicit)
         (map tail opt)
+        darcs
     where
         -- return (directory, explicit, implicit)
         f file = do
@@ -68,3 +73,13 @@ getDir dir = do
 getFile file = do
     (a,b,[]) <- getDir $ takeDirectory file
     return (a, [file], b)
+
+
+getDarcs = f . reverse . map joinPath . tail . inits . splitDirectories
+    where
+        f [] = return ""
+        f (x:xs) = do
+            b <- doesDirectoryExist (x </> "_darcs")
+            if b then return x else f xs
+
+
