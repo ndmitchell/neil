@@ -48,7 +48,7 @@
     }
 
 % to counteract the setspace package
-\renewcommand\hscodestyle{\setstretch{1}}
+\ifdefined\setstretch\renewcommand\hscodestyle{\setstretch{1}}\fi
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
