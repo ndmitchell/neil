@@ -63,8 +63,7 @@ getDir dir = do
     files <- return $ filter ((==) ".tex" . takeExtension) files
 
     -- now pick the main file
-    let mainFile = if "index.tex" `elem` files then "index.tex" else
-                   snd $ maximum [(rank x, x) | x <- files]
+    let mainFile = snd $ maximum [(rank x, x) | x <- files]
         dirs = reverse $ splitDirectories dir
         rank x = liftM negate $ findIndex (== dropExtension x) dirs
     return (dir, [mainFile | not $ null files] ++ files, [])
