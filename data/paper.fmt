@@ -84,6 +84,7 @@
 %format _N = "\mathcal{N}"
 %format _O = "\mathcal{O}"
 %format _T = "\mathcal{T}"
+%format _I = "\mathcal{I}"
 
 %format _A_ = "\mathcal{\overline{A}}\!\!"
 %format _C_ = "\mathcal{\overline{C}}"
