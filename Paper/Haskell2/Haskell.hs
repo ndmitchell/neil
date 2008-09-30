@@ -44,7 +44,7 @@ classLeft [] = []
 
 rename :: [(String, String)] -> String -> String
 rename [] = id
-rename ren = concat . map f . lexerSpace
+rename ren = concatMap f . lexerSpace
     where f x = fromMaybe x $ lookup x ren
 
 
