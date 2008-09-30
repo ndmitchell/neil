@@ -13,7 +13,7 @@ import Paper.Util.String
 isHaskellSymbol :: Char -> Bool
 isHaskellSymbol = flip elem "|+-*<>"
 
-haskellKeywords = ["class","instance","where","data","type","import","in","let","do"]
+haskellKeywords = ["class","instance","where","data","type","import","in","let","do","module","import"]
 haskellKeySymbols = ["--"]
 
 defines :: String -> [String]
