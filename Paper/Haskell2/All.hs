@@ -20,5 +20,5 @@ haskell2 obj files = mapM_ f files
             let dest = obj </> takeFileName file
                 res = stage3 dest $ stage2 $ stage1 file src
             mapM_ (uncurry writeFile) res
-            res <- system $ "runhaskell -i" ++ obj ++ " " ++ fst (head res)
+            res <- system $ "runghc -i" ++ obj ++ " " ++ fst (head res)
             when (res /= ExitSuccess) $ error "Failed to check"
