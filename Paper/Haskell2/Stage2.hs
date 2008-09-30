@@ -35,7 +35,7 @@ parseExpr names seen n (HsCheck pos expr whr x) =
         [] -> []
         [y] | seen y -> []
         ["(",y,")"] | seen y -> []
-        [y] | all isHaskellSymbol y -> f [y] ("(" ++ y ++ ")")
+        [y] | isHaskellSym y -> f [y] ("(" ++ y ++ ")")
         lexed -> f lexed x
     where
         f lexed x = [HsItem Stmt pos (unwords (("auto_" ++ show n) : free) ++ " = " ++ x ++ "\n") whr]

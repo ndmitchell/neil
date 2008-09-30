@@ -67,7 +67,7 @@ prime n xs | length pos == length (nub pos) = pos
         sym = uniqueSym !! n
         (pos,def) = unzip $ map f xs
 
-        f (x:xs) | isHaskellSymbol x = (x:xs ++ "++" ++ sym, x:xs ++ "++" ++ sym)
+        f (x:xs) | isHaskellSym (x:xs) = (x:xs ++ "++" ++ sym, x:xs ++ "++" ++ sym)
                  | otherwise = (x : (reverse $ drop (length end) $ reverse xs) ++ end, x:xs ++ end)
 
 

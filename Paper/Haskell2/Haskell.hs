@@ -1,6 +1,6 @@
 
 module Paper.Haskell2.Haskell(
-    isHaskellSymbol, haskellKeywords, lexer,
+    isHaskellSym, haskellKeywords, lexer,
     defines, rename, fakeImplement
     ) where
 
@@ -10,25 +10,24 @@ import Data.Maybe
 import Paper.Util.String
 
 
-isHaskellSymbol :: Char -> Bool
-isHaskellSymbol = flip elem "|+-*<>"
-
 haskellKeywords = ["class","instance","where","data","type","import","in","let","do","module","import"]
-haskellKeySymbols = ["--"]
+haskellKeySymbols = ["--","="]
+
+
+isHaskellSym xs = all (`elem` "|+-*<>.=") xs && xs `notElem` haskellKeySymbols
+isHaskellVar xs = isAlpha (head xs) && xs `notElem` haskellKeywords
+validName xs = isHaskellSym xs || isHaskellVar xs
+
 
 defines :: String -> [String]
 defines = nub . filter validName . concatMap f . map lexer . classLeft . lines
     where
-        f ("(":name:")":_) | all isHaskellSymbol name = [name]
-        f ("(":xs) | all isHaskellSymbol name = [name]
+        f ("(":name:")":_) | isHaskellSym name = [name]
+        f ("(":xs) | isHaskellSym name = [name]
             where name:_ = drop 1 $ dropWhile (/= ")") xs
-        f (_:name:_) | name /= "=" && all isHaskellSymbol name = [name]
+        f (_:name:_) | isHaskellSym name = [name]
         f (name:_) = [name]
         f _ = []
-
-
-validName x = (all isHaskellSymbol x && x `notElem` haskellKeySymbols) ||
-              (isAlpha (head x) && x `notElem` haskellKeywords)
 
 
 flushLeft (x:xs) = not $ isSpace x
@@ -79,8 +78,8 @@ implementsFunction = nub . concatMap (f . lexer) . lines
     where
         f xs | not $ null $ typesigs xs = []
         f (_:"`":x:"`":_) = [x]
-        f (_:x:_) | all isHaskellSymbol x = [x]
-        f ("(":xs) | all isHaskellSymbol b = [b]
+        f (_:x:_) | isHaskellSym x = [x]
+        f ("(":xs) | isHaskellSym b = [b]
             where b:_ = drop 1 $ dropWhile (/= ")") xs
         f (x:xs) = [x]
         f [] = []
