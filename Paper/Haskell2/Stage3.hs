@@ -12,7 +12,7 @@ import Paper.Haskell2.Haskell
 exts = "NoMonomorphismRestriction, MultiParamTypeClasses, FlexibleContexts, " ++
        "FlexibleInstances, UndecidableInstances, Rank2Types, EmptyDataDecls, " ++
        "FunctionalDependencies, TypeSynonymInstances, IncoherentInstances, " ++
-       "ExtendedDefaultRules"
+       "ExtendedDefaultRules, ScopedTypeVariables, GADTs"
 
 prefix = "{-# LANGUAGE " ++ exts ++ " #-}\n" ++
          "{-# OPTIONS_GHC -fno-warn-missing-methods -fno-warn-overlapping-patterns #-}\n"
