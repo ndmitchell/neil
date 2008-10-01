@@ -6,6 +6,7 @@ import Data.List
 import Paper.Util.String
 import Paper.Util.Error
 import Paper.Haskell2.Type
+import Paper.Haskell2.Haskell
 
 
 defs = [("\\hsdef{\\begin{comment}","\\end{comment}}")
@@ -102,6 +103,10 @@ hsCustom "exprlist" x = map ((,) Expr) $ f $ lines x
         f (x:(y:ys):z) | isSpace y = f ((x ++ '\n':y:ys) : z)
         f (x:xs) = x : f xs
         f [] = []
+
+-- a piece of context
+hsCustom "ctxt" x = [(Stmt,"context_expression :: " ++ x ++ " => " ++ free ++ "()\ncontext_expression = undefined")]
+    where free = concat [x:xs ++ " -> " | x:xs <- lexer x, isLower x]
 
 hsCustom "stmt" x = [(Stmt,x)]
 hsCustom "expr" x = [(Expr,unlines $ map (' ':) $ lines x)]
