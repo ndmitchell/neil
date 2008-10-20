@@ -14,7 +14,7 @@ haskellKeywords = ["class","instance","where","data","type","import","in","let",
 haskellKeySymbols = ["--","="]
 
 
-isHaskellSym xs = all (`elem` "|+-*<>.=") xs && xs `notElem` haskellKeySymbols
+isHaskellSym xs = all (`elem` "|+-*<>.=&") xs && xs `notElem` haskellKeySymbols
 isHaskellVar xs = isAlpha (head xs) && xs `notElem` haskellKeywords
 validName xs = isHaskellSym xs || isHaskellVar xs
 
