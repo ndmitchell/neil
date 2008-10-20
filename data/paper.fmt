@@ -24,6 +24,7 @@
 %format `union` = "\mathbin{\cup}"
 %format alpha  = "{\alpha}"
 %format beta  = "{\beta}"
+%format gamma = "{\gamma}"
 %format bullet = "{\bullet}"
 %format forall  = "{\forall}"
 %format lambda = "{\lambda}"
