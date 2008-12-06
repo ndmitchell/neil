@@ -13,6 +13,7 @@ import Paper.WordCount
 import Paper.Haskell
 import Paper.Haskell2.All
 import Paper.Push
+import Paper.Sync
 import Paper.Ftp
 import Paper.Ref
 import Paper.Todo
@@ -86,6 +87,10 @@ process "talk" files = do
     talk tlk (argFiles files) (flags files)
 
 process "push" files = push (darcs files)
+
+process "sync" files = do
+    dat <- dataDir
+    sync (takeDirectory $ takeDirectory dat)
 
 process "ref" files = ref (argFiles files)
 
