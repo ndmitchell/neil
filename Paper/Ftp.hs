@@ -6,6 +6,7 @@ import System.Cmd
 import System.Directory
 import System.FilePath
 import System.IO
+import Paper.Util.IO
 
 
 ftp :: FilePath -> IO ()
@@ -60,11 +61,3 @@ check x y = do
     if x1 == y1
         then putStrLn "Success"
         else putStrLn "ERROR: FTP was unsuccessful"
-
-
-readFile' x = do
-    h <- openFile x ReadMode
-    s <- hGetContents h
-    seq (length s) $ do
-        hClose h
-        return s
