@@ -10,6 +10,7 @@ import System.Exit
 import System.FilePath
 
 import Paper.LatexError
+import Paper.Util.IO
 
 
 make :: FilePath -> FilePath -> FilePath -> FilePath -> [FilePath] -> IO ()
@@ -41,12 +42,17 @@ make dataDir objDir srcDir mainFile allFiles = do
             copyFile from temp
             system_ sys{cleanup=removeFile to} $
                 "lhs2tex " ++ takeFileName temp ++ " -o " ++ to
+            fixLineEndings to
 
     let base = takeBaseName mainFile
     system_ sys{errorMsg=latexError (tex++fmt) (objDir </> base <.> "log")} $
         "texify --quiet " ++ (base <.> "tex")
     copyFile (objDir </> base <.> "dvi") (srcDir </> base <.> "dvi")
 
+
+fixLineEndings file = do
+    src <- readFile' file
+    writeFile file $ filter (/= '\r') src
 
 for x = flip mapM x
 
