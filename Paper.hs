@@ -23,6 +23,7 @@ import Paper.Todo
 COMMANDS:
 make -- compile the document
 wc -- word count
+wcmin -- minimal word count
 graph -- make a graph
 spell -- complete spell check
 colin -- auto-colin grammar check
@@ -51,17 +52,21 @@ main = do
         _ -> error "No arguments given"
 
 
-process :: String -> FileData -> IO ()
-process "wc" files = do
+wc :: (FilePath -> IO Int) -> FileData -> IO ()
+wc f files = do
     let shw = fixed ("total" : map dropExtension (allFiles files))
     res <- flip mapM (allFiles files) $ \file -> do
         putStr $ shw (dropExtension file) ++ "  "
-        count <- wordCount (directory files </> file)
+        count <- f (directory files </> file)
         putStrLn $ int count
         return (file,count)
     putStrLn $ shw "Total" ++ "  " ++ int (sum $ map snd res)
     root <- settingsDir files
     graphLog (root </> "graph.txt") res
+
+process :: String -> FileData -> IO ()
+process "wc" files = wc wordCountNorm files
+process "wcmin" files = wc wordCountMin files
 
 process "graph" files = do
     root <- settingsDir files
