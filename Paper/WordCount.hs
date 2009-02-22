@@ -11,8 +11,12 @@ wordCount file = return . sum . map countLine . dropComments . lines =<< readFil
 
 dropComments :: [String] -> [String]
 dropComments (x:xs) | isBeginComment x = drop 1 $ dropWhile (not . isEndComment) xs
-dropComments (('%':_):xs) = dropComments xs
-dropComments (x:xs) = x : dropComments xs
+dropComments (x:xs) = f x : dropComments xs
+    where
+        f ('\\':'%':xs) = '\\':'%':f xs
+        f ('%':xs) = []
+        f (x:xs) = x : f xs
+        f [] = []
 dropComments [] = []
 
 isBeginComment = isPrefixOf "\\begin{comment}"
