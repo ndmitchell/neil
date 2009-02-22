@@ -20,7 +20,7 @@ readTodos file = liftM (f 1) $ readFile file
     where
         f n ('\n':xs) = f (n+1) xs
         f n ('\\':t:'o':'d':'o':x:xs)
-                | toLower t == 't' && not (isAlpha x)
+                | toLower t == 't' && not (isAlpha x) && x /= '}'
                 = errorMsg file n "\\todo" msg : f n xs
             where msg = g $ dropWhile isSpace (x:xs)
         f n (x:xs) = f n xs
