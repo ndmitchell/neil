@@ -36,6 +36,7 @@
 %format unions = "{\bigcup\!}"
 %format |--> = "\mathbin{\mapsto}"
 %format ~= = "\mathbin{\simeq}"
+%format ~== = "\mathbin{\cong}"
 %format $ = "\mathbin{\text{\textsf{\$}}}"
 %format undefined = "\Varid{undefined}"
 
@@ -141,6 +142,8 @@
 %format a_n  = "\Varid{a_n}"
 %format b_i  = "\Varid{b_i}"
 %format b_n  = "\Varid{b_n}"
+%format d_1  = "\Varid{d_1}"
+%format d_2  = "\Varid{d_2}"
 %format p_1  = "\Varid{p_1}"
 %format p_n  = "\Varid{p_n}"
 %format t_1  = "\Varid{t_1}"
