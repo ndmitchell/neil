@@ -108,6 +108,10 @@ hsCustom "exprlist" x = map ((,) Expr) $ f $ lines x
 hsCustom "ctxt" x = [(Stmt,"context_expression :: " ++ x ++ " => " ++ free ++ "()\ncontext_expression = undefined")]
     where free = concat [x:xs ++ " -> " | x:xs <- lexer x, isLower x]
 
+-- a type expression
+hsCustom "type" x = [(Stmt,"type TypeType " ++ free ++ " = " ++ x)]
+    where free = unwords [x | x <- lexer x, isLower $ head x]
+
 hsCustom "stmt" x = [(Stmt,x)]
 hsCustom "expr" x = [(Expr,unlines $ map (' ':) $ lines x)]
 hsCustom name _ = error $ "Stage1 todo: " ++ show name
