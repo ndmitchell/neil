@@ -79,8 +79,8 @@ implementsFunction = nub . concatMap (f . lexer) . lines
         f xs | not $ null $ typesigs xs = []
         f (_:"`":x:"`":_) = [x]
         f (_:x:_) | isHaskellSym x = [x]
-        f ("(":xs) | isHaskellSym b = [b]
-            where b:_ = drop 1 $ dropWhile (/= ")") xs
+        f ("(":xs) | bs /= [] && isHaskellSym (head bs) = [head bs]
+            where bs = drop 1 $ dropWhile (/= ")") xs
         f (x:xs) = [x]
         f [] = []
 
