@@ -12,7 +12,7 @@ import Paper.Haskell2.Haskell
 exts = "NoMonomorphismRestriction, MultiParamTypeClasses, FlexibleContexts, " ++
        "FlexibleInstances, UndecidableInstances, Rank2Types, EmptyDataDecls, " ++
        "FunctionalDependencies, TypeSynonymInstances, IncoherentInstances, " ++
-       "ExtendedDefaultRules, ScopedTypeVariables, GADTs"
+       "ExtendedDefaultRules, ScopedTypeVariables, GADTs, ViewPatterns"
 
 prefix = "{-# LANGUAGE " ++ exts ++ " #-}\n" ++
          "{-# OPTIONS_GHC -w #-}\n"
