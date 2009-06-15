@@ -92,6 +92,22 @@
     note =          "\url{http://www.haskell.org/ghc/}",
 }
 
+@unpublished{ghc6_8,
+    title =         "The {GHC} Compiler, Version 6.8.3",
+    author =        "{The GHC Team}",
+    year =          "2008",
+    month =         jul,
+    note =          "\url{http://www.haskell.org/ghc/}",
+}
+
+@unpublished{ghc6_10,
+    title =         "The {GHC} Compiler, Version 6.10.3",
+    author =        "{The GHC Team}",
+    year =          "2009",
+    month =         may,
+    note =          "\url{http://www.haskell.org/ghc/}",
+}
+
 @unpublished{ghc_core,
     title =         "{A}n {E}xternal {R}epresentation for the {GHC} {C}ore {L}anguage",
     author =        "Andrew Tolmach",
@@ -156,6 +172,16 @@
     publisher =     "ACM Press",
 }
 
+@inproceedings{haddock,
+   author = {Simon Marlow},
+   title = {{H}addock, A {H}askell Documentation Tool},
+   booktitle = {Proc. Haskell Workshop 2002},
+   year = {2002},
+   month = {October},
+   address = {Pittsburgh Pennsylvania, USA},
+   publisher = {ACM Press}
+}
+
 @article{epigram,
     author =        "Conor McBride and James McKinna",
     title =         "The view from the left",
@@ -207,6 +233,13 @@
     author = "Niklas Broberg",
     year = "2009",
     howpublished = "\url{http://www.cs.chalmers.se/~d00nibro/haskell-src-exts/}"
+}
+
+@misc{haskell_src_meta,
+    title = "haskell-src-meta",
+    author = "Matt Morrow",
+    year = "2009",
+    howpublished = "\url{http://hackage.haskell.org/package/haskell-src-meta}"
 }
 
 @inproceedings{esc_haskell,
@@ -703,6 +736,18 @@
     note      = "To appear."
 }
 
+@inproceedings{me:yds_derive
+    ,title          = "Deriving Generic Functions by Example"
+    ,author         = "Neil Mitchell"
+    ,year           = "2007"
+    ,month          = "October"
+    ,day            = "26"
+    ,pages          = "55--62"
+    ,booktitle      = "Proc. York Doctoral Symposium 2007"
+    ,publisher      = "Tech. Report YCS-2007-421, University of York"
+    ,editor         = {Jan Tobias M\"{u}hlberg and Juan Ignacio Perna}
+}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% HASKELL PAPERS
@@ -1074,17 +1119,6 @@
     year =          "2003",
 }
 
-@article{trinder:strategies,
-    author = {P Trinder and K Hammond and H-W Loidl and S {Peyton Jones}},
-    journal = {JFP},
-    pages = {23--60},
-    title = {Algorithm + Strategy = Parallelism},
-    _url = {http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.51.1628},
-    volume = {8},
-    year = {1998}
-}
-
-    
 
 @misc{oleg:smash,
     title = "Smash along your boilerplate",
@@ -1835,9 +1869,9 @@
 }
 
 @article{trinder:strategies,
-  author = 	 {Philip W. Trinder and Kevin Hammond and Hans-Wolfgang Loidl and Simon {Peyton Jones}},
-  title = 	 {Algorithm + {S}trategy = {P}arallelism},
-  journal = 	 {Journal of Functional Programming},
+  author = 	 {Philip Trinder and Kevin Hammond and Hans-Wolfgang Loidl and Simon {Peyton Jones}},
+  title = 	 {Algorithm + Strategy = Parallelism},
+  journal = 	 {JFP},
   year = 	 {1998},
   volume = 	 {8},
   number = 	 {1},
@@ -1845,3 +1879,62 @@
   pages = 	 {23--60}
 }
 
+@article{kitzelmann:inductive_synthesis,
+  author = {Emanuel Kitzelmann and Ute Schmid},
+  title = {Inductive Synthesis of Functional Programs -- {A}n Explanation Based Generalization Approach},
+  journal = {Journal of Machine Learning Research},
+  year = {2006},
+  volume = {7},
+  number = {Feb},
+  pages = {429--454}
+}
+
+@inproceedings{katayama:exhaustive_generation,
+  author = "Susumu Katayama",
+  title = "Efficient Exhaustive Generation of Functional Programs Using {Monte-Carlo} Search with Iterative Deepening",
+  publisher = "LNCS",
+  volume = 5351,
+  booktitle = "PRICAI 2008: Trends in Artificial Intelligence",
+  year = "2008",
+  pages = "199--210"
+}
+
+@inproceedings{kitzelmann:data_driven_induction,
+  author = "Emanuel Kitzelmann",
+  title = "Data-Driven Induction of Functional Programs",
+  booktitle = "Proc. ECAI 2008",
+  location = "Patras, Greece",
+  year = "2008",
+  month = "July",
+  publisher = "IOS Press"
+}
+
+@inproceedings{kitzelmann:data_driven_induction_ground,
+  author = "Emanuel Kitzelmann",
+  title = "Data-driven induction of recursive functions from input/output-examples",
+  booktitle = "Proceedings of the Workshop on Approaches and Applications of Inductive Progamming (AAIP'07)",
+  year = "2007",
+  location = "Warsaw",
+  pages = "15--26"
+}
+
+@inproceedings{hinze:derivable_type_classes,
+  author = "Ralf Hinze and Simon {Peyton Jones}",
+  title = "Derivable type classes",
+  editor = "Graham Hutton",
+  booktitle = "Proc Haskell Workshop 2000",
+  location = "Montreal, Canada",
+  year = "2000",
+  month = "September",
+  publisher = "Elsevier Science",
+}
+
+@inproceedings{hughes:pretty_printing,
+	AUTHOR = {John Hughes},
+	TITLE = {The Design of a Pretty-printing Library},
+	BOOKTITLE = {Advanced Functional Programming},
+	EDITOR = {J. Jeuring and E. Meijer},
+	YEAR = {1995},
+	pages = "53--96",
+	PUBLISHER = {Springer Verlag, LNCS 925},
+}
