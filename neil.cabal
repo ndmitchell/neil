@@ -13,5 +13,6 @@ homepage:           http://community.haskell.org/~ndm/
 stability:          None
 
 executable neil
-    build-depends:      base == 4.*, filepath, containers, directory, process, old-time
+    hs-source-dirs:     src
+    build-depends:      base == 4.*, filepath, containers, directory, process, old-time, cmdargs
     main-is:            Main.hs
