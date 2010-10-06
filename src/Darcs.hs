@@ -115,36 +115,30 @@ pull repo locks = forEachRepo locks repo $ \x -> do
         _ -> Just "Failed"
 
 
-
-{-
-    sync :: FilePath -> IO ()
-    sync dir = do
-        b <- doesDirectoryExist $ dir </> "_darcs"
-        if b then check dir else do
-            xs <- getDirectoryContents dir
-            xs <- return [dir </> x | x <- xs, not $ all (== '.') x]
-            flip mapM_ xs $ \x -> do
-                b <- doesDirectoryExist x
-                when b $ sync x
-    
-    
-    check :: FilePath -> IO ()
-    check dir = do
-        b1 <- run "darcs whatsnew --summary" "No changes!"
-        b2 <- run "darcs send --dry-run --all" "No recorded local changes to send!"
-        let msg = ["changes"|b1] ++ ["patches"|b2]
-        when (msg /= []) $
-            putStrLn $ unwords $ [takeFileName dir,"has"] ++ intersperse "and" msg
-        where
-            run cmd want = do
-                let out = dir </> "paper_sync.tmp"
-                system $ cmd ++ " --repodir=\"" ++ dir ++ "\" > \"" ++ out ++ "\""
-                src <- readFile' out
-                return $ want `notElem` lines src
--}
+push :: FilePath -> IO ()
+push repo = forEachRepo False repo $ \x -> do
+    (code,out,err) <- cmdCodeOutErr $ "darcs send --dry-run --all --repo=" ++ x
+    if code /= ExitSuccess then return $ Just "Failed"
+     else if "No recorded local changes to send!" `elem` lines out then return Nothing
+     else fmap Just $ do
+        src <- readFile' $ x </> "_darcs" </> "prefs" </> "repos"
+        case pick $ lines src of
+            Nothing -> return "Failed: No non-http repos in the prefs/repos file"
+            Just r -> do
+                (code,out,err) <- cmdCodeOutErr $ "darcs push --no-set-default \"" ++ r ++ "\" --repo=" ++ x
+                return $ if code == ExitSuccess then "Pushed" else "Failed"
+    where
+        -- pick the ssh address
+        pick :: [String] -> Maybe String
+        pick xs = listToMaybe $ ssh ++ [b ++ drop (length a) h | h <- http, (a,b) <- mapping, a `isPrefixOf` h]
+            where (http,ssh) = partition ("http://" `isPrefixOf`) xs
 
 
+        mapping = [("http://www.cs.york.ac.uk/fp/darcs/","ndm@community.haskell.org:/home/ndm/darcs/")
+                  ,("http://community.haskell.org/~ndm/darcs/","ndm@community.haskell.org:/home/ndm/darcs/")
+                  ,("http://code.haskell.org/","ndm@code.haskell.org:/srv/code/")
+                  ]
 
-push = undefined
+
 send = undefined
 apply = undefined
