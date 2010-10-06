@@ -106,7 +106,7 @@ whatsnew repo locks = forEachRepo locks repo $ \x ->
 
 pull :: FilePath -> Bool -> IO ()
 pull repo locks = forEachRepo locks repo $ \x -> do
-    (code,out,err) <- cmdCodeOutErr $ "darcs pull --all --repo=" ++ x
+    (code,out,err) <- cmdCodeOutErr $ "darcs pull --all --summary --repo=" ++ x
     return $ case code of
         ExitSuccess ->
             let n = length [() | x:xs <- lines out, not $ isSpace x] - 3
