@@ -148,7 +148,7 @@ push repo = do
             Just 0 -> return Nothing
             Just n -> do
                 modifyMVar_ mvar (return . (:) x)
-                return $ Just $ show n ++ "patch" ++ (if n == 1 then "" else "es") ++ " to push"
+                return $ Just $ show n ++ " patch" ++ (if n == 1 then "" else "es") ++ " to push"
 
     res <- readMVar mvar
     forM_ res $ \x -> do
