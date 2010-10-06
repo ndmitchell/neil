@@ -24,6 +24,8 @@ findRepos x = do
     x <- canonicalizePath x
     xs <- searchDown x
     res <- if null xs then searchUp x else return xs
+    let uni = map takeFileName res
+    when (length uni /= length (nub uni)) $ error $ "Some repos have duplicate last names - not allowed"
     putStrLn $ show (length res) ++ " found"
     return res
     where
@@ -77,6 +79,9 @@ forEachRepo deleteLocks repo act = do
 realLines :: String -> Int
 realLines str = length [() | x:_ <- lines str, not $ isSpace x]
 
+patches 1 = "1 patch"
+patches n = show n ++ " patches"
+
 ---------------------------------------------------------------------
 -- RAW COMMANDS
 
@@ -102,9 +107,7 @@ darcsSend repo outfile = do
     (code,out,err) <- cmdCodeOutErr $ "darcs send --all --repo=" ++ repo ++ " " ++
         maybe "--dry-run" (" --output=" ++) outfile
     return $ case code of
-        ExitSuccess
-            | "No recorded local changes to send!" `elem` lines out -> Just 0
-            | otherwise -> Just 1
+        ExitSuccess -> Just $ realLines out - (if isNothing outfile then 3 else 2)
         _ -> Nothing
 
 
@@ -135,7 +138,7 @@ pull repo locks = forEachRepo locks repo $ \x -> do
     return $ case n of
         Nothing -> Just "Failed"
         Just 0 -> Nothing
-        Just n -> Just $ "Pulled " ++ show n ++ " patch" ++ (if n == 1 then "" else "es")
+        Just n -> Just $ "Pulled " ++ patches n
 
 
 push :: FilePath -> IO ()
@@ -148,7 +151,7 @@ push repo = do
             Just 0 -> return Nothing
             Just n -> do
                 modifyMVar_ mvar (return . (:) x)
-                return $ Just $ show n ++ " patch" ++ (if n == 1 then "" else "es") ++ " to push"
+                return $ Just $ patches n ++ " to push"
 
     res <- readMVar mvar
     forM_ res $ \x -> do
@@ -172,11 +175,26 @@ push repo = do
 
 
 send :: FilePath -> FilePath -> IO ()
-send repo patch = do
+send repo patch = withTempDir $ \tdir -> do
     mvar <- newMVar []
     forEachRepo False repo $ \x -> do
-        n <- darcsSend x Nothing
-        return $ Just $ "I want to send " ++ show n
+        let file = tdir </> takeFileName x ++ ".patch"
+        n <- darcsSend x $ Just file
+        b <- doesFileExist file
+        case n of
+            Nothing -> return $ Just "failed to determine if there are patches"
+            Just n | (n == 0) == b -> return $ Just "logic error, confused about patches"
+            Just 0 -> return Nothing
+            Just n -> do
+                modifyMVar_ mvar (return . (takeFileName x:))
+                return $ Just $ "sending " ++ patches n
+
+    res <- readMVar mvar
+    if null res then putStrLn "Nothing to push, no patch created" else do
+        cmd $ "cmd /c \"cd " ++ tdir ++ " && tar -czf bundle.tar.gz *.patch"
+        copyFile (tdir </> "bundle.tar.gz") patch
+        let n = length res
+        putStrLn $ "Bundle created at " ++ patch ++ " (" ++ show n ++ " repo" ++ (if n == 1 then "" else "s") ++ ")"
 
 
 apply = undefined

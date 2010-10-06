@@ -13,11 +13,23 @@ import Data.List
 import Control.Concurrent
 
 
+tempDir :: IO FilePath
+tempDir = getTemporaryDirectory
+
+
 withTempFile :: (FilePath -> IO a) -> IO a
-withTempFile f = E.bracket
-    (do (file,h) <- openTempFile "." "neil.tmp"; hClose h; return file)
-    removeFile
-    f
+withTempFile f = do
+    tdir <- tempDir
+    E.bracket
+        (do (file,h) <- openTempFile "." "neilfile.tmp"; hClose h; return file)
+        removeFile
+        f
+
+-- FIXME: does not clean up
+withTempDir :: (FilePath -> IO a) -> IO a
+withTempDir f = do
+    createDirectory "temp"
+    f "temp"
 
 
 cmdCodeOutErr :: String -> IO (ExitCode, String, String)
