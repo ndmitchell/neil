@@ -146,7 +146,10 @@ push repo = do
         case n of
             Nothing -> return $ Just "failed to determine if there are patches"
             Just 0 -> return Nothing
-            Just n -> modifyMVar_ mvar (return . (:) x) >> return (Just "will push")
+            Just n -> do
+                modifyMVar_ mvar (return . (:) x)
+                return $ Just $ show n ++ "patch" ++ (if n == 1 then "" else "es") ++ " to push"
+
     res <- readMVar mvar
     forM_ res $ \x -> do
         putStrLn $ "Trying to push from " ++ x
