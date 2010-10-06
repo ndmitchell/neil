@@ -73,56 +73,80 @@ forEachRepo deleteLocks repo act = do
 
     takeMVar finished
 
+
+realLines :: String -> Int
+realLines str = length [() | x:_ <- lines str, not $ isSpace x]
+
+---------------------------------------------------------------------
+-- RAW COMMANDS
+
+darcsWhatsnew :: FilePath -> IO (Maybe Int)
+darcsWhatsnew repo = do
+    (code,out,err) <- cmdCodeOutErr $ "darcs whatsnew --summary --repo=" ++ repo
+    return $ case code of
+        ExitFailure 1 -> Just 0
+        ExitSuccess -> Just $ length $ lines out
+        _ -> Nothing
+
+
+darcsPull :: FilePath -> Bool -> IO (Maybe Int)
+darcsPull repo dryrun = do
+    (code,out,err) <- cmdCodeOutErr $ "darcs pull --all --repo=" ++ repo ++ (if dryrun then " --dry-run" else "")
+    return $ case code of
+        ExitSuccess -> Just $ realLines out - 2
+        _ -> Nothing
+
+
+darcsSend :: FilePath -> Maybe FilePath -> IO (Maybe Int)
+darcsSend repo outfile = do
+    (code,out,err) <- cmdCodeOutErr $ "darcs send --all --repo=" ++ repo ++ " " ++
+        maybe "--dry-run" (" --output=" ++) outfile
+    return $ case code of
+        ExitSuccess
+            | "No recorded local changes to send!" `elem` lines out -> Just 0
+            | otherwise -> Just 1
+        _ -> Nothing
+
+
 ---------------------------------------------------------------------
 -- COMMANDS
 
 whatsnew :: FilePath -> Bool -> IO ()
 whatsnew repo locks = forEachRepo locks repo $ \x ->
     (do
-        changes <- f ("darcs whatsnew --summary --repo=" ++ x) length
-        local <- f ("darcs send --dry-run --all --repo=" ++ x) $ hasnt "No recorded local changes to send!"
-        remote <- f ("darcs pull --dry-run --all --repo=" ++ x) $ spaces 2
-        return $ if changes == 0 && local == 0 && remote == 0 then Nothing else
+        changes <- darcsWhatsnew x
+        local <- darcsSend x Nothing
+        remote <- darcsPull x True
+        return $ if changes == Just 0 && local == Just 0 && remote == Just 0 then Nothing else
             Just $ intercalate ", "
-                [ (if n == -1 then "?" else show n) ++ " " ++ s ++ (if n == 1 then "" else ss)
+                [ maybe "?" show n ++ " " ++ s ++ (if n == Just 1 then "" else ss)
                 | (n,s,ss) <- [(changes,"local change","s"),(local,"local patch","es"),(remote,"remote patch","es")]
-                , n /= 0]
+                , n /= Just 0]
     ) `E.onException` (do
         let lockFile = x </> "_darcs/lock"
         b <- doesFileExist lockFile
         when b $ removeFile lockFile
     )
-    where
-        hasnt msg out = if msg `elem` out then 0 else 1
-        spaces n out = length [() | x:xs <- out, not $ isSpace x] - n
-
-        f cmd count = do
-            (code,out,err) <- cmdCodeOutErr cmd
-            case code of
-                ExitFailure 1 -> return 0
-                ExitSuccess -> return $ count $ lines out
-                _ -> return $ negate 1
 
 
 pull :: FilePath -> Bool -> IO ()
 pull repo locks = forEachRepo locks repo $ \x -> do
-    (code,out,err) <- cmdCodeOutErr $ "darcs pull --all --summary --repo=" ++ x
-    return $ case code of
-        ExitSuccess ->
-            let n = length [() | x:xs <- lines out, not $ isSpace x] - 3
-            in if n <= 0 then Nothing else Just $
-                "Pulled " ++ show n ++ " patch" ++ (if n == 1 then "" else "es")
-        _ -> Just "Failed"
+    n <- darcsPull x False
+    return $ case n of
+        Nothing -> Just "Failed"
+        Just 0 -> Nothing
+        Just n -> Just $ "Pulled " ++ show n ++ " patch" ++ (if n == 1 then "" else "es")
 
 
 push :: FilePath -> IO ()
 push repo = do
     mvar <- newMVar []
     forEachRepo False repo $ \x -> do
-        (code,out,err) <- cmdCodeOutErr $ "darcs send --dry-run --all --repo=" ++ x
-        if code /= ExitSuccess then return $ Just "failed to determine if there are patches"
-         else if "No recorded local changes to send!" `elem` lines out then return Nothing
-         else modifyMVar_ mvar (return . (:) x) >> return (Just "will push")
+        n <- darcsSend x Nothing
+        case n of
+            Nothing -> return $ Just "failed to determine if there are patches"
+            Just 0 -> return Nothing
+            Just n -> modifyMVar_ mvar (return . (:) x) >> return (Just "will push")
     res <- readMVar mvar
     forM_ res $ \x -> do
         putStrLn $ "Trying to push from " ++ x
@@ -144,5 +168,12 @@ push repo = do
                   ]
 
 
-send = undefined
+send :: FilePath -> FilePath -> IO ()
+send repo patch = do
+    mvar <- newMVar []
+    forEachRepo False repo $ \x -> do
+        n <- darcsSend x Nothing
+        return $ Just $ "I want to send " ++ show n
+
+
 apply = undefined
