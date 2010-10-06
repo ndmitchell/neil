@@ -12,6 +12,6 @@ description:
 homepage:           http://community.haskell.org/~ndm/
 stability:          None
 
-executable hlint
+executable neil
     build-depends:      base == 4.*, filepath, containers, directory, process, old-time
     main-is:            Main.hs
