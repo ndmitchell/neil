@@ -16,3 +16,4 @@ executable neil
     hs-source-dirs:     src
     build-depends:      base == 4.*, filepath, containers, directory, process, old-time, cmdargs
     main-is:            Main.hs
+    ghc-options:        -threaded
