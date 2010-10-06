@@ -27,13 +27,13 @@ cmdCodeOutErr x = withTempFile $ \stderr -> withTempFile $ \stdout -> do
     out <- readFile' stdout
     return (res,out,err)
 
-{-
-
 cmd :: String -> IO ()
 cmd x = do
     res <- system x
     when (res /= ExitSuccess) $
         error $ "Failed in system command: " ++ x
+
+{-
 
 cmdOut :: String -> IO String
 cmdOut x = withTempFile $ \file -> do

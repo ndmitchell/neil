@@ -116,17 +116,21 @@ pull repo locks = forEachRepo locks repo $ \x -> do
 
 
 push :: FilePath -> IO ()
-push repo = forEachRepo False repo $ \x -> do
-    (code,out,err) <- cmdCodeOutErr $ "darcs send --dry-run --all --repo=" ++ x
-    if code /= ExitSuccess then return $ Just "Failed"
-     else if "No recorded local changes to send!" `elem` lines out then return Nothing
-     else fmap Just $ do
+push repo = do
+    mvar <- newMVar []
+    forEachRepo False repo $ \x -> do
+        (code,out,err) <- cmdCodeOutErr $ "darcs send --dry-run --all --repo=" ++ x
+        if code /= ExitSuccess then return $ Just "Failed"
+         else if "No recorded local changes to send!" `elem` lines out then return Nothing
+         else modifyMVar_ mvar (return . (:) x) >> return (Just "will push")
+    res <- readMVar mvar
+    forM_ res $ \x -> do
+        putStrLn $ "Trying to push to " ++ x
         src <- readFile' $ x </> "_darcs" </> "prefs" </> "repos"
         case pick $ lines src of
-            Nothing -> return "Failed: No non-http repos in the prefs/repos file"
+            Nothing -> error "Failed: No non-http repos in the prefs/repos file"
             Just r -> do
-                (code,out,err) <- cmdCodeOutErr $ "darcs push --no-set-default \"" ++ r ++ "\" --repo=" ++ x
-                return $ if code == ExitSuccess then "Pushed" else "Failed"
+                cmd $ "darcs push --no-set-default \"" ++ r ++ "\" --repo=" ++ x
     where
         -- pick the ssh address
         pick :: [String] -> Maybe String
