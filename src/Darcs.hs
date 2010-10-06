@@ -120,12 +120,12 @@ push repo = do
     mvar <- newMVar []
     forEachRepo False repo $ \x -> do
         (code,out,err) <- cmdCodeOutErr $ "darcs send --dry-run --all --repo=" ++ x
-        if code /= ExitSuccess then return $ Just "Failed"
+        if code /= ExitSuccess then return $ Just "failed to determine if there are patches"
          else if "No recorded local changes to send!" `elem` lines out then return Nothing
          else modifyMVar_ mvar (return . (:) x) >> return (Just "will push")
     res <- readMVar mvar
     forM_ res $ \x -> do
-        putStrLn $ "Trying to push to " ++ x
+        putStrLn $ "Trying to push from " ++ x
         src <- readFile' $ x </> "_darcs" </> "prefs" </> "repos"
         case pick $ lines src of
             Nothing -> error "Failed: No non-http repos in the prefs/repos file"
