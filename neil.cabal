@@ -1,0 +1,17 @@
+cabal-version:      >= 1.2
+build-type:         Simple
+name:               neil
+version:            0.0
+license:            BSD3
+category:           Development
+author:             Neil Mitchell <ndmitchell@gmail.com>
+copyright:          Neil Mitchell 2004-2010
+synopsis:           General tools for Neil
+description:
+    General tools for Neil.
+homepage:           http://community.haskell.org/~ndm/
+stability:          None
+
+executable hlint
+    build-depends:      base == 4.*, filepath, containers, directory, process, old-time
+    main-is:            Main.hs
