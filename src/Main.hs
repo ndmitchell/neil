@@ -10,7 +10,7 @@ import Darcs
 
 data Neil
     = Whatsnew {repo :: FilePath, deleteLocks :: Bool}
-    | Pull {repo :: FilePath}
+    | Pull {repo :: FilePath, deleteLocks :: Bool}
     | Push {repo :: FilePath}
     | Send {repo :: FilePath, patch :: FilePath}
     | Apply {patch :: FilePath}
@@ -37,7 +37,7 @@ main = do
     args <- cmdArgsRun mode
     case args of
         Whatsnew x y -> whatsnew x y
-        Pull x -> pull x
+        Pull x y -> pull x y
         Push x -> push x
         Send x y -> send x y
         Apply x -> apply x

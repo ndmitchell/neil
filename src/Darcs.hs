@@ -83,7 +83,10 @@ whatsnew repo locks = forEachRepo locks repo $ \x ->
         local <- f ("darcs send --dry-run --all --repo=" ++ x) $ hasnt "No recorded local changes to send!"
         remote <- f ("darcs pull --dry-run --all --repo=" ++ x) $ spaces 2
         return $ if changes == 0 && local == 0 && remote == 0 then Nothing else
-            Just $ show (changes,local,remote) ++ " changes"
+            Just $ intercalate ", "
+                [ (if n == -1 then "?" else show n) ++ " " ++ s ++ (if n == 1 then "" else ss)
+                | (n,s,ss) <- [(changes,"local change","s"),(local,"local patch","es"),(remote,"remote patch","es")]
+                , n /= 0]
     ) `E.onException` (do
         let lockFile = x </> "_darcs/lock"
         b <- doesFileExist lockFile
@@ -99,6 +102,17 @@ whatsnew repo locks = forEachRepo locks repo $ \x ->
                 ExitFailure 1 -> return 0
                 ExitSuccess -> return $ count $ lines out
                 _ -> return $ negate 1
+
+
+pull :: FilePath -> Bool -> IO ()
+pull repo locks = forEachRepo locks repo $ \x -> do
+    (code,out,err) <- cmdCodeOutErr $ "darcs pull --all --repo=" ++ x
+    return $ case code of
+        ExitSuccess ->
+            let n = length [() | x:xs <- lines out, not $ isSpace x] - 3
+            in if n <= 0 then Nothing else Just $
+                "Pulled " ++ show n ++ " patch" ++ (if n == 1 then "" else "es")
+        _ -> Just "Failed"
 
 
 
@@ -132,6 +146,5 @@ whatsnew repo locks = forEachRepo locks repo $ \x ->
 
 
 push = undefined
-pull = undefined
 send = undefined
 apply = undefined
