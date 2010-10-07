@@ -13,23 +13,18 @@ import Data.List
 import Control.Concurrent
 
 
-tempDir :: IO FilePath
-tempDir = getTemporaryDirectory
-
-
 withTempFile :: (FilePath -> IO a) -> IO a
-withTempFile f = do
-    tdir <- tempDir
-    E.bracket
-        (do (file,h) <- openTempFile "." "neilfile.tmp"; hClose h; return file)
-        removeFile
-        f
+withTempFile f = E.bracket
+    (do (file,h) <- openTempFile "." "neil.tmp"; hClose h; return file)
+    removeFile
+    f
 
--- FIXME: does not clean up
-withTempDir :: (FilePath -> IO a) -> IO a
-withTempDir f = do
-    createDirectory "temp"
-    f "temp"
+
+withTempDirectory :: (FilePath -> IO a) -> IO a
+withTempDirectory f = E.bracket
+    (do (file,h) <- openTempFile "." "neil.tmp"; hClose h; removeFile file; createDirectory file; return file)
+    removeDirectoryRecursive
+    f
 
 
 cmdCodeOutErr :: String -> IO (ExitCode, String, String)
@@ -39,31 +34,12 @@ cmdCodeOutErr x = withTempFile $ \stderr -> withTempFile $ \stdout -> do
     out <- readFile' stdout
     return (res,out,err)
 
+
 cmd :: String -> IO ()
 cmd x = do
     res <- system x
     when (res /= ExitSuccess) $
         error $ "Failed in system command: " ++ x
-
-{-
-
-cmdOut :: String -> IO String
-cmdOut x = withTempFile $ \file -> do
-    cmd $ x ++ " >> " ++ file
-    readFile' file
-
-cmdPassOut :: String -> IO (Bool,String)
-cmdPassOut x = withTempFile $ \file -> do
-    b <- cmdPass $ x ++ " >> " ++ file
-    fmap ((,) b) $ readFile' file
-
-cmdPass :: String -> IO Bool
-cmdPass x = do
-    res <- system x
-    putStrLn $ x ++ " => " ++ show res
-    return $ res == ExitSuccess
--}
-
 
 
 readFile' :: FilePath -> IO String

@@ -1,5 +1,5 @@
 
-module Darcs(push,pull,send,whatsnew,apply) where
+module Darcs(run) where
 
 import Control.Monad
 import Data.Char
@@ -8,6 +8,7 @@ import System.Directory
 import System.Exit
 import System.FilePath
 import Util
+import Arguments
 import Control.Exception as E
 import Control.Concurrent
 import Data.Maybe
@@ -114,8 +115,8 @@ darcsSend repo outfile = do
 ---------------------------------------------------------------------
 -- COMMANDS
 
-whatsnew :: FilePath -> Bool -> IO ()
-whatsnew repo locks = forEachRepo locks repo $ \x ->
+run :: Arguments -> Maybe (IO ())
+run (Whatsnew repo locks) = Just $ forEachRepo locks repo $ \x ->
     (do
         changes <- darcsWhatsnew x
         local <- darcsSend x Nothing
@@ -132,8 +133,7 @@ whatsnew repo locks = forEachRepo locks repo $ \x ->
     )
 
 
-pull :: FilePath -> Bool -> IO ()
-pull repo locks = forEachRepo locks repo $ \x -> do
+run (Pull repo locks) = Just $ forEachRepo locks repo $ \x -> do
     n <- darcsPull x False
     return $ case n of
         Nothing -> Just "Failed"
@@ -141,8 +141,7 @@ pull repo locks = forEachRepo locks repo $ \x -> do
         Just n -> Just $ "Pulled " ++ patches n
 
 
-push :: FilePath -> IO ()
-push repo = do
+run (Push repo) = Just $ do
     mvar <- newMVar []
     forEachRepo False repo $ \x -> do
         n <- darcsSend x Nothing
@@ -174,8 +173,7 @@ push repo = do
                   ]
 
 
-send :: FilePath -> FilePath -> IO ()
-send repo patch = withTempDir $ \tdir -> do
+run (Send repo patch) = Just $ withTempDirectory $ \tdir -> do
     mvar <- newMVar []
     forEachRepo False repo $ \x -> do
         let file = tdir </> takeFileName x ++ ".patch"
@@ -197,4 +195,6 @@ send repo patch = withTempDir $ \tdir -> do
         putStrLn $ "Bundle created at " ++ patch ++ " (" ++ show n ++ " repo" ++ (if n == 1 then "" else "s") ++ ")"
 
 
-apply = undefined
+run (Apply{}) = Just $ error "todo, apply"
+
+run _ = Nothing
