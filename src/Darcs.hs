@@ -108,10 +108,10 @@ darcsPull repo dryrun = do
 
 darcsSend :: FilePath -> Maybe FilePath -> IO (Maybe Int)
 darcsSend repo outfile = do
-    (code,out,err) <- cmdCodeOutErr $ "darcs send --all --repo=" ++ repo ++ " " ++
+    (code,out,err) <- cmdCodeOutErr $ "darcs send --all --summary --repo=" ++ repo ++ " " ++
         maybe "--dry-run" (" --output=" ++) outfile
     return $ case code of
-        ExitSuccess -> Just $ realLines out - 2
+        ExitSuccess -> Just $ max 0 $ realLines out - (if isNothing outfile then 3 else 2)
         _ -> Nothing
 
 
@@ -181,6 +181,7 @@ run (Push repo) = Just $ do
 
 
 run (Send repo patch) = Just $ withTempDirectory $ \tdir -> do
+    tdir <- canonicalizePath tdir
     mvar <- newMVar []
     forEachRepo False repo $ \x -> do
         let file = tdir </> takeFileName x ++ ".patch"
