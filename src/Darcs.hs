@@ -109,7 +109,7 @@ darcsSend repo outfile = do
     (code,out,err) <- cmdCodeOutErr $ "darcs send --all --repo=" ++ repo ++ " " ++
         maybe "--dry-run" (" --output=" ++) outfile
     return $ case code of
-        ExitSuccess -> Just $ realLines out - (if isNothing outfile then 3 else 2)
+        ExitSuccess -> Just $ realLines out - 2
         _ -> Nothing
 
 
