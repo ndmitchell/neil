@@ -1,16 +1,20 @@
 
 module Main(main) where
 
-import System.IO
+import Control.Monad
+import Data.Maybe
 import System.Console.CmdArgs
-import Darcs
+import System.IO
+
 import Arguments
+import Cabal
+import Darcs
 
 
 main :: IO ()
 main = do
     hSetBuffering stdout NoBuffering
     args <- cmdArgsRun arguments
-    case Darcs.run args of
-        Nothing -> error $ "Don't know how to deal with argument: " ++ show args
-        Just x -> x
+    fromMaybe (error $ "Don't know how to deal with argument: " ++ show args) $
+        msum [Darcs.run args, Cabal.run args]
+           

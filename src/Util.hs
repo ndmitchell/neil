@@ -4,8 +4,6 @@ module Util where
 import Control.Monad
 import System.Directory
 import System.Exit
-import System.FilePath
-import System.Directory
 import Control.Exception as E
 import System.IO
 import System.Cmd
@@ -27,12 +25,22 @@ withTempDirectory f = E.bracket
     f
 
 
+withDirectory dir cmd = E.bracket
+    (do x <- getCurrentDirectory; setCurrentDirectory dir; return x)
+    setCurrentDirectory
+    (const cmd)
+
+
 cmdCodeOutErr :: String -> IO (ExitCode, String, String)
 cmdCodeOutErr x = withTempFile $ \stderr -> withTempFile $ \stdout -> do
     res <- system $ x ++ " > " ++ stdout ++ " 2> " ++ stderr
     err <- readFile' stderr
     out <- readFile' stdout
     return (res,out,err)
+
+
+cmdCode :: String -> IO ExitCode
+cmdCode = system
 
 
 cmd :: String -> IO ()

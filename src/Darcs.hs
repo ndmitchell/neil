@@ -189,7 +189,7 @@ run (Send repo patch) = Just $ withTempDirectory $ \tdir -> do
 
     res <- readMVar mvar
     if null res then putStrLn "Nothing to push, no patch created" else do
-        cmd $ "cmd /c \"cd " ++ tdir ++ " && tar -czf bundle.tar.gz *.patch"
+        withDirectory tdir $ cmd "tar -czf bundle.tar.gz *.patch"
         copyFile (tdir </> "bundle.tar.gz") patch
         let n = length res
         putStrLn $ "Bundle created at " ++ patch ++ " (" ++ show n ++ " repo" ++ (if n == 1 then "" else "s") ++ ")"
