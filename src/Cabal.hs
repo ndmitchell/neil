@@ -26,5 +26,6 @@ run Sdist = Just $ withTempDirectory $ \tdir -> do
         cmd "cabal configure --ghc-option=-Werror --ghc-option=-fwarn-unused-imports"
         cmd "cabal build"
         cmd "cabal haddock --executables"
+    putStrLn "Ready to release!"
 
 run _ = Nothing

@@ -23,6 +23,7 @@ findRepos :: FilePath -> IO [FilePath]
 findRepos x = do
     putStr "Looking for repos... "
     x <- canonicalizePath x
+    print x
     xs <- searchDown x
     res <- if null xs then searchUp x else return xs
     let uni = map takeFileName res
@@ -65,17 +66,17 @@ forEachRepo deleteLocks repo act = do
 
     tdir <- tempDir
     done "" Nothing
-    forM_ res $ \repo -> forkIO $ do
-        let lockFile = repo </> "_darcs/lock"
-        b <- doesFileExist lockFile
-        ans <- if b && not deleteLocks then
-            return $ Just "skipping because it has a lock outstanding"
-         else do
-            when (b && deleteLocks) $ removeFile lockFile
-            withDirectory tdir $ act repo
-        done repo ans
-
-    takeMVar finished
+    withDirectory tdir $ do
+        forM_ res $ \repo -> forkIO $ do
+            let lockFile = repo </> "_darcs/lock"
+            b <- doesFileExist lockFile
+            ans <- if b && not deleteLocks then
+                return $ Just "skipping because it has a lock outstanding"
+             else do
+                when (b && deleteLocks) $ removeFile lockFile
+                act repo
+            done repo ans
+        takeMVar finished
 
 
 realLines :: String -> Int
@@ -118,10 +119,13 @@ darcsSend repo outfile = do
 -- COMMANDS
 
 run :: Arguments -> Maybe (IO ())
-run (Whatsnew repo locks localOnly) = Just $ forEachRepo locks repo $ \x ->
+
+-- run _ = Just $ forEachRepo False ".." $ \_ -> cmdCodeOutErr "darcs --version" >> return Nothing
+
+run (Whatsnew repo locks localOnly lookForAdds) = Just $ forEachRepo locks repo $ \x ->
     (do
         changes <- darcsWhatsnew x False
-        adds <- fmap (fmap $ subtract $ fromMaybe 0 changes) $ darcsWhatsnew x True
+        adds <- if not lookForAdds then return $ Just 0 else fmap (fmap $ subtract $ fromMaybe 0 changes) $ darcsWhatsnew x True
         local <- if localOnly then return $ Just 0 else darcsSend x Nothing
         remote <- if localOnly then return $ Just 0 else darcsPull x True
         let items = [changes,adds,local,remote]
