@@ -6,8 +6,8 @@ module Arguments where
 import System.Console.CmdArgs
 
 data Arguments
-    = Whatsnew {repo :: FilePath, deleteLocks :: Bool}
-    | Pull {repo :: FilePath, deleteLocks :: Bool}
+    = Whatsnew {repo :: FilePath, delete_locks :: Bool, local :: Bool}
+    | Pull {repo :: FilePath, delete_locks :: Bool}
     | Push {repo :: FilePath}
     | Send {repo :: FilePath, patch :: FilePath}
     | Apply {patch :: FilePath}
@@ -16,7 +16,8 @@ data Arguments
 
 arguments = cmdArgsMode $ modes
     [Whatsnew {repo = "." &= typDir &= help "Repo to use"
-              ,deleteLocks = False &= help "Delete lock files"}
+              ,delete_locks = False &= help "Delete lock files"
+              ,local = False &= help "Only check for local changes, no network required"}
               &= help "See what has changed (local and remote changes)"
     ,Pull {}
           &= help "Pull from the default locations"

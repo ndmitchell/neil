@@ -116,11 +116,11 @@ darcsSend repo outfile = do
 -- COMMANDS
 
 run :: Arguments -> Maybe (IO ())
-run (Whatsnew repo locks) = Just $ forEachRepo locks repo $ \x ->
+run (Whatsnew repo locks localOnly) = Just $ forEachRepo locks repo $ \x ->
     (do
         changes <- darcsWhatsnew x
-        local <- darcsSend x Nothing
-        remote <- darcsPull x True
+        local <- if localOnly then return $ Just 0 else darcsSend x Nothing
+        remote <- if localOnly then return $ Just 0 else darcsPull x True
         return $ if changes == Just 0 && local == Just 0 && remote == Just 0 then Nothing else
             Just $ intercalate ", "
                 [ maybe "?" show n ++ " " ++ s ++ (if n == Just 1 then "" else ss)
