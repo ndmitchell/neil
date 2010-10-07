@@ -11,6 +11,10 @@ import Data.List
 import Control.Concurrent
 
 
+tempDir :: IO FilePath
+tempDir = getTemporaryDirectory
+
+
 withTempFile :: (FilePath -> IO a) -> IO a
 withTempFile f = E.bracket
     (do (file,h) <- openTempFile "." "neil.tmp"; hClose h; return file)

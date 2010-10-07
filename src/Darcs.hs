@@ -63,6 +63,7 @@ forEachRepo deleteLocks repo act = do
             ln $ "Waiting for " ++ show (length new) ++ " (" ++ unwords (map takeFileName $ take 4 new) ++ "...)"
         return new
 
+    tdir <- tempDir
     done "" Nothing
     forM_ res $ \repo -> forkIO $ do
         let lockFile = repo </> "_darcs/lock"
@@ -71,7 +72,7 @@ forEachRepo deleteLocks repo act = do
             return $ Just "skipping because it has a lock outstanding"
          else do
             when (b && deleteLocks) $ removeFile lockFile
-            act repo
+            withDirectory tdir $ act repo
         done repo ans
 
     takeMVar finished
@@ -120,7 +121,7 @@ run :: Arguments -> Maybe (IO ())
 run (Whatsnew repo locks localOnly) = Just $ forEachRepo locks repo $ \x ->
     (do
         changes <- darcsWhatsnew x False
-        adds <- darcsWhatsnew x True
+        adds <- fmap (fmap $ subtract $ fromMaybe 0 changes) $ darcsWhatsnew x True
         local <- if localOnly then return $ Just 0 else darcsSend x Nothing
         remote <- if localOnly then return $ Just 0 else darcsPull x True
         let items = [changes,adds,local,remote]
