@@ -86,9 +86,10 @@ patches n = show n ++ " patches"
 ---------------------------------------------------------------------
 -- RAW COMMANDS
 
-darcsWhatsnew :: FilePath -> IO (Maybe Int)
-darcsWhatsnew repo = do
-    (code,out,err) <- cmdCodeOutErr $ "darcs whatsnew --summary --repo=" ++ repo
+darcsWhatsnew :: FilePath -> Bool -> IO (Maybe Int)
+darcsWhatsnew repo incAdds = do
+    (code,out,err) <- cmdCodeOutErr $ "darcs whatsnew --summary --repo=" ++ repo ++
+        (if incAdds then " --look-for-adds" else "")
     return $ case code of
         ExitFailure 1 -> Just 0
         ExitSuccess -> Just $ length $ lines out
@@ -118,14 +119,15 @@ darcsSend repo outfile = do
 run :: Arguments -> Maybe (IO ())
 run (Whatsnew repo locks localOnly) = Just $ forEachRepo locks repo $ \x ->
     (do
-        changes <- darcsWhatsnew x
+        changes <- darcsWhatsnew x False
+        adds <- darcsWhatsnew x True
         local <- if localOnly then return $ Just 0 else darcsSend x Nothing
         remote <- if localOnly then return $ Just 0 else darcsPull x True
-        return $ if changes == Just 0 && local == Just 0 && remote == Just 0 then Nothing else
-            Just $ intercalate ", "
-                [ maybe "?" show n ++ " " ++ s ++ (if n == Just 1 then "" else ss)
-                | (n,s,ss) <- [(changes,"local change","s"),(local,"local patch","es"),(remote,"remote patch","es")]
-                , n /= Just 0]
+        let items = [changes,adds,local,remote]
+        let names = [("local change","s"),("addable",""),("local patch","es"),("remote patch","es")]
+        return $ if all (== Just 0) items then Nothing else Just $ intercalate ", "
+            [ maybe "?" show n ++ " " ++ s ++ (if n == Just 1 then "" else ss)
+            | (n,(s,ss)) <- zip items names, n /= Just 0]
     ) `E.onException` (do
         let lockFile = x </> "_darcs/lock"
         b <- doesFileExist lockFile
