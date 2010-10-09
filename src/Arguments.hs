@@ -12,6 +12,7 @@ data Arguments
     | Send {repo :: FilePath, patch :: FilePath}
     | Apply {patch :: FilePath}
     | Sdist
+    | Versions
       deriving (Data,Typeable,Show)
 
 arguments = cmdArgsMode $ modes
@@ -30,5 +31,7 @@ arguments = cmdArgsMode $ modes
            &= help "Apply a patch tarball"
     ,Sdist {}
            &= help "Create a cabal sdist with extra checks"
+    ,Versions {}
+              &= help "Expand the supported library/compiler range as much as possible"
     ]
     &= summary "Neil's utility tool"

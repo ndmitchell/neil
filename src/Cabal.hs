@@ -28,4 +28,6 @@ run Sdist = Just $ withTempDirectory $ \tdir -> do
         cmd "cabal haddock --executables"
     putStrLn "Ready to release!"
 
+run Versions = Just $ error "Check to see what the permissable range is by repeatedly installing all the values in range"
+
 run _ = Nothing
