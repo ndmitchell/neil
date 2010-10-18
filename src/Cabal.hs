@@ -23,7 +23,7 @@ run Sdist = Just $ withTempDirectory $ \tdir -> do
     let tarball = head $ [x | x <- files, ".tar.gz" `isSuffixOf` x]
     withDirectory tdir $ cmd $ "tar -xf " ++ tarball
     withDirectory (tdir </> dropExtension (dropExtension $ takeFileName tarball)) $ do
-        cmd "cabal configure --ghc-option=-Werror --ghc-option=-fwarn-unused-imports"
+        cmd "cabal configure --ghc-option=-Werror --ghc-option=-fwarn-unused-imports --disable-library-profiling"
         cmd "cabal build"
         cmd "cabal haddock --executables"
     putStrLn "Ready to release!"
