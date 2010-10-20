@@ -25,7 +25,7 @@ arguments = cmdArgsMode $ modes
           &= help "Pull from the default locations"
     ,Push {}
           &= help "Push to the calculated SSH location"
-    ,Send {patch="patches.tar.gz" &= typFile &= help "Location for patches"}
+    ,Send {patch="patches.tar" &= typFile &= help "Location for patches"}
           &= help "Send patches as a tarball"
     ,Apply {}
            &= help "Apply a patch tarball"
