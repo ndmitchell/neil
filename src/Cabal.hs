@@ -15,7 +15,10 @@ import Arguments
 ---------------------------------------------------------------------
 -- COMMANDS
 
--- Policy: currently all must build flawlessly on 6.12.3, and at least build on 6.10.4
+-- Policy: currently all must build flawlessly on 6.12.3, and at least build on 6.10.4 and 7.0.0 pre
+official = ["6.12.3","7.0.0.20101106"]
+partial = ["6.10.4"]
+
 run :: Arguments -> Maybe (IO ())
 run Sdist = Just $ do
     tested <- testedWith
@@ -29,13 +32,17 @@ run Sdist = Just $ do
         let tarball = head $ [x | x <- files, ".tar.gz" `isSuffixOf` x]
         withDirectory tdir $ cmd $ "tar -xf " ++ tarball
         withDirectory (tdir </> dropExtension (dropExtension $ takeFileName tarball)) $ do
-            cmd "cabal configure --ghc-option=-Werror --ghc-option=-fwarn-unused-imports --disable-library-profiling"
-            cmd "cabal build"
-            cmd "cabal haddock --executables"
-
-            cmd "cabal clean"
-            cmd "cabal configure --disable-library-profiling -w c:\\ghc\\ghc-6.10.4\\bin\\ghc.exe"
-            cmd "cabal build"
+            forM_ official $ \x -> do
+                cmd "cabal clean"
+                cmd $ "cabal configure --ghc-option=-Werror --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
+                      "--with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-haddock=c:\\ghc\\ghc-" ++ x ++ "\\bin\\haddock.exe " ++
+                      "--with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe"
+                cmd "cabal build"
+                cmd "cabal haddock --executables"
+            forM_ partial $ \x -> do
+                cmd "cabal clean"
+                cmd $ "cabal configure --disable-library-profiling --with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe"
+                cmd "cabal build"
         putStrLn $ "Ready to release!"
 
 run Versions = Just $ error "Check to see what the permissable range is by repeatedly installing all the values in range"
