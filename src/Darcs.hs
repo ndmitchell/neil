@@ -122,7 +122,7 @@ run :: Arguments -> Maybe (IO ())
 
 -- run _ = Just $ forEachRepo False ".." $ \_ -> cmdCodeOutErr "darcs --version" >> return Nothing
 
-run (Whatsnew repo locks localOnly lookForAdds) = Just $ forEachRepo locks repo $ \x ->
+run (Whatsnew repo locks localOnly lookForAdds ssh) = Just $ forEachRepo locks repo $ \x ->
     (do
         changes <- darcsWhatsnew x False
         adds <- if not lookForAdds then return $ Just 0 else fmap (fmap $ subtract $ fromMaybe 0 changes) $ darcsWhatsnew x True
@@ -148,16 +148,16 @@ run (Pull repo locks) = Just $ forEachRepo locks repo $ \x -> do
         Just n -> Just $ "Pulled " ++ patches n
 
 
-run (Push repo) = Just $ do
+run (Push repo ssh) = Just $ do
     mvar <- newMVar []
     forEachRepo False repo $ \x -> do
-        n <- darcsSend x Nothing
+        n <- if ssh then return $ Just 1 else darcsSend x Nothing
         case n of
             Nothing -> return $ Just "failed to determine if there are patches"
             Just 0 -> return Nothing
             Just n -> do
                 modifyMVar_ mvar (return . (:) x)
-                return $ Just $ patches n ++ " to push"
+                return $ Just $ if ssh then "pushing with ssh" else patches n ++ " to push"
 
     res <- readMVar mvar
     forM_ res $ \x -> do
