@@ -33,6 +33,7 @@ run Sdist = Just $ do
         withDirectory tdir $ cmd $ "tar -xf " ++ tarball
         withDirectory (tdir </> dropExtension (dropExtension $ takeFileName tarball)) $ do
             forM_ official $ \x -> do
+                putStrLn $ "Building with " ++ x
                 cmd "cabal clean"
                 cmd $ "cabal configure --ghc-option=-Werror --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
                       "--with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-haddock=c:\\ghc\\ghc-" ++ x ++ "\\bin\\haddock.exe " ++
@@ -41,6 +42,7 @@ run Sdist = Just $ do
                 cmd "cabal build"
                 cmd "cabal haddock --executables"
             forM_ partial $ \x -> do
+                putStrLn $ "Building with " ++ x
                 cmd "cabal clean"
                 cmd $ "cabal configure --disable-library-profiling --with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe --flags=testprog"
                 cmd "cabal build"
