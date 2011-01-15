@@ -15,7 +15,7 @@ import Arguments
 ---------------------------------------------------------------------
 -- COMMANDS
 
--- Policy: currently all must build flawlessly on 6.12.3, and at least build on 6.10.4 and 7.0.1
+-- Policy: currently all must build flawlessly on 6.12.3 and 7.0.1, and at least build on 6.10.4
 official = ["6.12.3","7.0.1"]
 partial = ["6.10.4"]
 
@@ -26,6 +26,7 @@ run Sdist = Just $ do
     withTempDirectory $ \tdir -> do
         res <- cmdCode "cabal check"
         when (res /= ExitSuccess) $ error "Cabal check failed"
+        checkCabalFile
         cmd $ "cabal configure --builddir=" ++ tdir
         cmd $ "cabal sdist --builddir=" ++ tdir
         files <- getDirectoryContents tdir
@@ -46,7 +47,8 @@ run Sdist = Just $ do
                 cmd "cabal clean"
                 cmd $ "cabal configure --disable-library-profiling --with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe --flags=testprog"
                 cmd "cabal build"
-        putStrLn $ "Ready to release!"
+    cmd "cabal sdist"
+    putStrLn $ "Ready to release!"
 
 run Versions = Just $ error "Check to see what the permissable range is by repeatedly installing all the values in range"
 
@@ -56,17 +58,27 @@ run _ = Nothing
 
 testedWith :: IO [String]
 testedWith = do
-    file <- findCabal
-    case file of
-        Nothing -> return []
-        Just file -> do
-            src <- readFile' file
-            return $ concat [ map f $ words $ map (\x -> if x == ',' then ' ' else x) $ drop 12 x
-                            | x <- lines src, "tested-with:" `isPrefixOf` x]
-
+    src <- readCabal
+    return $ concat [ map f $ words $ map (\x -> if x == ',' then ' ' else x) $ drop 12 x
+                    | x <- lines src, "tested-with:" `isPrefixOf` x]
     where
         f x = map toLower a ++ "-" ++ drop 2 b
             where (a,b) = break (== '=') x
+
+
+checkCabalFile :: IO ()
+checkCabalFile = do
+    src <- readCabal
+    let year = "2011" `isInfixOf` concat [x | x <- lines src, "copyright" `isPrefixOf` x]
+    unless year $ error "Doesn't have 2011 in the copyright year"
+
+
+readCabal :: IO String
+readCabal = do
+    file <- findCabal
+    case file of
+        Nothing -> return []
+        Just file -> readFile' file
 
 
 findCabal :: IO (Maybe FilePath)
