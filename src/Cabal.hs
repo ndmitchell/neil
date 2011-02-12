@@ -69,7 +69,7 @@ testedWith = do
 checkCabalFile :: IO ()
 checkCabalFile = do
     src <- readCabal
-    let year = "2011" `isInfixOf` concat [x | x <- lines src, "copyright" `isPrefixOf` x]
+    let year = "2011" `isInfixOf` concat [x | x <- lines src, "copyright" `isPrefixOf` map toLower x]
     unless year $ error "Doesn't have 2011 in the copyright year"
 
 
