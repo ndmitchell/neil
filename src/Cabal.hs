@@ -16,7 +16,7 @@ import Arguments
 -- COMMANDS
 
 -- Policy: currently all must build flawlessly on 6.12.3 and 7.0.1, and at least build on 6.10.4
-official = ["6.12.3","7.0.1"]
+official = ["6.12.3","7.0.2"]
 partial = ["6.10.4"]
 
 run :: Arguments -> Maybe (IO ())
