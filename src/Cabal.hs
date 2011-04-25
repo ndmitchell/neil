@@ -1,3 +1,4 @@
+{-# LANGUAGE RecordWildCards #-}
 
 module Cabal(run) where
 
@@ -20,7 +21,7 @@ official = ["6.12.3","7.0.2"]
 partial = ["6.10.4"]
 
 run :: Arguments -> Maybe (IO ())
-run Sdist = Just $ do
+run Sdist{..} = Just $ do
     tested <- testedWith
     tested <- return $ if null tested then [""] else tested
     withTempDirectory $ \tdir -> do
@@ -42,11 +43,12 @@ run Sdist = Just $ do
                       "--flags=testprog"
                 cmd "cabal build"
                 cmd "cabal haddock --executables"
-            forM_ partial $ \x -> do
-                putStrLn $ "Building with " ++ x
-                cmd "cabal clean"
-                cmd $ "cabal configure --disable-library-profiling --with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe --flags=testprog"
-                cmd "cabal build"
+            unless ignore_partial $ do
+                forM_ partial $ \x -> do
+                    putStrLn $ "Building with " ++ x
+                    cmd "cabal clean"
+                    cmd $ "cabal configure --disable-library-profiling --with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe --flags=testprog"
+                    cmd "cabal build"
     cmd "cabal sdist"
     putStrLn $ "Ready to release!"
 
