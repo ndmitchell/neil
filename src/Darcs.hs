@@ -27,7 +27,8 @@ findRepos x = do
     xs <- searchDown x
     res <- if null xs then searchUp x else return xs
     let uni = map takeFileName res
-    when (length uni /= length (nub uni)) $ error $ "Some repos have duplicate last names - not allowed"
+    let dupes = uni \\ nub uni
+    unless (null dupes) $ error $ "Some repos have duplicate last names - not allowed: " ++ show (unwords dupes)
     putStrLn $ show (length res) ++ " found"
     return res
     where
