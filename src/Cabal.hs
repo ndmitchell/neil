@@ -37,7 +37,8 @@ run Sdist{..} = Just $ do
             forM_ official $ \x -> do
                 putStrLn $ "Building with " ++ x
                 cmd "cabal clean"
-                cmd $ "cabal configure --ghc-option=-Werror --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
+                cmd $ "cabal configure --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
+                      (if ignore_warnings then "" else "--ghc-option=-Werror ") ++
                       "--with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-haddock=c:\\ghc\\ghc-" ++ x ++ "\\bin\\haddock.exe " ++
                       "--with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe " ++
                       "--flags=testprog"
