@@ -17,8 +17,8 @@ import Arguments
 -- COMMANDS
 
 -- Policy: currently all must build flawlessly on 6.12.3, 7.0.2 and 7.2.1, and at least build on 6.10.4
-official = ["6.12.3","7.0.4","7.2.1"]
-partial = ["6.10.4"]
+defOfficial = ["6.12.3","7.0.4","7.2.1"]
+defPartial = ["6.10.4"]
 
 run :: Arguments -> Maybe (IO ())
 run Sdist{..} = Just $ do
@@ -34,7 +34,8 @@ run Sdist{..} = Just $ do
         let tarball = head $ [x | x <- files, ".tar.gz" `isSuffixOf` x]
         withDirectory tdir $ cmd $ "tar -xf " ++ tarball
         withDirectory (tdir </> dropExtension (dropExtension $ takeFileName tarball)) $ do
-            forM_ official $ \x -> do
+            let a +| b = if null a then b else a
+            forM_ (official +| defOfficial) $ \x -> do
                 putStrLn $ "Building with " ++ x
                 cmd "cabal clean"
                 cmd $ "cabal configure --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
@@ -45,7 +46,7 @@ run Sdist{..} = Just $ do
                 cmd "cabal build"
                 cmd "cabal haddock --executables"
             unless ignore_partial $ do
-                forM_ partial $ \x -> do
+                forM_ (partial +| defPartial) $ \x -> do
                     putStrLn $ "Building with " ++ x
                     cmd "cabal clean"
                     cmd $ "cabal configure --disable-library-profiling --with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe --flags=testprog"

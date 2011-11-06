@@ -11,7 +11,7 @@ data Arguments
     | Push {repo :: FilePath, ssh :: Bool}
     | Send {repo :: FilePath, patch :: FilePath}
     | Apply {patch :: FilePath}
-    | Sdist {ignore_partial :: Bool, ignore_warnings :: Bool}
+    | Sdist {official :: [String], partial :: [String], ignore_partial :: Bool, ignore_warnings :: Bool}
     | Versions
       deriving (Data,Typeable,Show)
 
@@ -30,7 +30,9 @@ arguments = cmdArgsMode $ modes
           &= help "Send patches as a tarball"
     ,Apply {}
            &= help "Apply a patch tarball"
-    ,Sdist {ignore_partial = False &= help "Ignore GHC distros that are partially supported"
+    ,Sdist {official = [] &= help "Officially supported GHC versions"
+           ,partial = [] &= help "Partially supported GHC versions"
+           ,ignore_partial = False &= help "Don't check on partially supported GHC's"
            ,ignore_warnings = False &= help "Ignore warnings"}
            &= help "Create a cabal sdist with extra checks"
     ,Versions {}
