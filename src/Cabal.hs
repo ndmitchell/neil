@@ -43,6 +43,7 @@ run Sdist{..} = Just $ do
                       "--with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-haddock=c:\\ghc\\ghc-" ++ x ++ "\\bin\\haddock.exe " ++
                       "--with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe " ++
                       "--flags=testprog"
+                cmd "cabal install --only-dependencies"
                 cmd "cabal build"
                 cmd "cabal haddock --executables"
             unless ignore_partial $ do
