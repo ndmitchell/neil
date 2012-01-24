@@ -10,11 +10,11 @@ import Data.Maybe
 import Paper.Util.String
 
 
-haskellKeywords = ["class","instance","where","data","type","import","in","let","do","module","import"]
+haskellKeywords = ["class","instance","where","data","type","import","in","let","do","module","newtype"]
 haskellKeySymbols = ["--","="]
 
 
-isHaskellSym xs = all (`elem` "|+-*<>.=&") xs && xs `notElem` haskellKeySymbols
+isHaskellSym xs = all (`elem` "|+-*<>.=?&") xs && xs `notElem` haskellKeySymbols
 isHaskellVar xs = isAlpha (head xs) && xs `notElem` haskellKeywords
 validName xs = isHaskellSym xs || isHaskellVar xs
 
@@ -26,6 +26,7 @@ defines = nub . filter validName . concatMap f . map lexer . classLeft . lines
         f ("(":xs) | isHaskellSym name = [name]
             where name:_ = drop 1 $ dropWhile (/= ")") xs
         f (_:name:_) | isHaskellSym name = [name]
+        f ("type":name:_) = [name]
         f (name:_) = [name]
         f _ = []
 

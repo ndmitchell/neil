@@ -39,4 +39,4 @@ parseExpr names seen n (HsCheck pos expr whr x) =
         lexed -> f lexed x
     where
         f lexed x = [HsItem Stmt pos (unwords (("auto_" ++ show n) : free) ++ " = " ++ x ++ "\n") whr]
-            where free = names `intersect` lexed
+            where free = filter (not . isUpper . head) $ names `intersect` lexed

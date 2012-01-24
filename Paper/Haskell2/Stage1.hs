@@ -112,6 +112,8 @@ hsCustom "ctxt" x = [(Stmt,"context_expression :: " ++ x ++ " => " ++ free ++ "(
 hsCustom "type" x = [(Stmt,"type TypeType " ++ free ++ " = " ++ x)]
     where free = unwords [x | x <- lexer x, isLower $ head x]
 
+hsCustom "do" x = [(Expr,unlines $ "do" : map (' ':) (lines x))]
+
 hsCustom "stmt" x = [(Stmt,x)]
 hsCustom "expr" x = [(Expr,unlines $ map (' ':) $ lines x)]
 hsCustom name _ = error $ "Stage1 todo: " ++ show name
