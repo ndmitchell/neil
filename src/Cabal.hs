@@ -38,13 +38,15 @@ run Sdist{..} = Just $ do
             forM_ (official +| defOfficial) $ \x -> do
                 putStrLn $ "Building with " ++ x
                 cmd "cabal clean"
+                cmd $ "cabal install --only-dependencies " ++
+                      "--with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-haddock=c:\\ghc\\ghc-" ++ x ++ "\\bin\\haddock.exe " ++
+                      "--with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe"
                 cmd $ "cabal configure --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
                       (if ignore_warnings then "" else "--ghc-option=-Werror ") ++
                       "--ghc-option=-fno-warn-warnings-deprecations " ++ -- CABAL BUG WORKAROUND :(
                       "--with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-haddock=c:\\ghc\\ghc-" ++ x ++ "\\bin\\haddock.exe " ++
                       "--with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe " ++
                       "--flags=testprog"
-                cmd "cabal install --only-dependencies"
                 cmd "cabal build"
                 cmd "cabal haddock --executables"
             unless ignore_partial $ do
