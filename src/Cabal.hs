@@ -53,6 +53,9 @@ run Sdist{..} = Just $ do
                 forM_ (partial +| defPartial) $ \x -> do
                     putStrLn $ "Building with " ++ x
                     cmd "cabal clean"
+                    cmd $ "cabal install --only-dependencies " ++
+                          "--with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-haddock=c:\\ghc\\ghc-" ++ x ++ "\\bin\\haddock.exe " ++
+                          "--with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe"
                     cmd $ "cabal configure --disable-library-profiling --with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe --flags=testprog"
                     cmd "cabal build"
     cmd "cabal sdist"
