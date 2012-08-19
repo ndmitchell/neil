@@ -40,7 +40,7 @@ run Sdist{..} = Just $ do
                 cmd "cabal clean"
                 cmd $ "cabal install --only-dependencies " ++
                       "--with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-haddock=c:\\ghc\\ghc-" ++ x ++ "\\bin\\haddock.exe " ++
-                      "--with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe "
+                      "--with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe " ++
                       "--flags=testprog"
                 cmd $ "cabal configure --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
                       (if ignore_warnings then "" else "--ghc-option=-Werror ") ++
