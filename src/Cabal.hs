@@ -21,6 +21,11 @@ defOfficial = ["6.12.3","7.0.4","7.2.2","7.4.1","7.6.1"]
 defPartial = ["6.10.4"]
 
 run :: Arguments -> Maybe (IO ())
+run Check = Just $ do
+    res <- cmdCode "cabal check"
+    when (res /= ExitSuccess) $ error "Cabal check failed"
+    checkCabalFile
+
 run Sdist{..} = Just $ do
     tested <- testedWith
     tested <- return $ if null tested then [""] else tested

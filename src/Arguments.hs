@@ -6,12 +6,17 @@ module Arguments where
 import System.Console.CmdArgs
 
 data Arguments
+    -- darcs stuff
     = Whatsnew {repo :: FilePath, delete_locks :: Bool, local :: Bool, look_for_adds :: Bool, ssh :: Bool}
     | Pull {repo :: FilePath, delete_locks :: Bool}
     | Push {repo :: FilePath, ssh :: Bool}
     | Send {repo :: FilePath, patch :: FilePath}
     | Apply {patch :: FilePath}
+ 
+    -- cabal stuff
     | Sdist {official :: [String], partial :: [String], ignore_partial :: Bool, ignore_warnings :: Bool}
+    | Check
+    | Test
       deriving (Data,Typeable,Show)
 
 arguments = cmdArgsMode $ modes
@@ -34,5 +39,7 @@ arguments = cmdArgsMode $ modes
            ,ignore_partial = False &= help "Don't check on partially supported GHC's"
            ,ignore_warnings = False &= help "Ignore warnings"}
            &= help "Create a cabal sdist with extra checks"
+    ,Check
+    ,Test
     ]
     &= summary "Neil's utility tool"
