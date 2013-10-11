@@ -12,7 +12,6 @@ data Arguments
     | Send {repo :: FilePath, patch :: FilePath}
     | Apply {patch :: FilePath}
     | Sdist {official :: [String], partial :: [String], ignore_partial :: Bool, ignore_warnings :: Bool}
-    | Versions
       deriving (Data,Typeable,Show)
 
 arguments = cmdArgsMode $ modes
@@ -35,7 +34,5 @@ arguments = cmdArgsMode $ modes
            ,ignore_partial = False &= help "Don't check on partially supported GHC's"
            ,ignore_warnings = False &= help "Ignore warnings"}
            &= help "Create a cabal sdist with extra checks"
-    ,Versions {}
-              &= help "Expand the supported library/compiler range as much as possible"
     ]
     &= summary "Neil's utility tool"
