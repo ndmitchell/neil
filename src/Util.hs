@@ -15,6 +15,7 @@ import System.IO
 import System.IO.Unsafe
 import System.Cmd
 import Data.List
+import Data.Char
 import Control.Concurrent
 import System.FilePath
 
@@ -105,3 +106,8 @@ liner = do
 
 ignoreExceptions :: IO () -> IO ()
 ignoreExceptions act = E.catch act (\(x::SomeException) -> return ())
+
+trim, trimLeft, trimRight :: String -> String
+trimLeft = dropWhile isSpace
+trimRight = reverse . trimLeft . reverse
+trim = trimLeft . trimRight
