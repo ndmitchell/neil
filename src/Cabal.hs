@@ -6,6 +6,7 @@ import Control.Monad
 import Data.Char
 import Data.List
 import Data.Maybe
+import Data.Functor
 import System.Directory
 import System.Exit
 import System.FilePath
@@ -83,10 +84,20 @@ testedWith = do
 
 checkCabalFile :: IO ()
 checkCabalFile = do
-    src <- readCabal
-    let year = "2013" `isInfixOf` concat [x | x <- lines src, "copyright" `isPrefixOf` map toLower x]
-    unless year $ error "Doesn't have 2013 in the copyright year"
-
+    project <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal 
+    src <- fmap lines readCabal
+    let grab tag = [trimLeft $ drop (length tag + 1) x | x <- src, (tag ++ ":") `isPrefixOf` x]
+    license <- readFile' $ concat $ grab "license-file"
+    let bad =
+            ["Incorrect declaration style: " ++ x
+                | (x,':':_) <- map (break (== ':') . trimLeft) src, not $ all (\x -> isLower x || x == '-') x] ++
+            ["2013 is not in the copyright year" | not $ "2013" `isInfixOf` concat (grab "copyright")] ++
+            ["2013 is not in the copyright year of the license" | not $ "2013" `isInfixOf` concat (take 1 $ lines license)] ++
+            ["No correct source-repository link"
+                | let want = "source-repository head type: git location: https://github.com/ndmitchell/" ++ project ++ ".git"
+                , not $ want `isInfixOf` unwords (words $ unlines src)] ++
+            ["Incorrect license " | grab "license" /= ["BSD3"]]
+    unless (null bad) $ error $ unlines bad
 
 readCabal :: IO String
 readCabal = do
