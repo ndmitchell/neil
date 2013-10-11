@@ -3,7 +3,6 @@ module Paper.Make(make) where
 
 import Control.Exception
 import Control.Monad
-import Data.Char
 import System.Cmd
 import System.Directory
 import System.Exit

@@ -2,7 +2,6 @@
 module Paper.Haskell.Latex.Parser(Line, HsCode(..), parseLatex) where
 
 import Data.List
-import Data.Char
 
 type Line = Int
 

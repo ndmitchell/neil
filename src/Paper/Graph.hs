@@ -1,13 +1,10 @@
 
 module Paper.Graph(graphLog, graphCreate) where
 
-import Control.Monad
 import Data.List
 import qualified Data.Map as Map
 import Data.Ord
 import System.Cmd
-import System.Directory
-import System.FilePath
 import System.Time
 
 import Graphics.Google.Chart

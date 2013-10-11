@@ -9,7 +9,6 @@ import System.IO
 import Data.List
 import Data.Char
 import Control.Monad
-import Debug.Trace
 
 
 data Result = Pass | Fail String | Missing String | Instances [String]

@@ -3,7 +3,6 @@ module Paper.Haskell2.Stage3(stage3) where
 
 import Data.Char
 import Data.List
-import Data.Maybe
 import System.FilePath
 import Paper.Haskell2.Type
 import Paper.Haskell2.Haskell

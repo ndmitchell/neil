@@ -5,7 +5,6 @@ module Paper.Util.FileData(
 
 import Control.Monad
 import Data.List
-import Data.Ord
 import System.Directory
 import System.FilePath
 
