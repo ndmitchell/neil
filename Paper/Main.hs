@@ -1,5 +1,5 @@
 
-module Main(main) where
+module Paper.Main(main) where
 
 import System.Directory
 import System.Environment
