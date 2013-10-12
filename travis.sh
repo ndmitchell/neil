@@ -1,6 +1,6 @@
 #!/bin/bash -e
 # This script is invoked from my Travis-CI commands
 # It bootstraps to grab the 'neil' tool and run 'neil test'
-cabal configure --enable-tests
-cabal build
-cabal test
+git clone https://github.com/ndmitchell/neil
+(cd neil && cabal install)
+neil test
