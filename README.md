@@ -1,5 +1,7 @@
 # Neil: Workflow Utilities
 
+[![Build Status](https://travis-ci.org/ndmitchell/neil.png)](https://travis-ci.org/ndmitchell/neil)
+
 A tool for performing common actions run by Neil Mitchell. Many of these commands enhance specific aspects of my workflow. While other people are welcome to use this tool, it is not supported.
 
 This documentation is highly likely to be out of date, and I recommend running `neil --help` to get a correct list.
