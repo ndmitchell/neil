@@ -23,10 +23,12 @@ defPartial = ["6.10.4"]
 
 run :: Arguments -> Maybe (IO ())
 run Test = Just $ do
+    putStrLn "neil test: starting test"
     fromJust $ run Check
     cmd "cabal configure --enable-tests"
     cmd "cabal build"
     cmd "cabal test"
+    putStrLn "neil test: finishing test"
 
 run Check = Just $ do
     res <- cmdCode "cabal check"
