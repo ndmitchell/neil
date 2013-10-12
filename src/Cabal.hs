@@ -22,6 +22,12 @@ defOfficial = ["6.12.3","7.0.4","7.2.2","7.4.1","7.6.1"]
 defPartial = ["6.10.4"]
 
 run :: Arguments -> Maybe (IO ())
+run Test = Just $ do
+    fromJust $ run Check
+    cmd "cabal configure --enable-tests"
+    cmd "cabal build"
+    cmd "cabal test"
+
 run Check = Just $ do
     res <- cmdCode "cabal check"
     when (res /= ExitSuccess) $ error "Cabal check failed"
