@@ -98,7 +98,7 @@ checkCabalFile = do
     license <- readFile' $ concat $ grab "license-file"
     let bad =
             ["Incorrect declaration style: " ++ x
-                | (x,':':_) <- map (break (== ':') . trimLeft) src, not $ all (\x -> isLower x || x == '-') x] ++
+                | (x,':':_) <- map (break (== ':') . trimLeft) src, not $ "--" `isPrefixOf` x, not $ all (\x -> isLower x || x == '-') x] ++
             ["2013 is not in the copyright year" | not $ "2013" `isInfixOf` concat (grab "copyright")] ++
             ["2013 is not in the copyright year of the license" | not $ "2013" `isInfixOf` concat (take 1 $ lines license)] ++
             ["No correct source-repository link"
