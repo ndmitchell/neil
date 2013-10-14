@@ -24,7 +24,35 @@ executable neil
     main-is:            Main.hs
 
     other-modules:
+        Paper.LatexError
+        Paper.Haskell.Latex.Parser
+        Paper.Haskell.Haskell.Provides
+        Paper.Haskell.Haskell.Tweak
+        Paper.Haskell.Fragment
+        Paper.Haskell.Check
+        Paper.Util.String
+        Paper.Util.CmdNumber
+        Paper.Haskell2.Haskell
+        Paper.Haskell2.Type
+        Paper.Haskell2.Stage3
+        Paper.Haskell2.Stage2
+        Paper.Util.IO
+        Paper.Util.Error
+        Paper.Haskell2.Stage1
+        Paper.Todo
+        Paper.Ref
+        Paper.Ftp
+        Paper.Sync
+        Paper.Push
+        Paper.Haskell2.All
+        Paper.WordCount
+        Paper.Talk
+        Paper.Make
+        Paper.Graph
+        Paper.Util.FileData
+        Paper.Haskell
+        Paper.Main
         Arguments
+        Util
         Cabal
         Darcs
-        Util
