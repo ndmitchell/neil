@@ -43,9 +43,10 @@ tempDir = getTemporaryDirectory
 withTempFile :: (FilePath -> IO a) -> IO a
 withTempFile f = do
     u <- uniqueInt
+    dir <- getTemporaryDirectory
     let name = "neil_" ++ show u ++ "_file.tmp"
     E.bracket
-        (one $ do (file,h) <- openTempFile "." name; hClose h; return file)
+        (one $ do (file,h) <- openTempFile dir name; hClose h; return file)
         (\file -> one $ ignoreExceptions $ removeFile file)
         f
 
