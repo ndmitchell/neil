@@ -73,6 +73,14 @@ cmdCodeOutErr x = withTempFile $ \stderr -> withTempFile $ \stdout -> do
     out <- readFile' stdout
     return (res,out,err)
 
+cmdOut :: String -> IO String
+cmdOut x = withTempFile $ \stdout -> do
+    res <- system $ x ++ " > " ++ stdout
+    out <- readFile' stdout
+    when (res /= ExitSuccess) $
+        error $ "Failed in system command: " ++ x
+    return out
+
 
 cmdCode :: String -> IO ExitCode
 cmdCode = system
