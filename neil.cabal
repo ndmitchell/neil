@@ -55,4 +55,4 @@ executable neil
         Arguments
         Util
         Cabal
-        Darcs
+        Git
