@@ -21,27 +21,30 @@ import Arguments
 defOfficial = ["6.12.3","7.0.4","7.2.2","7.4.1","7.6.1"]
 defPartial = ["6.10.4"]
 
+
+-- | Check the .cabal file is well formed
+cabalCheck :: IO ()
+cabalCheck = do
+    res <- cmdCode "cabal check"
+    checkCabalFile
+
+
 run :: Arguments -> Maybe (IO ())
 run Test = Just $ do
     putStrLn "neil test: starting test"
-    fromJust $ run Check
+    cabalCheck
     cmd "cabal configure --enable-tests"
     cmd "cabal build"
     cmd "cabal test"
     putStrLn "neil test: finishing test"
 
-run Check = Just $ do
-    res <- cmdCode "cabal check"
-    when (res /= ExitSuccess) $ error "Cabal check failed"
-    checkCabalFile
+run Check = Just cabalCheck
 
 run Sdist{..} = Just $ do
     tested <- testedWith
     tested <- return $ if null tested then [""] else tested
     withTempDirectory $ \tdir -> do
-        res <- cmdCode "cabal check"
-        when (res /= ExitSuccess) $ error "Cabal check failed"
-        checkCabalFile
+        cabalCheck
         cmd $ "cabal configure --builddir=" ++ tdir
         cmd $ "cabal sdist --builddir=" ++ tdir
         files <- getDirectoryContents tdir
