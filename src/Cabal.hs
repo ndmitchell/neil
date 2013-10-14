@@ -108,7 +108,7 @@ checkCabalFile = do
                 | (x,':':_) <- map (break (== ':') . trimLeft) src
                 , not $ any isSpace $ trim x, not $ "http" `isSuffixOf` x, not $ all (\x -> isLower x || x == '-') x] ++
             ["2013 is not in the copyright year" | not $ "2013" `isInfixOf` concat (grab "copyright")] ++
-            ["2013 is not in the copyright year of the license" | not $ "2013" `isInfixOf` concat (take 1 $ lines license)] ++
+            ["copyright string is not at the start of the license" | not $ concat (grab "copyright") `isInfixOf` concat (take 1 $ lines license)] ++
             ["No correct source-repository link"
                 | let want = "source-repository head type: git location: https://github.com/ndmitchell/" ++ project ++ ".git"
                 , not $ want `isInfixOf` unwords (words $ unlines src)] ++
