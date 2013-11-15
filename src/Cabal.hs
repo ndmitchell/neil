@@ -106,7 +106,8 @@ checkCabalFile = do
     let bad =
             ["Incorrect declaration style: " ++ x
                 | (x,':':_) <- map (break (== ':') . trimLeft) src
-                , not $ any isSpace $ trim x, not $ "http" `isSuffixOf` x, not $ all (\x -> isLower x || x == '-') x] ++
+                , not $ any isSpace $ trim x, not $ "http" `isSuffixOf` x || "https" `isSuffixOf` x
+                , not $ all (\x -> isLower x || x == '-') x] ++
             ["2013 is not in the copyright year" | not $ "2013" `isInfixOf` concat (grab "copyright")] ++
             ["copyright string is not at the start of the license" | not $ concat (grab "copyright") `isInfixOf` concat (take 1 $ lines license)] ++
             ["No correct source-repository link"
