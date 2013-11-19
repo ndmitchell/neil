@@ -1,4 +1,4 @@
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE RecordWildCards, PatternGuards #-}
 
 module Cabal(run) where
 
@@ -12,9 +12,8 @@ import System.FilePath
 import Util
 import Arguments
 
--- Policy: currently all must build flawlessly on 6.12.3, 7.0.2 and 7.2.1, and at least build on 6.10.4
-defOfficial = ["6.12.3","7.0.4","7.2.2","7.4.1","7.6.1"]
-defPartial = ["6.10.4"]
+defAllow = ["6.10.4","6.12.3","7.0.4","7.2.2","7.4.2","7.6.3"]
+defWarn = ["6.10.4"]
 
 
 ---------------------------------------------------------------------
@@ -44,7 +43,7 @@ run Test = Just $ do
     withSDist $ do
         cmd "cabal install --only-dependencies"
         cmd $ "cabal configure --enable-tests --disable-library-profiling " ++
-              {- "--ghc-option=-Werror -} "--ghc-option=-fno-warn-warnings-deprecations" -- CABAL BUG WORKAROUND :(
+              "--ghc-option=-Werror --ghc-option=-fno-warn-warnings-deprecations" -- CABAL BUG WORKAROUND :(
         cmd "cabal build"
         cmd "cabal test --show-details=always"
 
@@ -53,10 +52,8 @@ run Check = Just cabalCheck
 run Sdist{..} = Just $ do
     cabalCheck
     tested <- testedWith
-    tested <- return $ if null tested then [""] else tested
     withSDist $ do
-        let a +| b = if null a then b else a
-        forM_ (official +| defOfficial) $ \x -> do
+        forM_ (sort tested) $ \x -> do -- deliberately start with the oldest first
             putStrLn $ "Building with " ++ x
             cmd "cabal clean"
             cmd $ "cabal install --only-dependencies " ++
@@ -64,22 +61,12 @@ run Sdist{..} = Just $ do
                   "--with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe " ++
                   "--flags=testprog"
             cmd $ "cabal configure --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
-                  (if ignore_warnings then "" else "--ghc-option=-Werror ") ++
-                  "--ghc-option=-fno-warn-warnings-deprecations " ++ -- CABAL BUG WORKAROUND :(
+                  "--ghc-option=-Werror --ghc-option=-fno-warn-warnings-deprecations " ++ -- CABAL BUG WORKAROUND :(
                   "--with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-haddock=c:\\ghc\\ghc-" ++ x ++ "\\bin\\haddock.exe " ++
                   "--with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe " ++
                   "--flags=testprog"
             cmd "cabal build"
             cmd "cabal haddock --executables"
-        unless ignore_partial $ do
-            forM_ (partial +| defPartial) $ \x -> do
-                putStrLn $ "Building with " ++ x
-                cmd "cabal clean"
-                cmd $ "cabal install --only-dependencies " ++
-                      "--with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-haddock=c:\\ghc\\ghc-" ++ x ++ "\\bin\\haddock.exe " ++
-                      "--with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe"
-                cmd $ "cabal configure --disable-library-profiling --with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe --flags=testprog"
-                cmd "cabal build"
     cmd "cabal sdist"
     putStrLn $ "Ready to release!"
 
@@ -93,14 +80,15 @@ testedWith = do
     return $ concat [ map f $ words $ map (\x -> if x == ',' then ' ' else x) $ drop 12 x
                     | x <- lines src, "tested-with:" `isPrefixOf` x]
     where
-        f x = map toLower a ++ "-" ++ drop 2 b
-            where (a,b) = break (== '=') x
+        f x | Just rest <- stripPrefix "GHC==" x = rest
+            | otherwise = error $ "Invalid tested-with, " ++ x
 
 
 checkCabalFile :: IO ()
 checkCabalFile = do
     project <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal 
     src <- fmap lines readCabal
+    test <- testedWith
     let grab tag = [trimLeft $ drop (length tag + 1) x | x <- src, (tag ++ ":") `isPrefixOf` x]
     license <- readFile' $ concat $ grab "license-file"
     let bad =
@@ -113,7 +101,9 @@ checkCabalFile = do
             ["No correct source-repository link"
                 | let want = "source-repository head type: git location: https://github.com/ndmitchell/" ++ project ++ ".git"
                 , not $ want `isInfixOf` unwords (words $ unlines src)] ++
-            ["Incorrect license " | grab "license" /= ["BSD3"]]
+            ["Incorrect license " | grab "license" /= ["BSD3"]] ++
+            ["Invalid tested-with: " ++ show test | length test < 1 || not (null $ test \\ defAllow) || test /= reverse (sort test)] ++
+            ["Bad stabilty, should be missing" | grab "stability" /= []]
     unless (null bad) $ error $ unlines bad
 
 readCabal :: IO String

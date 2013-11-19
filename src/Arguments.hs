@@ -14,7 +14,7 @@ data Arguments
     | Apply {patch :: FilePath}
  
     -- cabal stuff
-    | Sdist {official :: [String], partial :: [String], ignore_partial :: Bool, ignore_warnings :: Bool}
+    | Sdist
     | Check
     | Test
       deriving (Data,Typeable,Show)
@@ -34,11 +34,8 @@ arguments = cmdArgsMode $ modes
           &= help "Send patches as a tarball"
     ,Apply {}
            &= help "Apply a patch tarball"
-    ,Sdist {official = [] &= help "Officially supported GHC versions"
-           ,partial = [] &= help "Partially supported GHC versions"
-           ,ignore_partial = False &= help "Don't check on partially supported GHC's"
-           ,ignore_warnings = False &= help "Ignore warnings"}
-           &= help "Create a cabal sdist with extra checks"
+    ,Sdist {}
+          &= help "Create a cabal sdist with extra checks"
     ,Check
     ,Test
     ]
