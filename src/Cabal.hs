@@ -1,6 +1,6 @@
 {-# LANGUAGE RecordWildCards, PatternGuards #-}
 
-module Cabal(run) where
+module Cabal(run, readCabal) where
 
 import Control.Monad
 import Data.Char
@@ -68,7 +68,7 @@ run Sdist{..} = Just $ do
             cmd "cabal build"
             cmd "cabal haddock --executables"
     cmd "cabal sdist"
-    putStrLn $ "Ready to release!"
+    putStrLn $ "Ready to release! (remember to neil tag after uploading)"
 
 run _ = Nothing
 

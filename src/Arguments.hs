@@ -12,6 +12,7 @@ data Arguments
     | Push {repo :: FilePath, ssh :: Bool}
     | Send {repo :: FilePath, patch :: FilePath}
     | Apply {patch :: FilePath}
+    | Tag
  
     -- cabal stuff
     | Sdist
@@ -36,6 +37,7 @@ arguments = cmdArgsMode $ modes
            &= help "Apply a patch tarball"
     ,Sdist {}
           &= help "Create a cabal sdist with extra checks"
+    ,Tag {} &= help "Tag the repo, after a release"
     ,Check
     ,Test
     ]

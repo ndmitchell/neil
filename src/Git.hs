@@ -9,6 +9,7 @@ import System.Exit
 import System.FilePath
 import Util
 import Arguments
+import Cabal(readCabal)
 
 
 ---------------------------------------------------------------------
@@ -55,5 +56,14 @@ run Whatsnew{..} = Just $ forEachRepo $ \name -> do
     let names = [("local change","s"),("addable",""),("local patch","es"),("remote patch","es")]
     let res = [show n ++ " " ++ s ++ (if n == 1 then "" else ss) | (n,(s,ss)) <- zip items names, n /= 0]
     unless (null res) $ putStrLn $ name ++ ": " ++ intercalate ", " res
+
+run Tag = Just $ do
+    src <- readCabal
+    let [ver] = [trim $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
+    putStrLn $ "Confirm to tag the release with version " ++ ver ++ "? Type 'yes':"
+    "yes" <- getLine
+    cmd "git push"
+    cmd $ "git tag v" ++ ver
+    cmd "git push --tags"
 
 run _ = Nothing
