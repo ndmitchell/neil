@@ -4,7 +4,9 @@
 set -e # exit on errors
 set -x # echo each line
 export PATH=/home/travis/.cabal/bin:$PATH
-git clone https://github.com/ndmitchell/neil
+cabal install alex
+cabal install happy
 cabal install haddock
+git clone https://github.com/ndmitchell/neil
 (cd neil && cabal install)
 neil test
