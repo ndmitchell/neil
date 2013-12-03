@@ -6,6 +6,4 @@ set -x # echo each line
 export PATH=/home/travis/.cabal/bin:$PATH
 git clone https://github.com/ndmitchell/neil
 (cd neil && cabal install)
-echo $PATH
-ls /home/travis/.cabal/bin
 neil test
