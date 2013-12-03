@@ -8,5 +8,5 @@ cabal install alex
 cabal install happy
 cabal install haddock
 git clone https://github.com/ndmitchell/neil
-(cd neil && cabal install)
+(cd neil && cabal install --verbose=3)
 neil test
