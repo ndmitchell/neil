@@ -3,16 +3,6 @@
 # It bootstraps to grab the 'neil' tool and run 'neil test'
 set -e # exit on errors
 set -x # echo each line
-# export PATH=/home/travis/.cabal/bin:$PATH
-# export PATH=/home/travis/.ghc-multi/7.6.3/bin:$PATH
-
-happy --version
-ghc --version
-cabal --version
-runhaskell --version
-runghc --version
-
-
 git clone https://github.com/ndmitchell/neil
 (cd neil && cabal install)
 neil test
