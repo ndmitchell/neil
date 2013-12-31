@@ -13,6 +13,8 @@ description:
     General tools for Neil.
 homepage:           http://community.haskell.org/~ndm/
 tested-with:        GHC==7.6.3, GHC==7.4.2, GHC==7.2.2
+extra-source-files:
+    CHANGES.txt
 
 source-repository head
     type:     git
