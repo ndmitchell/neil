@@ -89,7 +89,7 @@ checkCabalFile = do
     project <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal 
     src <- fmap lines readCabal
     test <- testedWith
-    let grab tag = [trimLeft $ drop (length tag + 1) x | x <- src, (tag ++ ":") `isPrefixOf` x]
+    let grab tag = [trimLeft $ drop (length tag + 1) x | x <- relines src, (tag ++ ":") `isPrefixOf` x]
     license <- readFile' $ concat $ grab "license-file"
     let bad =
             ["Incorrect declaration style: " ++ x
@@ -104,8 +104,14 @@ checkCabalFile = do
             ["Incorrect license " | grab "license" /= ["BSD3"]] ++
             ["Invalid tested-with: " ++ show test | length test < 1 || not (null $ test \\ defAllow) || test /= reverse (sort test)] ++
             ["Bad stabilty, should be missing" | grab "stability" /= []] ++
-            ["Missing CHANGES.txt in extra-source-files" | "CHANGES.txt" `notElem` grab "extra-source-files"]
+            ["Missing CHANGES.txt in extra-source-files" | "CHANGES.txt" `notElem` concatMap words (grab "extra-source-files")]
     unless (null bad) $ error $ unlines bad
+
+relines :: [String] -> [String]
+relines (x:xs) | ":" `isSuffixOf` x = unwords (x:a) : relines b
+    where (a,b) = break (\x -> trimLeft x == x) xs
+relines (x:xs) = x : relines xs
+relines [] = []
 
 readCabal :: IO String
 readCabal = do
