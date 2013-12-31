@@ -103,7 +103,8 @@ checkCabalFile = do
                 , not $ want `isInfixOf` unwords (words $ unlines src)] ++
             ["Incorrect license " | grab "license" /= ["BSD3"]] ++
             ["Invalid tested-with: " ++ show test | length test < 1 || not (null $ test \\ defAllow) || test /= reverse (sort test)] ++
-            ["Bad stabilty, should be missing" | grab "stability" /= []]
+            ["Bad stabilty, should be missing" | grab "stability" /= []] ++
+            ["Missing CHANGES.txt in extra-source-files" | "CHANGES.txt" `notElem` grab "extra-source-files"]
     unless (null bad) $ error $ unlines bad
 
 readCabal :: IO String
