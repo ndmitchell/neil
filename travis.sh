@@ -5,4 +5,7 @@ set -e # exit on errors
 set -x # echo each line
 git clone https://github.com/ndmitchell/neil
 (cd neil && cabal install)
-neil test
+neil test --install
+if [ -e Travis.sh ]; then
+	runhaskell Travis.hs
+fi
