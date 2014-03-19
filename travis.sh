@@ -6,6 +6,6 @@ set -x # echo each line
 git clone https://github.com/ndmitchell/neil
 (cd neil && cabal install)
 neil test --install
-if [ -e Travis.sh ]; then
-	runhaskell Travis.hs
+if [ -e travis.hs ]; then
+	runhaskell travis.hs
 fi
