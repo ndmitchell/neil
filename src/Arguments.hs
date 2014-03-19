@@ -17,7 +17,7 @@ data Arguments
     -- cabal stuff
     | Sdist
     | Check
-    | Test
+    | Test {install :: Bool}
       deriving (Data,Typeable,Show)
 
 arguments = cmdArgsMode $ modes
@@ -39,6 +39,6 @@ arguments = cmdArgsMode $ modes
           &= help "Create a cabal sdist with extra checks"
     ,Tag {} &= help "Tag the repo, after a release"
     ,Check
-    ,Test
+    ,Test {install = False &= help "Install after building"}
     ]
     &= summary "Neil's utility tool"

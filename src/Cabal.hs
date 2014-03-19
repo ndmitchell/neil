@@ -38,7 +38,7 @@ withSDist run = withTempDirectory $ \tdir -> do
 
 
 run :: Arguments -> Maybe (IO ())
-run Test = Just $ do
+run Test{..} = Just $ do
     cabalCheck
     withSDist $ do
         cmd "cabal install --only-dependencies"
@@ -46,6 +46,7 @@ run Test = Just $ do
               "--ghc-option=-Werror --ghc-option=-fno-warn-warnings-deprecations" -- CABAL BUG WORKAROUND :(
         cmd "cabal build"
         cmd "cabal test --show-details=always"
+        when install $ cmd "cabal install"
 
 run Check = Just cabalCheck
 
