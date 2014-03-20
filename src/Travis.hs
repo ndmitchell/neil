@@ -33,6 +33,7 @@ run Travis = Just $ do
         let time = x ! "started_at"
         when (num `notElem` found && x ! "result" /= JSNull) $ do
             build <- wgetJSON $ "https://api.travis-ci.org/builds/" ++ id
+            sleep 2
 
             let jobs = map (\x -> show (x ! "id" :: Int)) $ build ! "matrix"
             forM_ jobs $ \i -> do
