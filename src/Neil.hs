@@ -4,6 +4,7 @@ module Neil(
     cmd, cmdCode, cmdOut, cmdCodeOutErr,
     withTempFile, withTempDirectory,
     duration, offsetTime, sleep,
+    retry,
     module Control.Monad,
     module Data.List
     ) where

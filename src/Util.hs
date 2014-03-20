@@ -142,3 +142,13 @@ duration act = do
 
 sleep :: Double -> IO ()
 sleep x = threadDelay $ ceiling $ x * 1000000
+
+
+retry :: Int -> IO a -> IO a
+retry i x | i <= 0 = error "retry ran out of times"
+retry 1 x = x
+retry i x = do
+    res <- try x
+    case res of
+        Left (_ :: SomeException) -> retry (i-1) x
+        Right v -> return v
