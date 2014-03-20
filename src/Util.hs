@@ -152,3 +152,6 @@ retry i x = do
     case res of
         Left (_ :: SomeException) -> retry (i-1) x
         Right v -> return v
+
+rep a b x = if x == a then b else x
+reps a b = map (rep a b)

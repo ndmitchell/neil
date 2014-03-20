@@ -14,6 +14,8 @@ data Arguments
     | Apply {patch :: FilePath}
     | Tag
  
+    | Travis
+ 
     -- cabal stuff
     | Sdist
     | Check
@@ -39,6 +41,7 @@ arguments = cmdArgsMode $ modes
           &= help "Create a cabal sdist with extra checks"
     ,Tag {} &= help "Tag the repo, after a release"
     ,Check
+    ,Travis
     ,Test {install = False &= help "Install after building"}
     ]
     &= summary "Neil's utility tool"

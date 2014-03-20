@@ -10,6 +10,7 @@ import System.IO
 import Arguments
 import Cabal
 import Git
+import Travis
 import qualified Paper.Main as Paper
 
 
@@ -22,4 +23,4 @@ main = do
         _ -> do
             args <- cmdArgsRun arguments
             fromMaybe (error $ "Don't know how to deal with argument: " ++ show args) $
-                msum [Git.run args, Cabal.run args]
+                msum [Git.run args, Cabal.run args, Travis.run args]
