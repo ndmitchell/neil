@@ -26,6 +26,8 @@ library
 
     exposed-modules:
         Neil
+    other-modules:
+        Util
 
 executable neil
     hs-source-dirs:     src
