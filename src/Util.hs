@@ -13,6 +13,7 @@ import System.Exit
 import Control.Exception as E
 import System.IO
 import System.IO.Unsafe
+import Data.Time
 import System.Cmd
 import Data.List
 import Data.Char
@@ -120,3 +121,24 @@ trim, trimLeft, trimRight :: String -> String
 trimLeft = dropWhile isSpace
 trimRight = reverse . trimLeft . reverse
 trim = trimLeft . trimRight
+
+
+-- | Call once at the start, then call repeatedly to get Time values out
+offsetTime :: IO (IO Double)
+offsetTime = do
+    start <- getCurrentTime
+    return $ do
+        end <- getCurrentTime
+        return $ fromRational $ toRational $ end `diffUTCTime` start
+
+
+duration :: IO a -> IO (Double, a)
+duration act = do
+    time <- offsetTime
+    res <- act
+    time <- time
+    return (time, res)
+
+
+sleep :: Double -> IO ()
+sleep x = threadDelay $ ceiling $ x * 1000000

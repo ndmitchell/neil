@@ -20,6 +20,13 @@ source-repository head
     type:     git
     location: https://github.com/ndmitchell/neil.git
 
+library
+    hs-source-dirs:     src
+    build-depends:      base == 4.*, filepath, containers, directory, process, time
+
+    exposed-modules:
+        Neil
+
 executable neil
     hs-source-dirs:     src
     build-depends:      base == 4.*, filepath, containers, directory, process, old-time, cmdargs, GoogleChart
