@@ -12,6 +12,7 @@ synopsis:           General tools for Neil
 description:
     General tools for Neil.
 homepage:           http://community.haskell.org/~ndm/
+bug-reports:        https://github.com/ndmitchell/neil/issues
 tested-with:        GHC==7.6.3, GHC==7.4.2, GHC==7.2.2
 extra-source-files:
     CHANGES.txt
