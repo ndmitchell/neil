@@ -45,8 +45,8 @@ run Test{..} = Just $ do
         cmd $ "cabal configure --enable-tests --disable-library-profiling " ++
               "--ghc-option=-Werror --ghc-option=-fno-warn-warnings-deprecations" -- CABAL BUG WORKAROUND :(
         cmd "cabal build"
-        cmd "cabal test --show-details=always"
         when install $ cmd "cabal install"
+        cmd "cabal test --show-details=always"
 
 run Check = Just cabalCheck
 
