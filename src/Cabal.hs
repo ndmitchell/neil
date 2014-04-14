@@ -104,7 +104,7 @@ checkCabalFile = do
                 , not $ want `isInfixOf` unwords (words $ unlines src)] ++
             ["No bug-reports link" | grab "bug-reports" /= ["https://github.com/ndmitchell/" ++ project ++ "/issues"]] ++
             ["Incorrect license " | grab "license" /= ["BSD3"]] ++
-            ["Invalid tested-with: " ++ show test | length test < 1 || not (null $ test \\ defAllow) || test /= reverse (sort test)] ++
+            ["Invalid tested-with: " ++ show test | length test < 1 || not (null $ test \\ defAllow) || test /= reverse (sort test) || not (test `isPrefixOf` reverse defAllow)] ++
             ["Bad stabilty, should be missing" | grab "stability" /= []] ++
             ["Missing CHANGES.txt in extra-source-files" | "CHANGES.txt" `notElem` concatMap words (grab "extra-source-files")]
     unless (null bad) $ error $ unlines bad
