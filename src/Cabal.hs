@@ -12,7 +12,7 @@ import System.FilePath
 import Util
 import Arguments
 
-defAllow = ["6.10.4","6.12.3","7.0.4","7.2.2","7.4.2","7.6.3"]
+defAllow = ["6.10.4","6.12.3","7.0.4","7.2.2","7.4.2","7.6.3","7.8.2"]
 defWarn = ["6.10.4"]
 
 
