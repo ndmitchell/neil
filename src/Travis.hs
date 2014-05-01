@@ -13,7 +13,7 @@ import Util
 
 
 run :: Arguments -> Maybe (IO ())
-run Travis = Just $ do
+run Travis{..} = Just $ do
     dir <- getCurrentDirectory
     let name = takeFileName dir
     createDirectoryIfMissing True "dist"
@@ -21,9 +21,9 @@ run Travis = Just $ do
     rel <- findRelevant
     found <- findEntries
 
-    let more [] = more . list =<< wgetJSON ("https://api.travis-ci.org/repos/ndmitchell/" ++ name ++ "/builds")
+    let more [] = more . list =<< wgetJSON wait ("https://api.travis-ci.org/repos/ndmitchell/" ++ name ++ "/builds")
         more xs = let i = read (last xs ! "number") in if i == 1 then return xs else do
-                        new <- wgetJSON $ "https://api.travis-ci.org/repos/ndmitchell/" ++ name ++ "/builds?after_number=" ++ show i
+                        new <- wgetJSON wait $ "https://api.travis-ci.org/repos/ndmitchell/" ++ name ++ "/builds?after_number=" ++ show i
                         more $ xs ++ list new
     builds <- more []
     
@@ -32,13 +32,13 @@ run Travis = Just $ do
         let id = show (x ! "id" :: Int)
         let time = x ! "started_at"
         when (num `notElem` found && x ! "result" /= JSNull) $ do
-            build <- wgetJSON $ "https://api.travis-ci.org/builds/" ++ id
+            build <- wgetJSON wait $ "https://api.travis-ci.org/builds/" ++ id
             sleep 2
 
             let jobs = map (\x -> show (x ! "id" :: Int)) $ build ! "matrix"
             forM_ jobs $ \i -> do
                 putChar '.'
-                src <- wget $ "https://s3.amazonaws.com/archive.travis-ci.org/jobs/" ++ i ++ "/log.txt"
+                src <- wget wait $ "https://s3.amazonaws.com/archive.travis-ci.org/jobs/" ++ i ++ "/log.txt"
                 let want = [x | x <- lines $ reps '\r' '\n' src, any (`isPrefixOf` x) rel]
                 addEntry num time want
             when (null jobs) $ addEntry num time []
@@ -64,17 +64,18 @@ addEntry :: String -> String -> [String] -> IO ()
 addEntry num time xs = appendFile "dist/travis" $ unlines $ ("BUILD " ++ num ++ " " ++ time) : xs
 
 
-wget :: String -> IO String
-wget x = withTempFile $ \t -> do
+wget :: Double -> String -> IO String
+wget wait x = withTempFile $ \t -> do
     putStr $ "wget " ++ x ++ " ... "
     cmd $ "wget " ++ x ++ " -O" ++ t ++ " --no-check-certificate --quiet"
     res <- readFile' t
     putStrLn "done"
+    sleep wait
     return res
 
 
-wgetJSON :: String -> IO JSValue
-wgetJSON x = fmap (ok . decode) $ wget x
+wgetJSON :: Double -> String -> IO JSValue
+wgetJSON wait x = fmap (ok . decode) $ wget wait x
 
 ok (Ok x) = x
 ok (Error x) = error x
