@@ -14,7 +14,7 @@ data Arguments
     | Apply {patch :: FilePath}
     | Tag
  
-    | Travis
+    | Travis {wait :: Double}
  
     -- cabal stuff
     | Sdist
@@ -41,7 +41,7 @@ arguments = cmdArgsMode $ modes
           &= help "Create a cabal sdist with extra checks"
     ,Tag {} &= help "Tag the repo, after a release"
     ,Check
-    ,Travis
+    ,Travis {wait = 0 &= help "Time to wait after each wget request"}
     ,Test {install = False &= help "Install after building"}
     ]
     &= summary "Neil's utility tool"
