@@ -70,6 +70,22 @@ run Sdist{..} = Just $ do
     cmd "cabal sdist"
     putStrLn $ "Ready to release! (remember to neil tag after uploading)"
 
+run Docs = Just $ do
+    src <- readCabal
+    let [ver] = [trim $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
+    let [name] = [trim $ drop 5 x | x <- lines src, "name:" `isPrefixOf` x]
+    cmd $ "cabal haddock --hoogle --hyperlink-source " ++
+          "--html-location=http://hackage.haskell.org/package/" ++ name ++ "/docs " ++
+          "--contents-location='http://hackage.haskell.org/package/" ++ name
+    withTempDirectory $ \dir -> do
+        cmd $ "cp -R dist/doc/html/" ++ name ++ " \"" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs"
+        cmd $ "tar cvz -C " ++ dir ++ " --format=ustar -f " ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs.tar.gz " ++ name ++ "-" ++ ver ++ "-docs"
+        cmd $ "curl -X PUT -H \"Content-Type: application/x-tar\" " ++
+              "-H \"Content-Encoding: gzip\" " ++
+              "-u NeilMitchell " ++
+              "--data-binary \"@" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs.tar.gz\" " ++
+              "https://hackage.haskell.org/package/" ++ name ++ "-" ++ ver ++ "/docs"
+
 run _ = Nothing
 
 
