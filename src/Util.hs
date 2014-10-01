@@ -145,7 +145,7 @@ sleep x = threadDelay $ ceiling $ x * 1000000
 
 
 retry :: Int -> IO a -> IO a
-retry i x | i <= 0 = error "retry ran out of times"
+retry i x | i <= 0 = error "retry count must be 1 or more"
 retry 1 x = x
 retry i x = do
     res <- try x
