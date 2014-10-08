@@ -61,7 +61,6 @@ run Test{..} = Just $ do
         cmd "cabal test --show-details=always"
         when install $ do
             cmd "cabal install --force-reinstalls"
-            cmd "cabal install neil"
 
 run Check = Just cabalCheck
 
