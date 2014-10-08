@@ -87,6 +87,3 @@ ok (Error x) = error x
 
 list :: JSValue -> [JSValue]
 list (JSArray x) = x
-
-has :: String -> JSValue -> Bool
-has k (JSObject mp) = k `elem` map fst (fromJSObject mp)

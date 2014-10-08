@@ -48,5 +48,3 @@ checkRefs = concatMap f . Map.toList
             where
                 (a,b) = partition (\(Ref a b c) -> c) xs
                 err (Ref file line _) msg = [errorMsg file line msg ("{" ++ s ++ "}")]
-
-        g (Ref a b c) = a ++ "(" ++ show b ++ ")"

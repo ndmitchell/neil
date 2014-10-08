@@ -36,7 +36,7 @@ flushLeft [] = False
 
 
 classLeft (x:xs) | "class" `isPrefixOf` x = x : a ++ classLeft xs
-    where (a,b) = span (\x -> null x || isSpace (head x)) xs
+    where (a,_) = span (\x -> null x || isSpace (head x)) xs
 classLeft ((x:_):xs) | isSpace x = classLeft xs
 classLeft (x:xs) = x : classLeft xs
 classLeft [] = []

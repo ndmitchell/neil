@@ -54,7 +54,7 @@ comments :: String -> [String]
 comments = concatMap f . lines
     where
         f xs = [drop 2 b | not $ null b]
-            where (a,b) = breakStr "--" xs
+            where (_,b) = breakStr "--" xs
 
 
 spanExpr :: String -> (String, String)

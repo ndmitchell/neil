@@ -74,8 +74,8 @@ graphUrl dat = chartURL $
         newLineChart
     where
         -- calculate the bounding box
-        minX = let (a,b,c) = fst (head dat) in (a,b,1)
-        maxX = let (a,b,c) = fst (last dat) in incDate (a,b,31)
+        minX = let (a,b,_) = fst (head dat) in (a,b,1)
+        maxX = let (a,b,_) = fst (last dat) in incDate (a,b,31)
         allY = if length dat == 1 then replicate 2 $ snd $ head dat else map snd dat
         minY = (minimum allY `div` 1000) * 1000
         maxY = (maximum allY `div` 1000) * 1000 + 1000

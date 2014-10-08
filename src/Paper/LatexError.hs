@@ -21,8 +21,6 @@ latexError texFiles logFile messages = do
         mapM_ (f log) $ nub $ map (\(a,b,_) -> (a,b)) $ mapMaybe splitErrLine $ lines messages
         mapM_ checkFile texFiles
     where
-        rep from to x = if x == from then to else x
-
         f log (file,line) = do
                 mapM_ putStr $ take 1 [c | (a,b,c) <- log, a == file2, b == line]
                 showSection file line
