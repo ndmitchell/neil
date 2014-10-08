@@ -3,8 +3,8 @@
 module Git(run) where
 
 import Control.Monad
-import Data.List
-import System.Directory
+import Data.List.Extra
+import System.Directory.Extra
 import System.Exit
 import System.FilePath
 import Util
@@ -38,7 +38,7 @@ forEachRepo act = do
             cdir <- getCurrentDirectory
             act $ takeFileName cdir
         else
-            withDirectory x $ act x
+            withCurrentDirectory x $ act x
 
 
 ---------------------------------------------------------------------
@@ -59,7 +59,7 @@ run Whatsnew{..} = Just $ forEachRepo $ \name -> do
 
 run Tag = Just $ do
     src <- readCabal
-    let [ver] = [trim $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
+    let [ver] = [strip $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
     putStrLn $ "Confirm to tag the release with version " ++ ver ++ "? Type 'yes':"
     "yes" <- getLine
     cmd "git push"

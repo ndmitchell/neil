@@ -4,7 +4,7 @@ module Cabal(run, readCabal) where
 
 import Control.Monad.Extra
 import Data.Char
-import Data.List
+import Data.List.Extra
 import Data.Maybe
 import Data.Functor
 import System.Directory.Extra
@@ -33,12 +33,12 @@ cabalCheck = do
 
 -- | Run some commands in a temporary directory with the unpacked cabal
 withSDist :: IO a -> IO a
-withSDist run = withTempDirectory $ \tdir -> do
+withSDist run = withTempDir $ \tdir -> do
     cmd $ "cabal configure --builddir=" ++ tdir
     cmd $ "cabal sdist --builddir=" ++ tdir
     files <- getDirectoryContents tdir
     let tarball = head $ [x | x <- files, ".tar.gz" `isSuffixOf` x]
-    withDirectory tdir $ cmd $ "tar -xf " ++ tarball
+    withCurrentDirectory tdir $ cmd $ "tar -xf " ++ tarball
     lst <- getDirectoryContentsRecursive tdir
     let binary = [".png",".gz",""]
     bad <- flip filterM lst $ \file ->
@@ -46,7 +46,7 @@ withSDist run = withTempDirectory $ \tdir -> do
         fmap ('\r' `elem`) (readFileBinary' file)
     when (bad /= []) $ do
         error $ unlines $ "The following files have \\r characters in, Windows newlines?" : bad
-    withDirectory (tdir </> dropExtension (dropExtension $ takeFileName tarball)) run
+    withCurrentDirectory (tdir </> dropExtension (dropExtension $ takeFileName tarball)) run
 
 
 run :: Arguments -> Maybe (IO ())
@@ -85,12 +85,12 @@ run Sdist{..} = Just $ do
 
 run Docs = Just $ do
     src <- readCabal
-    let [ver] = [trim $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
-    let [name] = [trim $ drop 5 x | x <- lines src, "name:" `isPrefixOf` x]
+    let [ver] = [strip $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
+    let [name] = [strip $ drop 5 x | x <- lines src, "name:" `isPrefixOf` x]
     cmd $ "cabal haddock --hoogle --hyperlink-source " ++
           "--html-location=http://hackage.haskell.org/package/" ++ name ++ "/docs " ++
           "--contents-location='http://hackage.haskell.org/package/" ++ name
-    withTempDirectory $ \dir -> do
+    withTempDir $ \dir -> do
         cmd $ "cp -R dist/doc/html/" ++ name ++ " \"" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs"
         cmd $ "tar cvz -C " ++ dir ++ " --format=ustar -f " ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs.tar.gz " ++ name ++ "-" ++ ver ++ "-docs"
         cmd $ "curl -X PUT -H \"Content-Type: application/x-tar\" " ++
@@ -132,12 +132,12 @@ checkCabalFile = do
     project <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal 
     src <- fmap lines readCabal
     test <- testedWith
-    let grab tag = [trimLeft $ drop (length tag + 1) x | x <- relines src, (tag ++ ":") `isPrefixOf` x]
+    let grab tag = [stripStart $ drop (length tag + 1) x | x <- relines src, (tag ++ ":") `isPrefixOf` x]
     license <- readFile' $ concat $ grab "license-file"
     let bad =
             ["Incorrect declaration style: " ++ x
-                | (x,':':_) <- map (break (== ':') . trimLeft) src
-                , not $ any isSpace $ trim x, not $ "http" `isSuffixOf` x || "https" `isSuffixOf` x
+                | (x,':':_) <- map (break (== ':') . stripStart) src
+                , not $ any isSpace $ strip x, not $ "http" `isSuffixOf` x || "https" `isSuffixOf` x
                 , not $ all (\x -> isLower x || x == '-') x] ++
             ["2014 is not in the copyright year" | not $ "2014" `isInfixOf` concat (grab "copyright")] ++
             ["copyright string is not at the start of the license" | not $ concat (grab "copyright") `isInfixOf` concat (take 1 $ lines license)] ++
@@ -153,7 +153,7 @@ checkCabalFile = do
 
 relines :: [String] -> [String]
 relines (x:xs) | ":" `isSuffixOf` x = unwords (x:a) : relines b
-    where (a,b) = break (\x -> trimLeft x == x) xs
+    where (a,b) = break (\x -> stripStart x == x) xs
 relines (x:xs) = x : relines xs
 relines [] = []
 

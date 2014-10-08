@@ -1,14 +1,25 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Neil(
-    cmd, cmdCode, cmdOut, cmdCodeOutErr,
-    withTempFile, withTempDirectory,
-    duration, offsetTime, sleep,
-    retry,
+    neil,
+    module Util,
     module Control.Monad,
-    module Data.List
+    module Data.List,
+    module Data.Maybe,
+    module Extra
     ) where
 
 import Util
 import Control.Monad
 import Data.List
+import Data.Maybe
+import Extra
+
+
+neil :: IO () -> IO ()
+neil act = do
+    args <- getArgs
+    if "--go" `elem` args then
+        act
+     else
+        putStrLn "Script type checks successfully, pass --go to run it"
