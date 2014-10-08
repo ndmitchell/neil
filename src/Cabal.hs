@@ -61,8 +61,9 @@ run Test{..} = Just $ do
         cmd "cabal test --show-details=always"
         when install $ do
             cmd "cabal install --force-reinstalls"
-            withCurrentDirectory "neil" $ cmd "cabal install --flag=small"
-                -- in case installing this package breaks 'neil'
+    when install $
+        -- in case installing this package breaks 'neil'
+        withCurrentDirectory "neil" $ cmd "cabal install --flag=small"
 
 run Check = Just cabalCheck
 
