@@ -2,14 +2,15 @@
 
 module Cabal(run, readCabal) where
 
-import Control.Monad
+import Control.Monad.Extra
 import Data.Char
 import Data.List
 import Data.Maybe
 import Data.Functor
-import System.Directory
+import System.Directory.Extra
+import System.IO.Extra
 import System.FilePath
-import Util
+import Util hiding (readFile')
 import Arguments
 
 defAllow = ["7.0.4","7.2.2","7.4.2","7.6.3","7.8.2"]
@@ -34,6 +35,13 @@ withSDist run = withTempDirectory $ \tdir -> do
     files <- getDirectoryContents tdir
     let tarball = head $ [x | x <- files, ".tar.gz" `isSuffixOf` x]
     withDirectory tdir $ cmd $ "tar -xf " ++ tarball
+    lst <- getDirectoryContentsRecursive tdir
+    let binary = [".png",".gz",""]
+    bad <- flip filterM lst $ \file ->
+        return (takeExtension file `notElem` binary) &&^
+        fmap ('\r' `elem`) (readFileBinary' file)
+    when (bad /= []) $ do
+        error $ unlines $ "The following files have \\r characters in, Windows newlines?" : bad
     withDirectory (tdir </> dropExtension (dropExtension $ takeFileName tarball)) run
 
 

@@ -36,7 +36,7 @@ flag small
 
 executable neil
     hs-source-dirs:     src
-    build-depends:      base == 4.*, filepath, process, containers, cmdargs
+    build-depends:      base == 4.*, filepath, process, containers, cmdargs, extra
     if flag(small)
         cpp-options: -DSMALL
     else
