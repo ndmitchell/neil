@@ -23,7 +23,7 @@ source-repository head
 
 library
     hs-source-dirs:     src
-    build-depends:      base == 4.*, filepath, directory, time, process
+    build-depends:      base == 4.*, filepath, directory, time, process, extra
 
     exposed-modules:
         Neil
@@ -36,7 +36,7 @@ flag small
 
 executable neil
     hs-source-dirs:     src
-    build-depends:      base == 4.*, filepath, process, containers, cmdargs, extra
+    build-depends:      containers, cmdargs
     if flag(small)
         cpp-options: -DSMALL
     else
