@@ -23,16 +23,25 @@ source-repository head
 
 library
     hs-source-dirs:     src
-    build-depends:      base == 4.*, filepath, containers, directory, process, time
+    build-depends:      base == 4.*, filepath, directory, time, process
 
     exposed-modules:
         Neil
     other-modules:
         Util
 
+flag small
+    default: False
+    description: Minimise dependencies
+
 executable neil
     hs-source-dirs:     src
-    build-depends:      base == 4.*, filepath, containers, directory, process, old-time, json, cmdargs, GoogleChart
+    build-depends:      base == 4.*, filepath, process, containers, cmdargs
+    if flag(small)
+        cpp-options: -DSMALL
+    else
+        build-depends: json, GoogleChart
+
     main-is:            Main.hs
 
     other-modules:

@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 
 module Main(main) where
 
@@ -10,7 +11,9 @@ import System.IO
 import Arguments
 import Cabal
 import Git
+#ifndef SMALL
 import Travis
+#endif
 import qualified Paper.Main as Paper
 
 
@@ -22,5 +25,10 @@ main = do
         "paper":a -> withArgs a Paper.main
         _ -> do
             args <- cmdArgsRun arguments
-            fromMaybe (error $ "Don't know how to deal with argument: " ++ show args) $
-                msum [Git.run args, Cabal.run args, Travis.run args]
+            fromMaybe (error $ "Don't know how to deal with argument: " ++ show args) $ msum
+                [Git.run args
+                ,Cabal.run args
+#ifndef SMALL
+                ,Travis.run args
+#endif
+                ]

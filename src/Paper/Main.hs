@@ -1,4 +1,4 @@
-
+{-# LANGUAGE CPP #-}
 module Paper.Main(main) where
 
 import System.Directory
@@ -6,7 +6,9 @@ import System.Environment
 import System.FilePath
 
 import Paper.Util.FileData
+#ifndef SMALL
 import Paper.Graph
+#endif
 import Paper.Make
 import Paper.Talk
 import Paper.WordCount
@@ -61,18 +63,22 @@ wc f files = do
         putStrLn $ int count
         return (file,count)
     putStrLn $ shw "Total" ++ "  " ++ int (sum $ map snd res)
+#ifndef SMALL
     root <- settingsDir files
     graphLog (root </> "graph.txt") res
+#endif
 
 process :: String -> FileData -> IO ()
 process "wc" files = wc wordCountNorm files
 process "wcmin" files = wc wordCountMin files
 
+#ifndef SMALL
 process "graph" files = do
     root <- settingsDir files
     let res = root </> "graph.png"
     graphCreate (root </> "graph.txt") res (allFiles files)
     putStrLn $ "Written graph, " ++ res
+#endif
 
 process "make" files = do
     dat <- dataDir
