@@ -24,6 +24,7 @@ cabalCheck :: IO ()
 cabalCheck = do
     res <- cmdCode "cabal check"
     checkCabalFile
+    checkReadme
 
 -- | Run some commands in a temporary directory with the unpacked cabal
 withSDist :: IO a -> IO a
@@ -98,6 +99,20 @@ testedWith = do
     where
         f x | Just rest <- stripPrefix "GHC==" x = rest
             | otherwise = error $ "Invalid tested-with, " ++ x
+
+
+checkReadme :: IO ()
+checkReadme = do
+    project <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal
+    let want =
+            "[![Hackage version](https://img.shields.io/hackage/v/" ++ project ++ ".svg?style=flat)]" ++
+            "(http://hackage.haskell.org/package/" ++ project ++ ") " ++
+            "[![Build Status](http://img.shields.io/travis/ndmitchell/" ++ project ++ ".svg?style=flat)]" ++
+            "(https://travis-ci.org/ndmitchell/" ++ project ++ ")"
+    src <- readFile "README.md"
+    let line1 = head $ lines src ++ [""]
+    when (not $ want `isSuffixOf` line1) $
+        error $ "Expected first line of README.md to end with:\n" ++ want ++ "\nBut got:\n" ++ line1
 
 
 checkCabalFile :: IO ()
