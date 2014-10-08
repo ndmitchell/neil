@@ -55,6 +55,7 @@ run Test{..} = Just $ do
     withSDist $ do
         cmd "cabal install --only-dependencies"
         cmd $ "cabal configure --enable-tests --disable-library-profiling " ++
+              "--ghc-option=-fwarn-unused-binds --ghc-option=-fwarn-unused-imports " ++
               "--ghc-option=-Werror --ghc-option=-fno-warn-warnings-deprecations" -- CABAL BUG WORKAROUND :(
         cmd "cabal build"
         cmd "cabal test --show-details=always"
