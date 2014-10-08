@@ -7,5 +7,5 @@ git clone https://github.com/ndmitchell/neil
 (cd neil && (cabal install --flags=small || cabal install --flags=small || cabal install --flags=small))
 neil test --install
 if [ -e travis.hs ]; then
-	runhaskell travis.hs
+	runhaskell travis.hs --go
 fi

@@ -4,11 +4,9 @@ module Travis(run) where
 
 import Control.Monad
 import Data.Char
-import Data.List.Extra hiding (list)
+import Data.List
 import System.Directory
-import System.IO.Extra
 import System.FilePath
-import System.Time.Extra
 import Text.JSON
 import Arguments
 import Util
