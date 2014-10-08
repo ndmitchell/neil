@@ -26,6 +26,10 @@ cabalCheck = do
     res <- cmdCode "cabal check"
     checkCabalFile
     checkReadme
+    let require = ":set -fwarn-unused-binds -fwarn-unused-imports"
+    src <- readFile' ".ghci"
+    when (require `notElem` lines src) $
+        error $ "The .ghci file does not contain " ++ require
 
 -- | Run some commands in a temporary directory with the unpacked cabal
 withSDist :: IO a -> IO a
