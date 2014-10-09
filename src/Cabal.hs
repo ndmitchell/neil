@@ -59,11 +59,8 @@ run Test{..} = Just $ do
               "--ghc-option=-Werror --ghc-option=-fno-warn-warnings-deprecations" -- CABAL BUG WORKAROUND :(
         cmd "cabal build"
         cmd "cabal test --show-details=always"
-        when install $ do
+        when install $
             cmd "cabal install --force-reinstalls"
-    when install $
-        -- in case installing this package breaks 'neil'
-        withCurrentDirectory "neil" $ cmd "cabal install --flag=small"
 
 run Check = Just cabalCheck
 
