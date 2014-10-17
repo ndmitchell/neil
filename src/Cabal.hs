@@ -1,4 +1,4 @@
-{-# LANGUAGE RecordWildCards, PatternGuards #-}
+{-# LANGUAGE RecordWildCards, PatternGuards, ViewPatterns #-}
 
 module Cabal(run, readCabal) where
 
@@ -90,10 +90,15 @@ run Docs = Just $ do
     let [ver] = [strip $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
     let [name] = [strip $ drop 5 x | x <- lines src, "name:" `isPrefixOf` x]
     cmd $ "cabal haddock --hoogle --hyperlink-source " ++
-          "--html-location=http://hackage.haskell.org/package/" ++ name ++ "/docs " ++
-          "--contents-location='http://hackage.haskell.org/package/" ++ name
+          "--contents-location=/package/" ++ name
     withTempDir $ \dir -> do
         cmd $ "cp -R dist/doc/html/" ++ name ++ " \"" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs"
+        files <- getDirectoryContentsRecursive dir
+        forM_ files $ \file -> when (takeExtension file == ".html") $ do
+            src <- readFileBinary' $ dir </> file
+            src <- return $ filter (/= '\r') src -- filter out \r, due to CPP bugs
+            src <- return $ fixFileLinks $ fixHashT src
+            writeFileBinary (dir </> file) src
         cmd $ "tar cvz -C " ++ dir ++ " --format=ustar -f " ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs.tar.gz " ++ name ++ "-" ++ ver ++ "-docs"
         cmd $ "curl -X PUT -H \"Content-Type: application/x-tar\" " ++
               "-H \"Content-Encoding: gzip\" " ++
@@ -103,6 +108,20 @@ run Docs = Just $ do
 
 run _ = Nothing
 
+
+fixHashT :: String -> String
+fixHashT (stripPrefix ".html#t:" -> Just (x:xs)) | not $ isUpper x = ".html#v:" ++ fixHashT (x:xs)
+fixHashT (x:xs) = x : fixHashT xs
+fixHashT [] = []
+
+fixFileLinks :: String -> String
+fixFileLinks (stripPrefix "<a href=\"file://" -> Just xs)
+    | (a,'\"':b) <- break (== '\"') xs
+    , modu <- takeFileName a
+    , (pkg,_) <- breakEnd (== '-') $ takeFileName $ takeDirectory a
+    = "<a href=\"/package/" ++ pkg ++ "/docs/" ++ modu ++ "\"" ++ fixFileLinks b
+fixFileLinks (x:xs) = x : fixFileLinks xs
+fixFileLinks [] = []
 
 
 testedWith :: IO [String]
