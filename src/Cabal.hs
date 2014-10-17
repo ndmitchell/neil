@@ -118,8 +118,9 @@ fixFileLinks :: String -> String
 fixFileLinks (stripPrefix "<a href=\"file://" -> Just xs)
     | (a,'\"':b) <- break (== '\"') xs
     , modu <- takeFileName a
-    , (pkg,_) <- breakEnd (== '-') $ takeFileName $ takeDirectory a
+    , (pkg,_) <- breakEnd (== '-') $ takeFileName $ dropHTML $ takeDirectory a
     = "<a href=\"/package/" ++ pkg ++ "/docs/" ++ modu ++ "\"" ++ fixFileLinks b
+    where dropHTML x = if takeFileName x == "html" then takeDirectory x else x
 fixFileLinks (x:xs) = x : fixFileLinks xs
 fixFileLinks [] = []
 
