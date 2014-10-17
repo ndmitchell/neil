@@ -10,7 +10,7 @@ import Data.Functor
 import System.Directory.Extra
 import System.IO.Extra
 import System.FilePath
-import Util hiding (readFile')
+import Util
 import Arguments
 
 defAllow = ["7.0.4","7.2.2","7.4.2","7.6.3","7.8.2"]
