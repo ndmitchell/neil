@@ -85,7 +85,7 @@ run Sdist{..} = Just $ do
     cmd "cabal sdist"
     putStrLn $ "Ready to release! (remember to neil tag after uploading)"
 
-run Docs = Just $ do
+run Docs{..} = Just $ do
     src <- readCabal
     let [ver] = [strip $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
     let [name] = [strip $ drop 5 x | x <- lines src, "name:" `isPrefixOf` x]
@@ -102,7 +102,7 @@ run Docs = Just $ do
         cmd $ "tar cvz -C " ++ dir ++ " --format=ustar -f " ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs.tar.gz " ++ name ++ "-" ++ ver ++ "-docs"
         cmd $ "curl -X PUT -H \"Content-Type: application/x-tar\" " ++
               "-H \"Content-Encoding: gzip\" " ++
-              "-u NeilMitchell " ++
+              "-u " ++ username ++ " " ++
               "--data-binary \"@" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs.tar.gz\" " ++
               "https://hackage.haskell.org/package/" ++ name ++ "-" ++ ver ++ "/docs"
 
