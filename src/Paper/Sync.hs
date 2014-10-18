@@ -3,7 +3,7 @@ module Paper.Sync(sync) where
 
 import Control.Monad
 import Data.List
-import System.Cmd
+import System.Process
 import System.Directory
 import System.FilePath
 import Paper.Util.IO

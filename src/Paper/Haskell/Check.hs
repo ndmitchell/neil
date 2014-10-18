@@ -3,7 +3,7 @@ module Paper.Haskell.Check where
 
 import Paper.Haskell.Fragment
 import Paper.Haskell.Haskell.Provides
-import System.Cmd
+import System.Process
 import System.Exit
 import System.IO
 import Data.List

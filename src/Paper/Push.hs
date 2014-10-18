@@ -4,7 +4,7 @@ module Paper.Push(push) where
 import Control.Monad
 import Data.List
 import Data.Maybe
-import System.Cmd
+import System.Process
 import System.FilePath
 
 

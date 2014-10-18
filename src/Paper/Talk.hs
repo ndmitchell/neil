@@ -8,7 +8,7 @@ import Data.Maybe
 import Paper.Util.CmdNumber
 import Paper.Util.String
 import System.FilePath
-import System.Cmd
+import System.Process
 import System.Directory
 
 
