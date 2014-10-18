@@ -21,22 +21,14 @@ source-repository head
     type:     git
     location: https://github.com/ndmitchell/neil.git
 
-library
-    hs-source-dirs:     src
-    build-depends:      base == 4.*, filepath, directory, time, process, extra >= 0.3
-
-    exposed-modules:
-        Neil
-    other-modules:
-        Util
-
 flag small
     default: False
     description: Minimise dependencies
 
 executable neil
     hs-source-dirs:     src
-    build-depends:      containers, cmdargs
+    build-depends:      base == 4.*, filepath, directory, time, process, extra >= 0.3,
+                        containers, cmdargs
     if flag(small)
         cpp-options: -DSMALL
     else
