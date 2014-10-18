@@ -10,7 +10,7 @@ import Data.Functor
 import System.Directory.Extra
 import System.IO.Extra
 import System.FilePath
-import Util
+import System.Process.Extra
 import Arguments
 
 defAllow = ["7.0.4","7.2.2","7.4.2","7.6.3","7.8.2"]
@@ -23,7 +23,7 @@ defAllow = ["7.0.4","7.2.2","7.4.2","7.6.3","7.8.2"]
 -- | Check the .cabal file is well formed
 cabalCheck :: IO ()
 cabalCheck = do
-    res <- cmdCode "cabal check"
+    system_ "cabal check"
     checkCabalFile
     checkReadme
     let require = ":set -fwarn-unused-binds -fwarn-unused-imports"
@@ -34,11 +34,11 @@ cabalCheck = do
 -- | Run some commands in a temporary directory with the unpacked cabal
 withSDist :: IO a -> IO a
 withSDist run = withTempDir $ \tdir -> do
-    cmd $ "cabal configure --builddir=" ++ tdir
-    cmd $ "cabal sdist --builddir=" ++ tdir
+    system_ $ "cabal configure --builddir=" ++ tdir
+    system_ $ "cabal sdist --builddir=" ++ tdir
     files <- getDirectoryContents tdir
     let tarball = head $ [x | x <- files, ".tar.gz" `isSuffixOf` x]
-    withCurrentDirectory tdir $ cmd $ "tar -xf " ++ tarball
+    withCurrentDirectory tdir $ system_ $ "tar -xf " ++ tarball
     lst <- getDirectoryContentsRecursive tdir
     let binary = [".png",".gz",".bat",".zip",".gif",""]
     bad <- flip filterM lst $ \file ->
@@ -53,14 +53,14 @@ run :: Arguments -> Maybe (IO ())
 run Test{..} = Just $ do
     cabalCheck
     withSDist $ do
-        cmd "cabal install --only-dependencies"
-        cmd $ "cabal configure --enable-tests --disable-library-profiling " ++
+        system_ "cabal install --only-dependencies"
+        system_ $ "cabal configure --enable-tests --disable-library-profiling " ++
               "--ghc-option=-fwarn-unused-binds --ghc-option=-fwarn-unused-imports " ++
               "--ghc-option=-Werror --ghc-option=-fno-warn-warnings-deprecations" -- CABAL BUG WORKAROUND :(
-        cmd "cabal build"
-        cmd "cabal test --show-details=always"
+        system_ "cabal build"
+        system_ "cabal test --show-details=always"
         when install $
-            cmd "cabal install --force-reinstalls"
+            system_ "cabal install --force-reinstalls"
 
 run Check = Just cabalCheck
 
@@ -70,37 +70,37 @@ run Sdist{..} = Just $ do
     withSDist $ do
         forM_ (sort tested) $ \x -> do -- deliberately start with the oldest first
             putStrLn $ "Building with " ++ x
-            cmd "cabal clean"
-            cmd $ "cabal install --only-dependencies " ++
+            system_ "cabal clean"
+            system_ $ "cabal install --only-dependencies " ++
                   "--with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-haddock=c:\\ghc\\ghc-" ++ x ++ "\\bin\\haddock.exe " ++
                   "--with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe " ++
                   "--flags=testprog"
-            cmd $ "cabal configure --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
+            system_ $ "cabal configure --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
                   "--ghc-option=-Werror --ghc-option=-fno-warn-warnings-deprecations " ++ -- CABAL BUG WORKAROUND :(
                   "--with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-haddock=c:\\ghc\\ghc-" ++ x ++ "\\bin\\haddock.exe " ++
                   "--with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe " ++
                   "--flags=testprog"
-            cmd "cabal build"
-            cmd "cabal haddock --executables"
-    cmd "cabal sdist"
+            system_ "cabal build"
+            system_ "cabal haddock --executables"
+    system_ "cabal sdist"
     putStrLn $ "Ready to release! (remember to neil tag after uploading)"
 
 run Docs{..} = Just $ do
     src <- readCabal
     let [ver] = [trim $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
     let [name] = [trim $ drop 5 x | x <- lines src, "name:" `isPrefixOf` x]
-    cmd $ "cabal haddock --hoogle --hyperlink-source " ++
+    system_ $ "cabal haddock --hoogle --hyperlink-source " ++
           "--contents-location=/package/" ++ name
     withTempDir $ \dir -> do
-        cmd $ "cp -R dist/doc/html/" ++ name ++ " \"" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs"
+        system_ $ "cp -R dist/doc/html/" ++ name ++ " \"" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs"
         files <- getDirectoryContentsRecursive dir
         forM_ files $ \file -> when (takeExtension file == ".html") $ do
             src <- readFileBinary' $ dir </> file
             src <- return $ filter (/= '\r') src -- filter out \r, due to CPP bugs
             src <- return $ fixFileLinks $ fixHashT src
             writeFileBinary (dir </> file) src
-        cmd $ "tar cvz -C " ++ dir ++ " --format=ustar -f " ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs.tar.gz " ++ name ++ "-" ++ ver ++ "-docs"
-        cmd $ "curl -X PUT -H \"Content-Type: application/x-tar\" " ++
+        system_ $ "tar cvz -C " ++ dir ++ " --format=ustar -f " ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs.tar.gz " ++ name ++ "-" ++ ver ++ "-docs"
+        system_ $ "curl -X PUT -H \"Content-Type: application/x-tar\" " ++
               "-H \"Content-Encoding: gzip\" " ++
               "-u " ++ username ++ " " ++
               "--data-binary \"@" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs.tar.gz\" " ++

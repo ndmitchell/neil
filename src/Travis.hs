@@ -9,9 +9,9 @@ import System.Directory
 import System.IO.Extra
 import System.FilePath
 import System.Time.Extra
+import System.Process.Extra
 import Text.JSON
 import Arguments
-import Util
 
 
 run :: Arguments -> Maybe (IO ())
@@ -69,7 +69,7 @@ addEntry num time xs = appendFile "dist/travis" $ unlines $ ("BUILD " ++ num ++ 
 wget :: Double -> String -> IO String
 wget wait x = withTempFile $ \t -> do
     putStr $ "wget " ++ x ++ " ... "
-    cmd $ "wget " ++ x ++ " -O" ++ t ++ " --no-check-certificate --quiet"
+    system_ $ "wget " ++ x ++ " -O" ++ t ++ " --no-check-certificate --quiet"
     res <- readFile' t
     putStrLn "done"
     sleep wait
