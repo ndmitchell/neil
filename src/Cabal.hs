@@ -23,7 +23,8 @@ defAllow = ["7.0.4","7.2.2","7.4.2","7.6.3","7.8.2"]
 -- | Check the .cabal file is well formed
 cabalCheck :: IO ()
 cabalCheck = do
-    system_ "cabal check"
+    system "cabal check"
+        -- a lot of the warnings aren't real problems, just be aware of them
     checkCabalFile
     checkReadme
     let require = ":set -fwarn-unused-binds -fwarn-unused-imports"
