@@ -2,9 +2,9 @@
 module Paper.Ftp(ftp) where
 
 import Control.Monad
-import System.Cmd
 import System.Directory
 import System.FilePath
+import System.Process.Extra
 import System.IO
 import Paper.Util.IO
 
@@ -20,7 +20,7 @@ ftp darcs = do
     b <- doesFileExist (out <.> "send")
     when b $ removeFile (out <.> "send")
 
-    system $ "darcs send" ++
+    system_ $ "darcs send" ++
                  " --repodir=\"" ++ darcs ++ "\"" ++
                  " --output=\"" ++ (out <.> "send") ++ "\""
     b <- doesFileExist (out <.> "send")
@@ -36,7 +36,7 @@ ftp darcs = do
             ,"rename " ++ (name <.> "patch" <.> "send") ++ " " ++ (name <.> "patch")
             ,"get " ++ (name <.> "patch")
             ,"quit"]
-        system $ "ftp -s:" ++ ftpfile ++ " ftp.york.ac.uk > nul"
+        system_ $ "ftp -s:" ++ ftpfile ++ " ftp.york.ac.uk > nul"
         check out (out <.> "send")
         removeFile ftpfile
         removeFile out
