@@ -10,7 +10,8 @@ maintainer:         Neil Mitchell <ndmitchell@gmail.com>
 copyright:          Neil Mitchell 2010-2014
 synopsis:           General tools for Neil
 description:
-    General tools for Neil.
+    General tools for Neil. Typically, I don't bother releasing these tools, and just leave
+    them in the Git repo.
 homepage:           http://community.haskell.org/~ndm/
 bug-reports:        https://github.com/ndmitchell/neil/issues
 tested-with:        GHC==7.8.2, GHC==7.6.3, GHC==7.4.2, GHC==7.2.2
