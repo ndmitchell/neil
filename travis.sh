@@ -9,3 +9,4 @@ neil test --install
 if [ -e travis.hs ]; then
     runhaskell travis.hs
 fi
+git diff --exit-code # check regenerating doesn't change anything
