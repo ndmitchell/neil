@@ -41,7 +41,7 @@ run Travis{..} = Just $ do
             forM_ jobs $ \i -> do
                 putChar '.'
                 src <- wget wait $ "https://s3.amazonaws.com/archive.travis-ci.org/jobs/" ++ i ++ "/log.txt"
-                let want = [x | x <- lines $ reps '\r' '\n' src, any (`isPrefixOf` x) rel]
+                let want = [x | x <- lines $ replace "\r" "\n" src, any (`isPrefixOf` x) rel]
                 addEntry num time want
             when (null jobs) $ addEntry num time []
     putStrLn "\nDone!"

@@ -23,7 +23,7 @@ source-repository head
 
 library
     hs-source-dirs:     src
-    build-depends:      base == 4.*, filepath, directory, time, process, extra
+    build-depends:      base == 4.*, filepath, directory, time, process, extra >= 0.3
 
     exposed-modules:
         Neil

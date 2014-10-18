@@ -59,7 +59,7 @@ run Whatsnew{..} = Just $ forEachRepo $ \name -> do
 
 run Tag = Just $ do
     src <- readCabal
-    let [ver] = [strip $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
+    let [ver] = [trim $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
     putStrLn $ "Confirm to tag the release with version " ++ ver ++ "? Type 'yes':"
     "yes" <- getLine
     cmd "git push"

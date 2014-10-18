@@ -87,8 +87,8 @@ run Sdist{..} = Just $ do
 
 run Docs{..} = Just $ do
     src <- readCabal
-    let [ver] = [strip $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
-    let [name] = [strip $ drop 5 x | x <- lines src, "name:" `isPrefixOf` x]
+    let [ver] = [trim $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
+    let [name] = [trim $ drop 5 x | x <- lines src, "name:" `isPrefixOf` x]
     cmd $ "cabal haddock --hoogle --hyperlink-source " ++
           "--contents-location=/package/" ++ name
     withTempDir $ \dir -> do
@@ -154,12 +154,12 @@ checkCabalFile = do
     project <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal 
     src <- fmap lines readCabal
     test <- testedWith
-    let grab tag = [stripStart $ drop (length tag + 1) x | x <- relines src, (tag ++ ":") `isPrefixOf` x]
+    let grab tag = [trimStart $ drop (length tag + 1) x | x <- relines src, (tag ++ ":") `isPrefixOf` x]
     license <- readFile' $ concat $ grab "license-file"
     let bad =
             ["Incorrect declaration style: " ++ x
-                | (x,':':_) <- map (break (== ':') . stripStart) src
-                , not $ any isSpace $ strip x, not $ "http" `isSuffixOf` x || "https" `isSuffixOf` x
+                | (x,':':_) <- map (break (== ':') . trimStart) src
+                , not $ any isSpace $ trim x, not $ "http" `isSuffixOf` x || "https" `isSuffixOf` x
                 , not $ all (\x -> isLower x || x == '-') x] ++
             ["2014 is not in the copyright year" | not $ "2014" `isInfixOf` concat (grab "copyright")] ++
             ["copyright string is not at the start of the license" | not $ concat (grab "copyright") `isInfixOf` concat (take 1 $ lines license)] ++
@@ -175,7 +175,7 @@ checkCabalFile = do
 
 relines :: [String] -> [String]
 relines (x:xs) | ":" `isSuffixOf` x = unwords (x:a) : relines b
-    where (a,b) = break (\x -> stripStart x == x) xs
+    where (a,b) = break (\x -> trimStart x == x) xs
 relines (x:xs) = x : relines xs
 relines [] = []
 
