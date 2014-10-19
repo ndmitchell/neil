@@ -93,7 +93,7 @@ run Docs{..} = Just $ do
     system_ $ "cabal haddock --hoogle --hyperlink-source " ++
           "--contents-location=/package/" ++ name
     withTempDir $ \dir -> do
-        system_ $ "cp -R dist/doc/html/" ++ name ++ " \"" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs"
+        system_ $ "cp -R dist/doc/html/" ++ name ++ " \"" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs\""
         files <- getDirectoryContentsRecursive dir
         forM_ files $ \file -> when (takeExtension file == ".html") $ do
             src <- readFileBinary' $ dir </> file
