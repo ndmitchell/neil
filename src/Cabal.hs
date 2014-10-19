@@ -88,8 +88,8 @@ run Sdist{..} = Just $ do
 
 run Docs{..} = Just $ do
     src <- readCabal
-    let [ver] = [trim $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
-    let [name] = [trim $ drop 5 x | x <- lines src, "name:" `isPrefixOf` x]
+    let ver = extractCabal "version" src
+    let name = extractCabal "name" src
     system_ $ "cabal haddock --hoogle --hyperlink-source " ++
           "--contents-location=/package/" ++ name
     withTempDir $ \dir -> do
@@ -186,6 +186,13 @@ readCabal = do
     case file of
         Nothing -> return []
         Just file -> readFile' file
+
+extractCabal :: String -> String -> String
+extractCabal find = f . words . replace ":" " : "
+    where
+        f (name:":":val:_) | lower find == lower name = val
+        f (x:xs) = f xs
+        f [] = error "Failed to find the Cabal key " ++ find
 
 
 findCabal :: IO (Maybe FilePath)
