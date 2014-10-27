@@ -7,6 +7,7 @@ cabal update
 cabal install --only-dependencies --enable-tests
 git clone https://github.com/ndmitchell/neil
 (cd neil && cabal install --flags=small --verbose)
+export PATH=~/.cabal/bin:$PATH
 neil test --install --verbose
 if [ -e travis.hs ]; then
     runhaskell travis.hs
