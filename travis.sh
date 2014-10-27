@@ -7,7 +7,7 @@ cabal update
 cabal install --only-dependencies --enable-tests
 git clone https://github.com/ndmitchell/neil
 (cd neil && cabal install --flags=small --verbose)
-export PATH=~/.cabal/bin:$PATH
+export PATH=/home/travis/.cabal/bin:$PATH
 echo $PATH
 ~/.cabal/bin/neil --help
 neil --help
