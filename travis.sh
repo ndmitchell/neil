@@ -3,10 +3,10 @@
 # It bootstraps to grab the 'neil' tool and run 'neil test'
 set -e # exit on errors
 set -x # echo each line
-travis_retry cabal update
-travis_retry cabal install --only-dependencies --enable-tests
+cabal update
+cabal install --only-dependencies --enable-tests
 git clone https://github.com/ndmitchell/neil
-(cd neil && travis_retry cabal install --flags=small)
+(cd neil && cabal install --flags=small)
 neil test --install --verbose
 if [ -e travis.hs ]; then
     runhaskell travis.hs
