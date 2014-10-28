@@ -7,7 +7,7 @@ set -x # echo each line
 
 retry(){ "$@" || "$@" || "$@"; }
 
-if [ "$GHCVER" -ne "" ]; then
+if [[ ! -z "$GHCVER" ]]; then
     retry sudo add-apt-repository -y ppa:hvr/ghc
     retry sudo apt-get update
     retry sudo apt-get install cabal-install-1.18 ghc-$GHCVER
