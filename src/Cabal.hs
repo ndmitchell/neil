@@ -23,8 +23,15 @@ defAllow = ["7.0.4","7.2.2","7.4.2","7.6.3","7.8.2"]
 -- | Check the .cabal file is well formed
 cabalCheck :: IO ()
 cabalCheck = do
-    system "cabal check"
-        -- a lot of the warnings aren't real problems, just be aware of them
+    -- a lot of the warnings aren't real problems, so whitelist some
+    (_, res) <- systemOutput "cabal check"
+    let allowed = ["No errors or warnings could be found in the package."
+                  ,"These warnings may cause trouble when distributing the package:"
+                  ,"* 'ghc-options: -main-is' is not portable."
+                  ,""]
+    let bad = lines res \\ allowed
+    when (bad /= []) $ error $ unlines $ "Cabal check gave bad warnings:" : map show bad
+
     checkCabalFile
     checkReadme
     let require = ":set -fwarn-unused-binds -fwarn-unused-imports"
