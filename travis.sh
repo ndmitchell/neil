@@ -5,7 +5,7 @@ set -e # exit on errors
 set -u # warn about unitialised variables
 set -x # echo each line
 
-function retry () { "$@" || "$@" || "$@"; }
+retry(){ "$@" || "$@" || "$@"; }
 
 retry cabal update
 retry cabal install --only-dependencies --enable-tests
