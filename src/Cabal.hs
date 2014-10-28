@@ -40,7 +40,7 @@ withSDist run = withTempDir $ \tdir -> do
     files <- getDirectoryContents tdir
     let tarball = head $ [x | x <- files, ".tar.gz" `isSuffixOf` x]
     withCurrentDirectory tdir $ system_ $ "tar -xf " ++ tarball
-    lst <- getDirectoryContentsRecursive tdir
+    lst <- listFiles tdir
     let binary = [".png",".gz",".bat",".zip",".gif",""]
     bad <- flip filterM lst $ \file ->
         return (takeExtension file `notElem` binary) &&^
@@ -94,7 +94,7 @@ run Docs{..} = Just $ do
           "--contents-location=/package/" ++ name
     withTempDir $ \dir -> do
         system_ $ "cp -R dist/doc/html/" ++ name ++ " \"" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs\""
-        files <- getDirectoryContentsRecursive dir
+        files <- listFiles dir
         forM_ files $ \file -> when (takeExtension file == ".html") $ do
             src <- readFileBinary' $ dir </> file
             src <- return $ filter (/= '\r') src -- filter out \r, due to CPP bugs
