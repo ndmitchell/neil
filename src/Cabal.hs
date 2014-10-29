@@ -149,8 +149,8 @@ checkReadme = do
     let want =
             "[![Hackage version](https://img.shields.io/hackage/v/" ++ project ++ ".svg?style=flat)]" ++
             "(http://hackage.haskell.org/package/" ++ project ++ ") " ++
-            "[![Build Status](http://img.shields.io/travis/ndmitchell/" ++ project ++ ".svg?style=flat)]" ++
-            "(https://travis-ci.org/ndmitchell/" ++ project ++ ")"
+            "[![Build Status](http://img.shields.io/travis/" ++ qualify project ++ ".svg?style=flat)]" ++
+            "(https://travis-ci.org/" ++ qualify project ++ ")"
     src <- readFile "README.md"
     let line1 = head $ lines src ++ [""]
     when (not $ want `isSuffixOf` line1) $
@@ -172,14 +172,18 @@ checkCabalFile = do
             ["2014 is not in the copyright year" | not $ "2014" `isInfixOf` concat (grab "copyright")] ++
             ["copyright string is not at the start of the license" | not $ concat (grab "copyright") `isInfixOf` concat (take 1 $ lines license)] ++
             ["No correct source-repository link"
-                | let want = "source-repository head type: git location: https://github.com/ndmitchell/" ++ project ++ ".git"
+                | let want = "source-repository head type: git location: https://github.com/" ++ qualify project ++ ".git"
                 , not $ want `isInfixOf` unwords (words $ unlines src)] ++
-            ["No bug-reports link" | grab "bug-reports" /= ["https://github.com/ndmitchell/" ++ project ++ "/issues"]] ++
+            ["No bug-reports link" | grab "bug-reports" /= ["https://github.com/" ++ qualify project ++ "/issues"]] ++
             ["Incorrect license " | grab "license" `notElem` [["BSD3"],["MIT"]]] ++
             ["Invalid tested-with: " ++ show test | length test < 1 || not (null $ test \\ defAllow) || test /= reverse (sort test) || not (test `isPrefixOf` reverse defAllow)] ++
             ["Bad stabilty, should be missing" | grab "stability" /= []] ++
             ["Missing CHANGES.txt in extra-source-files" | ["CHANGES.txt","changelog.md"] `disjoint` concatMap words (grab "extra-source-files")]
     unless (null bad) $ error $ unlines bad
+
+qualify :: String -> String
+qualify "filepath" = "haskell/filepath"
+qualify x = "ndmitchell/filepath"
 
 relines :: [String] -> [String]
 relines (x:xs) | ":" `isSuffixOf` x = unwords (x:a) : relines b
