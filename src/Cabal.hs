@@ -183,7 +183,7 @@ checkCabalFile = do
 
 qualify :: String -> String
 qualify "filepath" = "haskell/filepath"
-qualify x = "ndmitchell/filepath"
+qualify x = "ndmitchell/" ++ x
 
 relines :: [String] -> [String]
 relines (x:xs) | ":" `isSuffixOf` x = unwords (x:a) : relines b
