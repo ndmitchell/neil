@@ -178,7 +178,7 @@ checkCabalFile = do
             ["Incorrect license " | grab "license" `notElem` [["BSD3"],["MIT"]]] ++
             ["Invalid tested-with: " ++ show test | length test < 1 || not (null $ test \\ defAllow) || test /= reverse (sort test) || not (test `isPrefixOf` reverse defAllow)] ++
             ["Bad stabilty, should be missing" | grab "stability" /= []] ++
-            ["Missing CHANGES.txt in extra-source-files" | "CHANGES.txt" `notElem` concatMap words (grab "extra-source-files")]
+            ["Missing CHANGES.txt in extra-source-files" | ["CHANGES.txt","changelog.md"] `disjoint` concatMap words (grab "extra-source-files")]
     unless (null bad) $ error $ unlines bad
 
 relines :: [String] -> [String]
