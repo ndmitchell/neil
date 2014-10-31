@@ -101,7 +101,7 @@ run Docs{..} = Just $ do
           "--contents-location=/package/" ++ name
     withTempDir $ \dir -> do
         system_ $ "cp -R dist/doc/html/" ++ name ++ " \"" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs\""
-        files <- listFiles dir
+        files <- listFilesRecursive dir
         forM_ files $ \file -> when (takeExtension file == ".html") $ do
             src <- readFileBinary' $ dir </> file
             src <- return $ filter (/= '\r') src -- filter out \r, due to CPP bugs
