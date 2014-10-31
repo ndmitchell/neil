@@ -47,7 +47,7 @@ withSDist run = withTempDir $ \tdir -> do
     files <- getDirectoryContents tdir
     let tarball = head $ [x | x <- files, ".tar.gz" `isSuffixOf` x]
     withCurrentDirectory tdir $ system_ $ "tar -xf " ++ tarball
-    lst <- listFiles tdir
+    lst <- listFilesRecursive tdir
     let binary = [".png",".gz",".bat",".zip",".gif",""]
     bad <- flip filterM lst $ \file ->
         return (takeExtension file `notElem` binary) &&^
