@@ -13,6 +13,7 @@ if [ "$GHCVER" != "" ]; then
     export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/1.18/bin:/opt/happy/1.19.4/bin:/opt/alex/3.1.3/bin:/home/travis/.cabal/bin:$PATH
 fi
 
+echo recache with sudo
 sudo ghc-pkg recache
 sudo ghc-pkg expose binary || true # on GHC 7.2 it is installed, but not exposed
 retry cabal update
