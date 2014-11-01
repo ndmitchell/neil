@@ -14,8 +14,8 @@ if [ "$GHCVER" != "" ]; then
 fi
 
 retry cabal update
-ghc-pkg recache
-ghc-pkg expose binary || true # on GHC 7.2 it is installed, but not exposed
+sudo ghc-pkg recache
+sudo ghc-pkg expose binary || true # on GHC 7.2 it is installed, but not exposed
 retry cabal install --only-dependencies --enable-tests
 retry git clone https://github.com/ndmitchell/neil
 (cd neil && retry cabal install --flags=small)
