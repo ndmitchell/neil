@@ -30,7 +30,10 @@ executable neil
     hs-source-dirs:     src
     build-depends:      base == 4.*, filepath, directory, time, process, extra >= 0.5,
                         containers, cmdargs
-    build-depends: GoogleChart, old-time, text, array, bytestring, pretty, parsec, syb, mtl
+    if flag(small)
+        cpp-options: -DSMALL
+    else
+        build-depends: GoogleChart, old-time, json
 
     main-is:            Main.hs
 
@@ -67,11 +70,3 @@ executable neil
         Cabal
         Git
         Travis
-        Text.JSON
-        Text.JSON.Generic
-        Text.JSON.Parsec
-        Text.JSON.Pretty
-        Text.JSON.ReadP
-        Text.JSON.String
-        Text.JSON.Types
-
