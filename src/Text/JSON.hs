@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fno-warn-tabs #-}
 {-# LANGUAGE CPP, TypeSynonymInstances, FlexibleInstances #-}
 --------------------------------------------------------------------
 -- |
