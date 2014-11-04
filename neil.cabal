@@ -70,3 +70,11 @@ executable neil
         Cabal
         Git
         Travis
+        Text.JSON
+        Text.JSON.Generic
+        Text.JSON.Parsec
+        Text.JSON.Pretty
+        Text.JSON.ReadP
+        Text.JSON.String
+        Text.JSON.Types
+
