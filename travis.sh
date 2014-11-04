@@ -7,7 +7,7 @@ set -x # echo each line
 retry(){ "$@" || "$@" || "$@"; }
 
 if [ "$GHCVER" != "" ]; then
-    if [ "$GHCVER" == "head" ]; then
+    if [ "$GHCVER" = "head" ]; then
         CABALVER=head
     else
         CABALVER=1.18
