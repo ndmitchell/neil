@@ -2,6 +2,14 @@
 
 module Main(main) where
 
+import Text.JSON()
+import Text.JSON.Generic()
+import Text.JSON.Parsec()
+import Text.JSON.Pretty()
+import Text.JSON.ReadP()
+import Text.JSON.String()
+import Text.JSON.Types()
+
 import Control.Monad
 import Data.Maybe
 import System.Console.CmdArgs
