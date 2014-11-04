@@ -33,7 +33,7 @@ executable neil
     if flag(small)
         cpp-options: -DSMALL
     else
-        build-depends: json, GoogleChart, old-time
+        build-depends: GoogleChart, old-time, text, array, bytestring
 
     main-is:            Main.hs
 
