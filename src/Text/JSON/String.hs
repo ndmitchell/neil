@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fno-warn-tabs #-}
 --------------------------------------------------------------------
 -- |
 -- Module    : Text.JSON.String
@@ -175,12 +176,12 @@ readJSRational = do
        '0' -> frac 0 cs
        _ 
         | not (isDigit c) -> fail $ "Unable to parse JSON Rational: " ++ context cs
-        | otherwise -> readDigits (digitToIntI c) cs
+	| otherwise -> readDigits (digitToIntI c) cs
 
    readDigits acc [] = frac (fromInteger acc) []
    readDigits acc (x:xs)
     | isDigit x = let acc' = 10*acc + digitToIntI x in 
-                      acc' `seq` readDigits acc' xs
+	          acc' `seq` readDigits acc' xs
     | otherwise = frac (fromInteger acc) (x:xs)
 
    frac n ('.' : ds) = 
