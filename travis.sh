@@ -7,10 +7,15 @@ set -x # echo each line
 retry(){ "$@" || "$@" || "$@"; }
 
 if [ "$GHCVER" != "" ]; then
+    if [ "$GHCVER" == "head" ]; then
+        local CABALVER=head
+    else
+        local CABALVER=1.18
+    fi
     retry sudo add-apt-repository -y ppa:hvr/ghc
     retry sudo apt-get update
-    retry sudo apt-get install ghc-$GHCVER cabal-install-1.18 happy-1.19.4 alex-3.1.3
-    export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/1.18/bin:/opt/happy/1.19.4/bin:/opt/alex/3.1.3/bin:/home/travis/.cabal/bin:$PATH
+    retry sudo apt-get install ghc-$GHCVER cabal-install-$CABALVER happy-1.19.4 alex-3.1.3
+    export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/happy/1.19.4/bin:/opt/alex/3.1.3/bin:/home/travis/.cabal/bin:$PATH
     sudo /opt/ghc/$GHCVER/bin/ghc-pkg expose binary # on GHC 7.2 it is installed, but not exposed
 fi
 
