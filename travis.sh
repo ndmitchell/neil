@@ -23,11 +23,13 @@ retry cabal update
 retry cabal install --only-dependencies --enable-tests
 retry git clone https://github.com/ndmitchell/neil
 (cd neil && retry cabal install --flags=small)
-neil test --install
-if [ -e travis.sh ] && [ ! -e neil.cabal ]; then
-    bash travis.sh
-fi
 if [ -e travis.hs ]; then
-    runhaskell travis.hs
+    # ensure that reinstalling this package won't break the test script
+    mkdir travis
+    ghc --make travis.hs -outputdir travis -o travis/travis
+fi
+neil test --install
+if [ -e travis.hs ]; then
+    travis/travis
 fi
 git diff --exit-code # check regenerating doesn't change anything
