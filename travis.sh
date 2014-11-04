@@ -24,6 +24,9 @@ retry cabal install --only-dependencies --enable-tests
 retry git clone https://github.com/ndmitchell/neil
 (cd neil && retry cabal install --flags=small)
 neil test --install
+if [ -e travis.sh ] && [ ! -e neil.cabal ]; then
+    bash travis.sh
+fi
 if [ -e travis.hs ]; then
     runhaskell travis.hs
 fi
