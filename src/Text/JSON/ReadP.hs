@@ -31,7 +31,7 @@ import Data.Char
 import Numeric
 
 token            :: ReadP a -> ReadP a
-token p           = skipSpaces *> p
+token p           = skipSpaces **> p
 
 p_value          :: ReadP JSValue
 p_value           =  (JSNull      <$  p_null)
@@ -67,10 +67,10 @@ p_string          = between (token (char '"')) (char '"') (many p_char)
                  <|> ('\n'  <$ char 'n')
                  <|> ('\r'  <$ char 'r')
                  <|> ('\t'  <$ char 't')
-                 <|> (char 'u' *> p_uni)
+                 <|> (char 'u' **> p_uni)
 
         p_uni     = check =<< count 4 (satisfy isHexDigit)
-          where check x | code <= max_char  = pure (toEnum code)
+          where check x | code <= max_char  = pure2 (toEnum code)
                         | otherwise         = empty
                   where code      = fst $ head $ readHex x
                         max_char  = fromEnum (maxBound :: Char)
@@ -78,7 +78,7 @@ p_string          = between (token (char '"')) (char '"') (many p_char)
 p_object         :: ReadP [(String,JSValue)]
 p_object          = between (token (char '{')) (token (char '}'))
                   $ p_field `sepBy` token (char ',')
-  where p_field   = (,) <$> (p_string <* token (char ':')) <*> p_value
+  where p_field   = (,) <$> (p_string <** token (char ':')) <**> p_value
 
 p_number         :: ReadP Rational
 p_number          = readS_to_P (readSigned readFloat)
@@ -92,17 +92,17 @@ p_js_object       = toJSObject <$> p_object
 --------------------------------------------------------------------------------
 -- XXX: Because ReadP is not Applicative yet...
 
-pure   :: a -> ReadP a
-pure    = return
+pure2   :: a -> ReadP a
+pure2    = return
 
-(<*>)  :: ReadP (a -> b) -> ReadP a -> ReadP b
-(<*>)   = ap
+(<**>)  :: ReadP (a -> b) -> ReadP a -> ReadP b
+(<**>)   = ap
 
-(*>)   :: ReadP a -> ReadP b -> ReadP b
-(*>)    = (>>)
+(**>)   :: ReadP a -> ReadP b -> ReadP b
+(**>)    = (>>)
 
-(<*)   :: ReadP a -> ReadP b -> ReadP a
-m <* n  = do x <- m; _ <- n; return x
+(<**)   :: ReadP a -> ReadP b -> ReadP a
+m <** n  = do x <- m; _ <- n; return x
 
 empty  :: ReadP a
 empty   = pfail
