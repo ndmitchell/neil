@@ -113,7 +113,7 @@ run Docs{..} = Just $ do
               "-H \"Content-Encoding: gzip\" " ++
               "-u " ++ username ++ " " ++
               "--data-binary \"@" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs.tar.gz\" " ++
-              "https://hackage.haskell.org/package/" ++ name ++ "-" ++ ver ++ "/docs"
+              host ++ "/package/" ++ name ++ "-" ++ ver ++ "/docs"
 
 run _ = Nothing
 
