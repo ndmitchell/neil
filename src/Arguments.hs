@@ -13,7 +13,7 @@ data Arguments
     | Send {repo :: FilePath, patch :: FilePath}
     | Apply {patch :: FilePath}
     | Tag
-    | Docs {username :: String}
+    | Docs {username :: String, host :: String}
 
     | Travis {wait :: Double}
  
@@ -42,7 +42,7 @@ arguments = cmdArgsMode $ modes
           &= help "Create a cabal sdist with extra checks"
     ,Tag {} &= help "Tag the repo, after a release"
     ,Check
-    ,Docs {username = "NeilMitchell"}
+    ,Docs {username = "NeilMitchell", host = "https://hackage.haskell.org"}
     ,Travis {wait = 0 &= help "Time to wait after each wget request"}
     ,Test {install = False &= help "Install after building"}
     ]
