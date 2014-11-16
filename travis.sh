@@ -20,7 +20,10 @@ if [ "$GHCVER" != "" ]; then
 fi
 
 retry cabal update
-retry cabal install --only-dependencies --enable-tests
+retry cabal install --only-dependencies --enable-tests || FAIL=1
+if [ "$GHCVER" = "head" ] && [ "$FAIL" = "1" ]; then
+    exit # not good, but not my fault
+fi
 retry git clone https://github.com/ndmitchell/neil
 (cd neil && retry cabal install --flags=small)
 if [ -e travis.hs ]; then
