@@ -34,10 +34,11 @@ cabalCheck = do
 
     checkCabalFile
     checkReadme
-    let require = ":set -fwarn-unused-binds -fwarn-unused-imports"
     src <- readFile' ".ghci"
-    when (require `notElem` lines src) $
-        error $ "The .ghci file does not contain " ++ require
+    let require = words "-fwarn-unused-binds -fwarn-unused-imports"
+    let missing = require \\ words src
+    when (missing /= []) $
+        error $ "The .ghci file does not contain " ++ unwords missing
 
 -- | Run some commands in a temporary directory with the unpacked cabal
 withSDist :: IO a -> IO a
