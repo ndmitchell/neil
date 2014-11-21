@@ -54,15 +54,11 @@ checkTravis = do
             ["env:"] ++
             [" - GHCVER=" ++ t | t <- reverse tests] ++
             [" - GHCVER=head"
-            ,""
             ,"script:"
             ," - wget https://raw.github.com/ndmitchell/neil/master/travis.sh -O - --no-check-certificate --quiet | sh"
             ]
     src <- readFile' ".travis.yml"
-    let (got,ignore) = partition (`elem` require) $ map (takeWhile (/= '#')) $ lines src
-    let bad = filter (" - GHCVER=" `isPrefixOf`) ignore
-    when (bad /= []) $
-        error $ unlines $ "Got a bad version not on the tested-with:" : bad
+    let got = filter (not . null) $ map (trimEnd . takeWhile (/= '#')) $ lines src
     when (got /= require) $
         error $ unlines $
             [".travis.yml file mismatch","Wanted:"] ++ require ++
