@@ -34,6 +34,10 @@ cabalCheck = do
 
     checkCabalFile
     checkReadme
+    checkGhci
+
+checkGhci :: IO ()
+checkGhci = do
     src <- readFile' ".ghci"
     let require = words "-fwarn-unused-binds -fwarn-unused-imports"
     let missing = require \\ words src
