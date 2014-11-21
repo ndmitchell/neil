@@ -150,8 +150,8 @@ checkReadme = do
     project <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal
     let want =
             "[![Hackage version](https://img.shields.io/hackage/v/" ++ project ++ ".svg?style=flat)]" ++
-            "(http://hackage.haskell.org/package/" ++ project ++ ") " ++
-            "[![Build Status](http://img.shields.io/travis/" ++ qualify project ++ ".svg?style=flat)]" ++
+            "(https://hackage.haskell.org/package/" ++ project ++ ") " ++
+            "[![Build Status](https://img.shields.io/travis/" ++ qualify project ++ ".svg?style=flat)]" ++
             "(https://travis-ci.org/" ++ qualify project ++ ")"
     src <- readFile "README.md"
     let line1 = head $ lines src ++ [""]
