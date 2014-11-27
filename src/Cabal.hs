@@ -99,7 +99,7 @@ run Test{..} = Just $ do
 
 run Check = Just cabalCheck
 
-run Sdist{..} = Just $ do
+run Sdist = Just $ do
     cabalCheck
     tested <- testedWith
     withSDist $ do
