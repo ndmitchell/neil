@@ -93,7 +93,7 @@ run Test{..} = Just $ do
               "--ghc-option=-fwarn-tabs " ++
               "--ghc-option=-Werror"
         system_ "cabal build"
-        system_ "cabal test --show-details=always"
+        system_ "cabal test --show-details=streaming"
         when install $
             system_ "cabal install --force-reinstalls"
 
