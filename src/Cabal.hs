@@ -204,10 +204,14 @@ checkCabalFile = do
                 , not $ want `isInfixOf` unwords (words $ unlines src)] ++
             ["No bug-reports link" | grab "bug-reports" /= ["https://github.com/" ++ qualify project ++ "/issues"]] ++
             ["Incorrect license " | grab "license" `notElem` [["BSD3"],["MIT"],["GPL"]]] ++
-            ["Invalid tested-with: " ++ show test | length test < 1 || not (null $ test \\ defAllow) || not (test `isPrefixOf` reverse defAllow)] ++
+            ["Invalid tested-with: " ++ show test | not $ validTests test] ++
             ["Bad stabilty, should be missing" | grab "stability" /= []] ++
             ["Missing CHANGES.txt in extra-source-files" | ["CHANGES.txt","changelog.md"] `disjoint` concatMap words (grab "extra-source-files")]
     unless (null bad) $ error $ unlines bad
+
+validTests :: [String] -> Bool
+validTests xs = length xs > 1 &&
+    ((xs `isPrefixOf` reverse defAllow) || (xs `isPrefixOf` tail (reverse defAllow)))
 
 qualify :: String -> String
 qualify "filepath" = "haskell/filepath"
