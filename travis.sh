@@ -10,7 +10,7 @@ if [ "$GHCVER" != "" ]; then
     if [ "$GHCVER" = "head" ]; then
         CABALVER=head
     else
-        CABALVER=1.18
+        CABALVER=1.22
     fi
     retry sudo add-apt-repository -y ppa:hvr/ghc
     retry sudo apt-get update
