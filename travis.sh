@@ -9,8 +9,10 @@ retry(){ "$@" || "$@" || "$@"; }
 if [ "$GHCVER" != "" ]; then
     if [ "$GHCVER" = "head" ]; then
         CABALVER=head
-    else
+    elif [ "$GHCVER" = "7.10.1" ]; then
         CABALVER=1.22
+    else
+        CABALVER=1.18
     fi
     retry sudo add-apt-repository -y ppa:hvr/ghc
     retry sudo apt-get update
