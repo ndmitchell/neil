@@ -20,7 +20,7 @@ data Arguments
     -- cabal stuff
     | Sdist
     | Check
-    | Test {install :: Bool}
+    | Test {install :: Bool, no_warnings :: Bool}
       deriving (Data,Typeable,Show)
 
 arguments = cmdArgsMode $ modes

@@ -91,7 +91,7 @@ run Test{..} = Just $ do
         system_ $ "cabal configure --enable-tests --disable-library-profiling " ++
               "--ghc-option=-fwarn-unused-binds --ghc-option=-fwarn-unused-imports " ++
               "--ghc-option=-fwarn-tabs " ++
-              "--ghc-option=-Werror"
+              (if no_warnings then "" else "--ghc-option=-Werror")
         system_ "cabal build"
         system_ "cabal test --show-details=always"
         when install $
