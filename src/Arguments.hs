@@ -43,6 +43,6 @@ arguments = cmdArgsMode $ modes
     ,Check
     ,Docs {username = "NeilMitchell", host = "https://hackage.haskell.org"}
     ,Travis {wait = 0 &= help "Time to wait after each wget request"}
-    ,Test {install = False &= help "Install after building"}
+    ,Test {install = False &= help "Install after building", no_warnings = False}
     ]
     &= summary "Neil's utility tool"
