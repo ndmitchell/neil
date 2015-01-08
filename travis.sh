@@ -34,7 +34,9 @@ if [ -e travis.hs ]; then
     mkdir travis
     ghc --make travis.hs -outputdir travis -o travis/travis
 fi
-neil test --install
+FLAGS=
+if [ "$GHCVER" = "head" ]; then FLAGS=--no-warnings
+neil test --install $FLAGS
 if [ -e travis.hs ]; then
     travis/travis
 fi
