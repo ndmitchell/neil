@@ -18,7 +18,10 @@ if [ "$GHCVER" != "" ]; then
     retry sudo apt-get update
     retry sudo apt-get install ghc-$GHCVER cabal-install-$CABALVER happy-1.19.4 alex-3.1.3
     export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/happy/1.19.4/bin:/opt/alex/3.1.3/bin:/home/travis/.cabal/bin:$PATH
-    sudo /opt/ghc/$GHCVER/bin/ghc-pkg expose binary # on GHC 7.2 it is installed, but not exposed
+    if [ "$GHCVER" = "7.2.2" ]; then
+        # on GHC 7.2 it is installed, but not exposed
+        sudo /opt/ghc/$GHCVER/bin/ghc-pkg expose binary
+    fi
 fi
 
 retry cabal update
