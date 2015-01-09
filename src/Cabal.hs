@@ -13,7 +13,7 @@ import System.FilePath
 import System.Process.Extra
 import Arguments
 
-defAllow = ["7.0.4","7.2.2","7.4.2","7.6.3","7.8.3","7.10.1"]
+defAllow = ["7.2.2","7.4.2","7.6.3","7.8.3","7.10.1"]
 
 
 ---------------------------------------------------------------------
@@ -103,7 +103,7 @@ run Sdist = Just $ do
     cabalCheck
     tested <- testedWith
     withSDist $ do
-        forM_ (sort tested) $ \x -> do -- deliberately start with the oldest first
+        forM_ (sort $ take 1 $ drop 1 tested) $ \x -> do -- deliberately start with the oldest first
             putStrLn $ "Building with " ++ x
             system_ "cabal clean"
             system_ $ "cabal install --only-dependencies " ++
@@ -116,7 +116,7 @@ run Sdist = Just $ do
                   "--with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe " ++
                   "--flags=testprog"
             system_ "cabal build"
-            system_ "cabal haddock --executables"
+            system_ "cabal haddock"
     system_ "cabal sdist"
     putStrLn $ "Ready to release! (remember to neil tag after uploading)"
 
