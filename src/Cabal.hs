@@ -206,7 +206,8 @@ checkCabalFile = do
             ["Incorrect license " | grab "license" `notElem` [["BSD3"],["MIT"],["GPL"]]] ++
             ["Invalid tested-with: " ++ show test | not $ validTests test] ++
             ["Bad stabilty, should be missing" | grab "stability" /= []] ++
-            ["Missing CHANGES.txt in extra-source-files" | ["CHANGES.txt","changelog.md"] `disjoint` concatMap words (grab "extra-source-files")]
+            ["Missing CHANGES.txt in extra-source-files" | ["CHANGES.txt","changelog.md"] `disjoint` concatMap words (grab "extra-source-files")] ++
+            ["Missing README.md in extra-source-files" | "README.md" `notElem` concatMap words (grab "extra-source-files")]
     unless (null bad) $ error $ unlines bad
 
 validTests :: [String] -> Bool
