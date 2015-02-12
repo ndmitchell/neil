@@ -210,8 +210,7 @@ checkCabalFile = do
     unless (null bad) $ error $ unlines bad
 
 validTests :: [String] -> Bool
-validTests xs = length xs > 1 &&
-    ((xs `isPrefixOf` reverse defAllow) || (xs `isPrefixOf` tail (reverse defAllow)))
+validTests xs = length xs > 1 && xs `isPrefixOf` reverse defAllow
 
 qualify :: String -> String
 qualify "filepath" = "haskell/filepath"
