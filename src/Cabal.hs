@@ -123,6 +123,7 @@ run Docs{..} = Just $ do
         system_ $ "cp -R dist/doc/html/" ++ name ++ " \"" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs\""
         files <- listFilesRecursive dir
         forM_ files $ \file -> when (takeExtension file == ".html") $ do
+            system_ $ "chmod u+w " ++ (dir </> file)
             src <- readFileBinary' $ dir </> file
             src <- return $ filter (/= '\r') src -- filter out \r, due to CPP bugs
             src <- return $ fixFileLinks $ fixHashT src
