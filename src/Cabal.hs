@@ -103,20 +103,13 @@ run Sdist = Just $ do
     cabalCheck
     tested <- testedWith
     withSDist $ do
-        forM_ (sort $ take 1 $ drop 1 tested) $ \x -> do -- deliberately start with the oldest first
-            putStrLn $ "Building with " ++ x
-            system_ "cabal clean"
-            system_ $ "cabal install --only-dependencies " ++
-                  "--with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-haddock=c:\\ghc\\ghc-" ++ x ++ "\\bin\\haddock.exe " ++
-                  "--with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe " ++
-                  "--flags=testprog"
-            system_ $ "cabal configure --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
+        system_ "cabal clean"
+        system_ "cabal install --only-dependencies"
+        system_ $ "cabal configure --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
                   "--ghc-option=-Werror --ghc-option=-fno-warn-warnings-deprecations " ++ -- CABAL BUG WORKAROUND :(
-                  "--with-compiler=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc.exe --with-haddock=c:\\ghc\\ghc-" ++ x ++ "\\bin\\haddock.exe " ++
-                  "--with-hc-pkg=c:\\ghc\\ghc-" ++ x ++ "\\bin\\ghc-pkg.exe " ++
                   "--flags=testprog"
-            system_ "cabal build"
-            system_ "cabal haddock"
+        system_ "cabal build"
+        system_ "cabal haddock"
     system_ "cabal sdist"
     putStrLn $ "Ready to release! (remember to neil tag after uploading)"
 
