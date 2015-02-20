@@ -4,6 +4,7 @@ module Git(run) where
 
 import Control.Monad
 import Data.List.Extra
+import Control.Exception.Extra
 import System.Directory.Extra
 import System.Exit
 import System.FilePath
@@ -62,8 +63,8 @@ run Tag = Just $ do
     let [ver] = [trim $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
     putStrLn $ "Confirm to tag the release with version " ++ ver ++ "? Type 'yes':"
     "yes" <- getLine
-    system_ "git push"
+    retry 2 $ system_ "git push"
     system_ $ "git tag v" ++ ver
-    system_ "git push --tags"
+    retry 2 $ system_ "git push --tags"
 
 run _ = Nothing
