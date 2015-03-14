@@ -12,6 +12,7 @@ import System.IO.Extra
 import System.FilePath
 import System.Process.Extra
 import Arguments
+import Prelude
 
 defAllow = ["7.2.2","7.4.2","7.6.3","7.8.4","7.10.1"]
 
