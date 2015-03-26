@@ -60,11 +60,12 @@ run Whatsnew{..} = Just $ forEachRepo $ \name -> do
 
 run Tag = Just $ do
     src <- readCabal
+    let [name] = [trim $ drop 5 x | x <- lines src, "name:" `isPrefixOf` x]
     let [ver] = [trim $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
-    putStrLn $ "Confirm to tag the release with version " ++ ver ++ "? Type 'yes':"
+    putStrLn $ "Confirm to tag the release with '" ++ name ++ " " ++ ver ++ "'? Type 'yes':"
     "yes" <- getLine
     retry 2 $ system_ "git push"
-    system_ $ "git tag v" ++ ver
+    system_ $ "git tag -a -s -m \"" ++ name ++ " " ++ ver ++ "\" v" ++ ver
     retry 2 $ system_ "git push --tags"
 
 run _ = Nothing
