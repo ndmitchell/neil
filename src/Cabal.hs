@@ -90,6 +90,7 @@ run Test{..} = Just $ do
     withSDist $ do
         system_ "cabal install --only-dependencies"
         system_ $ "cabal configure --enable-tests --disable-library-profiling " ++
+              "--ghc-option=-rtsopts " ++
               "--ghc-option=-fwarn-unused-binds --ghc-option=-fwarn-unused-imports " ++
               "--ghc-option=-fwarn-tabs " ++
               (if no_warnings then "" else "--ghc-option=-Werror")
