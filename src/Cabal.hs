@@ -100,7 +100,8 @@ run Test{..} = Just $ do
         -- system_ "cabal test --show-details=always"
         when install $ do
             putStrLn "Install"
-            system_ "cabal install  --verbose --force-reinstalls"
+            system_ "cabal register --verbose"
+            system_ "cabal copy --verbose"
 
 run Check = Just cabalCheck
 
