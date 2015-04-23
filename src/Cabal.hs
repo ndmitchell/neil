@@ -97,7 +97,7 @@ run Test{..} = Just $ do
               (if no_warnings then "" else "--ghc-option=-Werror")
         putStrLn "Build"
         system_ "cabal build --verbose"
-        system_ "cabal test --show-details=always"
+        -- system_ "cabal test --show-details=always"
         when install $ do
             putStrLn "Install"
             system_ "cabal install  --verbose --force-reinstalls"
