@@ -6,5 +6,5 @@ import System.Process.Extra
 
 main :: IO ()
 main = do
-    (time,_) <- duration $ system_ $ "neil +RTS -T -M100M -RTS --help"
+    (time,_) <- duration $ system_ $ "neil +RTS -M100M -RTS --help"
     putStrLn $ "Running --help took " ++ showDuration time
