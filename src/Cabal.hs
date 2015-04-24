@@ -89,19 +89,16 @@ run Test{..} = Just $ do
     cabalCheck
     withSDist $ do
         system_ "cabal install --only-dependencies"
-        putStrLn "Configure with -rtsopts"
-        system_ $ "cabal configure --verbose --enable-tests --disable-library-profiling " ++
+        system_ $ "cabal configure --enable-tests --disable-library-profiling " ++
               "--ghc-option=-rtsopts " ++
               "--ghc-option=-fwarn-unused-binds --ghc-option=-fwarn-unused-imports " ++
               "--ghc-option=-fwarn-tabs " ++
               (if no_warnings then "" else "--ghc-option=-Werror")
-        putStrLn "Build"
-        system_ "cabal build --verbose"
+        system_ "cabal build"
         system_ "cabal test --show-details=always"
         when install $ do
-            putStrLn "Install"
-            system_ "cabal register --verbose"
-            system_ "cabal copy --verbose"
+            system_ "cabal register"
+            system_ "cabal copy"
 
 run Check = Just cabalCheck
 
