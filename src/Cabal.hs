@@ -97,8 +97,8 @@ run Test{..} = Just $ do
         system_ "cabal build"
         system_ "cabal test --show-details=always"
         when install $ do
-            system_ "cabal register"
             system_ "cabal copy"
+            system_ "cabal register"
 
 run Check = Just cabalCheck
 
