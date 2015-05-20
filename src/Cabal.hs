@@ -61,6 +61,7 @@ checkTravis = do
     src <- readFile' ".travis.yml"
     let got = filter (not . null) $ replace ["allow_failures:"," - GHCVER=head"] [] $
               map (trimEnd . takeWhile (/= '#')) $ lines src
+    when ("allow_failures:" `isInfixOf` src) $ putStrLn $ "Warning: .travis.yml allows failures with GHC HEAD"
     when (got /= require) $
         error $ unlines $
             [".travis.yml file mismatch","Wanted:"] ++ require ++
