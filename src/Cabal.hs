@@ -59,7 +59,7 @@ checkTravis = do
             ," - wget https://raw.github.com/ndmitchell/neil/master/travis.sh -O - --no-check-certificate --quiet | sh"
             ]
     src <- readFile' ".travis.yml"
-    let got = filter (not . null) $ replace ["allow_failures:"," - GHCVER=head"] [] $
+    let got = filter (not . null) $ replace ["matrix:","  allow_failures:","   - env: GHCVER=head"] [] $
               map (trimEnd . takeWhile (/= '#')) $ lines src
     when ("allow_failures:" `isInfixOf` src) $ putStrLn $ "Warning: .travis.yml allows failures with GHC HEAD"
     when (got /= require) $
