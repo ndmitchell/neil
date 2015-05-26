@@ -41,11 +41,10 @@ cabalCheck = do
 
 checkGhci :: IO ()
 checkGhci = do
-    src <- readFile' ".ghci"
-    let require = words "-fwarn-unused-binds -fwarn-unused-imports"
-    let missing = require \\ words src
-    when (missing /= []) $
-        error $ "The .ghci file does not contain " ++ unwords missing
+    let warns = words "-fwarn-unused-binds -fwarn-unused-imports"
+    src <- words <$> readFile' ".ghci"
+    unless ("-W" `elem` src || all (`elem` src) warns) $
+        error $ "The .ghci file does not enough of " ++ unwords ("-W":warns)
 
 
 checkTravis :: IO ()
