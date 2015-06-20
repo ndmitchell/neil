@@ -70,6 +70,7 @@ checkTravis = do
 -- | Run some commands in a temporary directory with the unpacked cabal
 withSDist :: IO a -> IO a
 withSDist run = withTempDir $ \tdir -> do
+    system_ "git diff --stat --exit-code"
     system_ $ "cabal configure --builddir=" ++ tdir
     system_ $ "cabal sdist --builddir=" ++ tdir
     files <- getDirectoryContents tdir
