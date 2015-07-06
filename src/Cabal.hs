@@ -174,13 +174,13 @@ testedWith = do
 checkReadme :: IO ()
 checkReadme = do
     project <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal
+    src <- fmap lines $ readFile "README.md"
     let want =
             "[![Hackage version](https://img.shields.io/hackage/v/" ++ project ++ ".svg?style=flat)]" ++
             "(https://hackage.haskell.org/package/" ++ project ++ ") " ++
-            "[![Build Status](https://img.shields.io/travis/" ++ qualify project ++ ".svg?style=flat)]" ++
-            "(https://travis-ci.org/" ++ qualify project ++ ")"
-    src <- readFile "README.md"
-    let line1 = head $ lines src ++ [""]
+            "[![Build Status](https://img.shields.io/travis/" ++ qualify src project ++ ".svg?style=flat)]" ++
+            "(https://travis-ci.org/" ++ qualify src project ++ ")"
+    let line1 = head $ src ++ [""]
     when (not $ want `isSuffixOf` line1) $
         error $ "Expected first line of README.md to end with:\n" ++ want ++ "\nBut got:\n" ++ line1
 
@@ -200,9 +200,9 @@ checkCabalFile = do
             ["2015 is not in the copyright year" | not $ "2015" `isInfixOf` concat (grab "copyright")] ++
             ["copyright string is not at the start of the license" | not $ (concat (grab "copyright") `isInfixOf` concat (take 1 $ lines license)) || grab "license" == ["GPL"]] ++
             ["No correct source-repository link"
-                | let want = "source-repository head type: git location: https://github.com/" ++ qualify project ++ ".git"
+                | let want = "source-repository head type: git location: https://github.com/" ++ qualify src project ++ ".git"
                 , not $ want `isInfixOf` unwords (words $ unlines src)] ++
-            ["No bug-reports link" | grab "bug-reports" /= ["https://github.com/" ++ qualify project ++ "/issues"]] ++
+            ["No bug-reports link" | grab "bug-reports" /= ["https://github.com/" ++ qualify src project ++ "/issues"]] ++
             ["Incorrect license " | grab "license" `notElem` [["BSD3"],["MIT"],["GPL"]]] ++
             ["Invalid tested-with: " ++ show test | not $ validTests test] ++
             ["Bad stabilty, should be missing" | grab "stability" /= []] ++
@@ -213,9 +213,9 @@ checkCabalFile = do
 validTests :: [String] -> Bool
 validTests xs = length xs > 1 && xs `isPrefixOf` reverse defAllow
 
-qualify :: String -> String
-qualify "filepath" = "haskell/filepath"
-qualify x = "ndmitchell/" ++ x
+qualify :: [String] -> String -> String
+qualify src proj = user ++ "/" ++ proj
+    where user = (\x -> if null x then "ndmitchell" else takeWhile (/= '/') $ drop 19 x) $ snd $ breakOn "https://github.com/" $ unlines src
 
 relines :: [String] -> [String]
 relines (x:xs) | ":" `isSuffixOf` x = unwords (x:a) : relines b
