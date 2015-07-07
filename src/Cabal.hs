@@ -215,7 +215,9 @@ validTests xs = length xs > 1 && xs `isPrefixOf` reverse defAllow
 
 qualify :: [String] -> String -> String
 qualify src proj = user ++ "/" ++ proj
-    where user = (\x -> if null x then "ndmitchell" else takeWhile (/= '/') $ drop 19 x) $ snd $ breakOn "https://github.com/" $ unlines src
+    where user1 = takeWhile (/= '/') $ drop 19 $ snd $ breakOn "https://github.com/" $ unlines src
+          user2 = takeWhile (/= '/') $ drop 30 $ snd $ breakOn "https://img.shields.io/travis/" $ unlines src
+          user = if user2 /= "" then user2 else if user1 /= "" then user1 else "ndmitchell"
 
 relines :: [String] -> [String]
 relines (x:xs) | ":" `isSuffixOf` x = unwords (x:a) : relines b
