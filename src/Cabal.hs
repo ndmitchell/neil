@@ -123,7 +123,7 @@ run Docs{..} = Just $ do
     src <- readCabal
     let ver = extractCabal "version" src
     let name = extractCabal "name" src
-    system_ $ "cabal haddock --hoogle --hyperlink-source " ++
+    system_ $ "cabal haddock --hoogle --html --hyperlink-source " ++
           "--contents-location=/package/" ++ name
     withTempDir $ \dir -> do
         system_ $ "cp -R dist/doc/html/" ++ name ++ " \"" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs\""
