@@ -183,13 +183,11 @@ checkReadme = do
             ,"[![Build Status](https://img.shields.io/travis/" ++ qname ++ ".svg?style=flat)]" ++
              "(https://travis-ci.org/" ++ qname ++ ")"
             -- ACTIVE
-            ,"[![Hackage version](https://img.shields.io/hackage/v/" ++ name ++ ".svg)]" ++
+            ,"[![Hackage version](https://img.shields.io/hackage/v/" ++ name ++ ".svg?label=Hackage)]" ++
              "(https://hackage.haskell.org/package/" ++ name ++ ") "
-            ,"[![Build Status](https://img.shields.io/travis/" ++ qname ++ ".svg)]" ++
+            ,"[![Linux Build Status](https://img.shields.io/travis/" ++ qname ++ ".svg?label=Linux%20build)]" ++
              "(https://travis-ci.org/" ++ qname ++ ")"
-            ,"[![Linux Build Status](https://img.shields.io/travis/" ++ qname ++ ".svg)]" ++
-             "(https://travis-ci.org/" ++ qname ++ ")"
-            ,"[![Windows Build Status](https://img.shields.io/appveyor/ci/" ++ qname ++ ".svg)]" ++
+            ,"[![Windows Build Status](https://img.shields.io/appveyor/ci/" ++ qname ++ ".svg?label=Windows%20build)]" ++
              "(https://ci.appveyor.com/project/" ++ qname ++ ")"
             ]
     let line1 = head $ src ++ [""]
