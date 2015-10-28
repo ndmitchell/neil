@@ -187,8 +187,8 @@ checkReadme = do
              "(https://hackage.haskell.org/package/" ++ name ++ ") "
             ,"[![Linux Build Status](https://img.shields.io/travis/" ++ qname ++ ".svg?label=Linux%20build)]" ++
              "(https://travis-ci.org/" ++ qname ++ ")"
-            ,"[![Windows Build Status](https://img.shields.io/appveyor/ci/" ++ qname ++ ".svg?label=Windows%20build)]" ++
-             "(https://ci.appveyor.com/project/" ++ qname ++ ")"
+            ,"[![Windows Build Status](https://img.shields.io/appveyor/ci/ndmitchell/" ++ name ++ ".svg?label=Windows%20build)]" ++
+             "(https://ci.appveyor.com/project/ndmitchell/" ++ name ++ ")"
             ]
     let line1 = head $ src ++ [""]
     let bangs = length $ filter (== '!') line1
