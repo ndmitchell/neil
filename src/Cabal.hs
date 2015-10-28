@@ -176,10 +176,21 @@ checkReadme = do
     project <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal
     src <- fmap lines $ readFile "README.md"
     let badges =
+            -- DEPRECATED (style=flat is no longer required)
             ["[![Hackage version](https://img.shields.io/hackage/v/" ++ project ++ ".svg?style=flat)]" ++
              "(https://hackage.haskell.org/package/" ++ project ++ ") "
             ,"[![Build Status](https://img.shields.io/travis/" ++ qualify src project ++ ".svg?style=flat)]" ++
-             "(https://travis-ci.org/" ++ qualify src project ++ ")"]
+             "(https://travis-ci.org/" ++ qualify src project ++ ")"
+            -- ACTIVE
+            ,"[![Hackage version](https://img.shields.io/hackage/v/" ++ project ++ ".svg)]" ++
+             "(https://hackage.haskell.org/package/" ++ project ++ ") "
+            ,"[![Build Status](https://img.shields.io/travis/" ++ qualify src project ++ ".svg)]" ++
+             "(https://travis-ci.org/" ++ qualify src project ++ ")"
+            ,"[![Linux Build Status](https://img.shields.io/travis/" ++ qualify src project ++ ".svg)]" ++
+             "(https://travis-ci.org/" ++ qualify src project ++ ")"
+            ,"[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/" ++ qualify src project ++ "?svg=true)]" ++
+             "(https://ci.appveyor.com/project/" ++ qualify src project ++ ")"
+            ]
     let line1 = head $ src ++ [""]
     let bangs = length $ filter (== '!') line1
     let found = length $ filter (`isInfixOf` line1) badges
