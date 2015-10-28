@@ -175,14 +175,18 @@ checkReadme :: IO ()
 checkReadme = do
     project <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal
     src <- fmap lines $ readFile "README.md"
-    let want =
-            "[![Hackage version](https://img.shields.io/hackage/v/" ++ project ++ ".svg?style=flat)]" ++
-            "(https://hackage.haskell.org/package/" ++ project ++ ") " ++
-            "[![Build Status](https://img.shields.io/travis/" ++ qualify src project ++ ".svg?style=flat)]" ++
-            "(https://travis-ci.org/" ++ qualify src project ++ ")"
+    let badges =
+            ["[![Hackage version](https://img.shields.io/hackage/v/" ++ project ++ ".svg?style=flat)]" ++
+             "(https://hackage.haskell.org/package/" ++ project ++ ") "
+            ,"[![Build Status](https://img.shields.io/travis/" ++ qualify src project ++ ".svg?style=flat)]" ++
+             "(https://travis-ci.org/" ++ qualify src project ++ ")"]
     let line1 = head $ src ++ [""]
-    when (not $ want `isSuffixOf` line1) $
-        error $ "Expected first line of README.md to end with:\n" ++ want ++ "\nBut got:\n" ++ line1
+    let bangs = length $ filter (== '!') line1
+    let found = length $ filter (`isInfixOf` line1) badges
+    when (found < 2) $
+        error $ "Expected first line of README.md to end with at least 2 badges, got " ++ show found
+    when (found /= bangs) $
+        error $ "Unexpected badges, found " ++ show bangs ++ ", but only recognised " ++ show found
 
 
 checkCabalFile :: IO ()
