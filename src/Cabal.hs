@@ -173,23 +173,24 @@ testedWith = do
 
 checkReadme :: IO ()
 checkReadme = do
-    project <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal
+    name <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal
     src <- fmap lines $ readFile "README.md"
+    let qname = qualify src name
     let badges =
             -- DEPRECATED (style=flat is no longer required)
-            ["[![Hackage version](https://img.shields.io/hackage/v/" ++ project ++ ".svg?style=flat)]" ++
-             "(https://hackage.haskell.org/package/" ++ project ++ ") "
-            ,"[![Build Status](https://img.shields.io/travis/" ++ qualify src project ++ ".svg?style=flat)]" ++
-             "(https://travis-ci.org/" ++ qualify src project ++ ")"
+            ["[![Hackage version](https://img.shields.io/hackage/v/" ++ name ++ ".svg?style=flat)]" ++
+             "(https://hackage.haskell.org/package/" ++ name ++ ") "
+            ,"[![Build Status](https://img.shields.io/travis/" ++ qname ++ ".svg?style=flat)]" ++
+             "(https://travis-ci.org/" ++ qname ++ ")"
             -- ACTIVE
-            ,"[![Hackage version](https://img.shields.io/hackage/v/" ++ project ++ ".svg)]" ++
-             "(https://hackage.haskell.org/package/" ++ project ++ ") "
-            ,"[![Build Status](https://img.shields.io/travis/" ++ qualify src project ++ ".svg)]" ++
-             "(https://travis-ci.org/" ++ qualify src project ++ ")"
-            ,"[![Linux Build Status](https://img.shields.io/travis/" ++ qualify src project ++ ".svg)]" ++
-             "(https://travis-ci.org/" ++ qualify src project ++ ")"
-            ,"[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/" ++ qualify src project ++ "?svg=true)]" ++
-             "(https://ci.appveyor.com/project/" ++ qualify src project ++ ")"
+            ,"[![Hackage version](https://img.shields.io/hackage/v/" ++ name ++ ".svg)]" ++
+             "(https://hackage.haskell.org/package/" ++ name ++ ") "
+            ,"[![Build Status](https://img.shields.io/travis/" ++ qname ++ ".svg)]" ++
+             "(https://travis-ci.org/" ++ qname ++ ")"
+            ,"[![Linux Build Status](https://img.shields.io/travis/" ++ qname ++ ".svg)]" ++
+             "(https://travis-ci.org/" ++ qname ++ ")"
+            ,"[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/" ++ qname ++ "?svg=true)]" ++
+             "(https://ci.appveyor.com/project/" ++ qname ++ ")"
             ]
     let line1 = head $ src ++ [""]
     let bangs = length $ filter (== '!') line1
