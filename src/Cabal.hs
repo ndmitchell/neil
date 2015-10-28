@@ -189,7 +189,7 @@ checkReadme = do
              "(https://travis-ci.org/" ++ qname ++ ")"
             ,"[![Linux Build Status](https://img.shields.io/travis/" ++ qname ++ ".svg)]" ++
              "(https://travis-ci.org/" ++ qname ++ ")"
-            ,"[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/" ++ qname ++ "?svg=true)]" ++
+            ,"[![Windows Build Status](https://img.shields.io/appveyor/ci/" ++ qname ++ ".svg)]" ++
              "(https://ci.appveyor.com/project/" ++ qname ++ ")"
             ]
     let line1 = head $ src ++ [""]
