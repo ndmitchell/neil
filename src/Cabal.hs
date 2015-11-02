@@ -184,7 +184,9 @@ checkReadme = do
              "(https://travis-ci.org/" ++ qname ++ ")"
             -- ACTIVE
             ,"[![Hackage version](https://img.shields.io/hackage/v/" ++ name ++ ".svg?label=Hackage)]" ++
-             "(https://hackage.haskell.org/package/" ++ name ++ ") "
+             "(https://hackage.haskell.org/package/" ++ name ++ ")"
+            ,"[![Stackage version](https://www.stackage.org/package/" ++ name ++ "/badge/lts?label=Stackage)]" ++
+             "(https://www.stackage.org/package/" ++ name ++ ")"
             ,"[![Linux Build Status](https://img.shields.io/travis/" ++ qname ++ ".svg?label=Linux%20build)]" ++
              "(https://travis-ci.org/" ++ qname ++ ")"
             ,"[![Windows Build Status](https://img.shields.io/appveyor/ci/ndmitchell/" ++ name ++ ".svg?label=Windows%20build)]" ++
