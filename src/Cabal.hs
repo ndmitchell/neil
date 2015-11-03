@@ -191,6 +191,8 @@ checkReadme = do
              "(https://travis-ci.org/" ++ qname ++ ")"
             ,"[![Windows Build Status](https://img.shields.io/appveyor/ci/ndmitchell/" ++ name ++ ".svg?label=Windows%20build)]" ++
              "(https://ci.appveyor.com/project/ndmitchell/" ++ name ++ ")"
+            ,"[![Build Status](https://img.shields.io/travis/" ++ qname ++ ".svg)]" ++
+             "(https://travis-ci.org/" ++ qname ++ ")"
             ]
     let line1 = head $ src ++ [""]
     let bangs = length $ filter (== '!') line1
