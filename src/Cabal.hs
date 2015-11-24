@@ -74,12 +74,16 @@ checkTravis = do
 withSDist :: IO a -> IO a
 withSDist run = withTempDir $ \tdir -> do
     system_ "git diff --stat --exit-code"
+    local <- map normalise . lines <$> systemOutput_ "git ls-files . --others"
     system_ $ "cabal configure --builddir=" ++ tdir
     system_ $ "cabal sdist --builddir=" ++ tdir
     files <- getDirectoryContents tdir
     let tarball = head $ [x | x <- files, ".tar.gz" `isSuffixOf` x]
     withCurrentDirectory tdir $ system_ $ "tar -xf " ++ tarball
     lst <- listFilesRecursive tdir
+    let bad = local `intersect` map (normalise . drop (length tdir + length tarball - 5)) lst
+    when (bad /= []) $
+        error $ unlines $ "The following files are not checked in, but are in the dist" : bad
     let binary = [".png",".gz",".bat",".zip",".gif",""]
     bad <- flip filterM lst $ \file ->
         return (takeExtension file `notElem` binary) &&^
