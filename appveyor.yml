@@ -1,6 +1,3 @@
-cache:
-- "c:\\sr" # stack root, short paths == less problems
-
 build: off
 
 before_test:
