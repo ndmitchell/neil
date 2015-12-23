@@ -27,8 +27,12 @@ fi
 retry cabal update
 retry cabal install --only-dependencies --enable-tests || FAIL=1
 if [ "$GHCVER" = "head" ] && [ "$FAIL" = "1" ]; then
-    echo Failed because some dependencies failed to install, not my fault
-    exit
+    FAIL=
+    retry cabal install --only-dependencies --enable-tests --allow-newer || FAIL=1
+    if [ "$FAIL" = "1" ]; then
+        echo Failed because some dependencies failed to install, not my fault
+        exit
+    fi
 fi
 retry git clone https://github.com/ndmitchell/neil
 (cd neil && retry cabal install --flags=small)
