@@ -7,6 +7,8 @@ import Data.Char
 import Data.List.Extra
 import Data.Maybe
 import Data.Functor
+import Data.Tuple.Extra
+import Data.Time
 import System.Directory.Extra
 import System.IO.Extra
 import System.FilePath
@@ -216,12 +218,13 @@ checkCabalFile = do
     test <- testedWith
     let grab tag = [trimStart $ drop (length tag + 1) x | x <- relines src, (tag ++ ":") `isPrefixOf` x]
     license <- readFile' $ concat $ grab "license-file"
+    year <- show . fst3 . toGregorian . utctDay <$> getCurrentTime
     let bad =
             ["Incorrect declaration style: " ++ x
                 | (x,':':_) <- map (break (== ':') . trimStart) src
                 , not $ any isSpace $ trim x, not $ "http" `isSuffixOf` x || "https" `isSuffixOf` x
                 , not $ all (\x -> isLower x || x == '-') x] ++
-            ["2015 is not in the copyright year" | not $ "2015" `isInfixOf` concat (grab "copyright")] ++
+            [year ++ " is not in the copyright year" | not $ year `isInfixOf` concat (grab "copyright")] ++
             ["copyright string is not at the start of the license" | not $ (concat (grab "copyright") `isInfixOf` concat (take 1 $ lines license)) || grab "license" == ["GPL"]] ++
             ["No correct source-repository link"
                 | let want = "source-repository head type: git location: https://github.com/" ++ qualify src project ++ ".git"
