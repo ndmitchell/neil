@@ -14,6 +14,7 @@ These guidelines apply to all my projects, not just this one. I am pretty relaxe
 * If you go down a few dead ends and have a few junk commits in there, don't worry, as long as they don't stray too far outside the area you were working on. No need to squash the history.
 * If I am not responding after a few days, ping me again on the ticket, or via email. I'm probably just busy or lost the email in a pile. I certainly intended to thank you for contribution and give some feedback.
 * If your preferences are vehemently different, then follow yours, I'm really not all that fussed - but sometimes it's easier for people to know what you do like rather than to spend effort thinking about what you like, or doing something they think you will like but you actually don't.
+* After I've merged your patch, if it would be useful to have an immediate release containing the patch (e.g. because you are working on downstream code or can only deploy official releases in production) let me know. Usually I am happy to release after any change, but for smaller changes might wait to collect a bunch of things together.
 
 ### Quirks
 
