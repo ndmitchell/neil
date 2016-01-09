@@ -14,6 +14,7 @@ These guidelines apply to all my projects, not just this one. I am pretty relaxe
 * If you go down a few dead ends and have a few junk commits in there, don't worry, as long as they don't stray too far outside the area you were working on. No need to squash the history.
 * If I am not responding after a few days, ping me again on the ticket, or via email. I'm probably just busy or lost the email in a pile. I certainly intended to thank you for contribution and give some feedback.
 * If your preferences are vehemently different, then follow yours, I'm really not all that fussed - but sometimes it's easier for people to know what you do like rather than to spend effort thinking about what you like, or doing something they think you will like but you actually don't.
+* After I've merged your patch, if it would be useful to have an immediate release containing the patch (e.g. because you are working on downstream code or can only deploy official releases in production) let me know. Usually I am happy to release after any change, but for smaller changes might wait to collect a bunch of things together.
 
 ### Quirks
 
@@ -23,3 +24,5 @@ There are a few places where my opinion on coding differs from other people, so 
 * I am conservative in my use of additional packages, since each additional package complicates a project. I tend to not use upper bounds unless I think they are particularly valuable, but do so on a package-by-package basis.
 * I avoid CPP where possible, trying other techniques to work around API changes through versions.
 * I don't use explicit imports, since I consider the benefits small, but the cost of continually editing imports while developing to be a significant distraction to the flow of coding.
+* I don't add stack.yml files if they would be identical to those produced by stack init.
+* I try and push my testing to the limit, checking things like timing properties and the copyright year etc that are inherently fragile. As a result, sometimes the tests will fail. That tends to be a transient state, but don't overly worry if tests fail after a PR.
