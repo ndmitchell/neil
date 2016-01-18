@@ -9,7 +9,9 @@ retry(){ "$@" || "$@" || "$@"; }
 if [ "$GHCVER" != "" ]; then
     if [ "$GHCVER" = "head" ]; then
         CABALVER=head
-    elif [ "$GHCVER" = "7.10.3" ] || [ "$GHCVER" = "8.0.1"]; then
+    elif [ "$GHCVER" = "8.0.1"]; then
+        CABALVER=1.24
+    elif [ "$GHCVER" = "7.10.3" ]; then
         CABALVER=1.22
     else
         CABALVER=1.18
