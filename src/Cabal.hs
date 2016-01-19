@@ -62,8 +62,9 @@ checkTravis = do
     src <- readFile' ".travis.yml"
     let got = filter (not . null) $
               replace ["sudo: true"] [] $
-              replace ["matrix:","  allow_failures:","   - env: GHCVER=head"] [] $
-              replace ["matrix:","  allow_failures:","   - env: GHCVER=8.0.1","   - env: GHCVER=head"] [] $
+              replace ["matrix:","  allow_failures:"] [] $
+              replace ["   - env: GHCVER=8.0.1"] [] $
+              replace ["   - env: GHCVER=head"] [] $
               map (trimEnd . takeWhile (/= '#')) $ lines src
     when ("allow_failures:" `isInfixOf` src) $ putStrLn $ "Warning: .travis.yml allows failures with GHC HEAD"
     got <- return $ take (length require - 1) got ++ [last got] -- drop everything between script/wget
