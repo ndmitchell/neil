@@ -28,8 +28,8 @@ if [ "$GHCVER" != "" ]; then
         CABALVER=1.18
     fi
     retry sudo add-apt-repository -y ppa:hvr/ghc
-    retry timer sudo apt-get update
-    retry timer sudo apt-get install ghc-$GHCVER cabal-install-$CABALVER happy-1.19.4 alex-3.1.3
+    retry sudo apt-get update
+    retry sudo apt-get install ghc-$GHCVER cabal-install-$CABALVER happy-1.19.4 alex-3.1.3
     export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/happy/1.19.4/bin:/opt/alex/3.1.3/bin:/home/travis/.cabal/bin:$PATH
     if [ "$GHCVER" = "7.2.2" ]; then
         # on GHC 7.2 it is installed, but not exposed
@@ -37,8 +37,8 @@ if [ "$GHCVER" != "" ]; then
     fi
 fi
 
-retry timer cabal update
-retry timer cabal install --only-dependencies --enable-tests || FAIL=1
+retry cabal update
+retry cabal install --only-dependencies --enable-tests || FAIL=1
 if [ "$GHCVER" = "head" ] && [ "$FAIL" = "1" ]; then
     FAIL=
     retry cabal install --only-dependencies --enable-tests --allow-newer || FAIL=1
@@ -48,7 +48,7 @@ if [ "$GHCVER" = "head" ] && [ "$FAIL" = "1" ]; then
     fi
 fi
 retry git clone https://github.com/ndmitchell/neil
-(cd neil && retry timer cabal install --flags=small)
+(cd neil && retry cabal install --flags=small)
 if [ -e travis.hs ]; then
     # ensure that reinstalling this package won't break the test script
     mkdir travis
