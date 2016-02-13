@@ -14,7 +14,7 @@ description:
     them in the Git repo.
 homepage:           http://ndmitchell.com/
 bug-reports:        https://github.com/ndmitchell/neil/issues
-tested-with:        GHC==8.0.1, GHC==7.10.3, GHC==7.8.4, GHC==7.6.3, GHC==7.4.2, GHC==7.2.2
+tested-with:        GHC==8.0.1, GHC==7.10.3, GHC==7.8.4, GHC==7.6.3, GHC==7.4.2
 extra-doc-files:
     CHANGES.txt
     README.md

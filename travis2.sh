@@ -16,10 +16,6 @@ fi
 if [ -d /opt/alex ]; then
     export PATH=/opt/alex/$(ls /opt/alex)/bin:$PATH
 fi
-if [ "$GHCVER" = "7.2.2" ]; then
-    # on GHC 7.2 it is installed, but not exposed
-    /opt/ghc/$GHCVER/bin/ghc-pkg expose binary
-fi
 
 
 #####################################################################
