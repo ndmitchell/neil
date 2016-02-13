@@ -12,7 +12,7 @@ timer(){
     "$@";
     set +x;
     local after=$(date +%s);
-    echo Timing: Command $@ took $(expr $after - $before);
+    echo Timing: $(expr $after - $before) spent doing $@;
     set -x;
 }
 
