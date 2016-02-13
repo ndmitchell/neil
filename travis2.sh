@@ -6,11 +6,13 @@ set -x # echo each line
 
 retry(){ "$@" || "$@" || "$@"; }
 timer(){
+    set +x;
     local before=$(date +%s);
+    set -x;
     "$@";
     set +x;
     local after=$(date +%s);
-    echo Command $@ took $(expr $after - $before);
+    echo Timing: Command $@ took $(expr $after - $before);
     set -x;
 }
 
