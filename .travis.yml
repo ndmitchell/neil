@@ -18,5 +18,5 @@ matrix:
     - env: GHCVER=HEAD
       addons: {apt: {packages: [ghc-head  ,cabal-install-head], sources: [hvr-ghc]}}
 
-install:
+script:
  - wget https://raw.github.com/ndmitchell/neil/master/travis2.sh -O - --no-check-certificate --quiet | sh
