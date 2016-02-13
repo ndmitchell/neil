@@ -38,7 +38,8 @@ cabalCheck = do
     checkCabalFile
     checkReadme
     checkGhci
-    checkTravis
+    -- temporarily disabled while upgrading travis infrastructure
+    when False checkTravis
 
 
 checkGhci :: IO ()
