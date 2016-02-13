@@ -36,20 +36,7 @@ fi
 #####################################################################
 ## NEIL SETUP
 
-(cd neil && retry cabal install --flags=small --verbose=3)
-ls -l /home/travis/.cabal/bin
-echo ~
-/home/travis/.cabal/bin/neil --version || true
-neil --version || true
-echo $PATH
-export PATH=/home/travis/.cabal/bin:$PATH
-export PATH=/home/travis/.cabal/bin:$PATH
-/home/travis/.cabal/bin/neil --version || true
-neil --version || true
-chmod +x /home/travis/.cabal/bin/neil
-/home/travis/.cabal/bin/neil --version || true
-neil --version
-
+(cd neil && retry cabal install --flags=small)
 if [ -e travis.hs ]; then
     # ensure that reinstalling this package won't break the test script
     mkdir travis
