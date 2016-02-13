@@ -19,4 +19,4 @@ matrix:
       addons: {apt: {packages: [ghc-head  ,cabal-install-head], sources: [hvr-ghc]}}
 
 script:
- - wget https://raw.github.com/ndmitchell/neil/master/travis2.sh -O - --no-check-certificate --quiet | sh
+ - wget https://raw.github.com/ndmitchell/neil/master/travis2.sh -O - --no-check-certificate --no-cache --quiet | sh
