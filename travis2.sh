@@ -8,8 +8,10 @@ retry(){ "$@" || "$@" || "$@"; }
 timer(){
     local before=$(date +%s);
     "$@";
+    set +x;
     local after=$(date +%s);
     echo Command $@ took $(expr $after - $before);
+    set -x;
 }
 
 #####################################################################
