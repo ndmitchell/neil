@@ -41,7 +41,7 @@ retry timer cabal update
 retry timer cabal install --only-dependencies --enable-tests || FAIL=1
 if [ "$GHCVER" = "head" ] && [ "$FAIL" = "1" ]; then
     FAIL=
-    retry timer cabal install --only-dependencies --enable-tests --allow-newer || FAIL=1
+    retry cabal install --only-dependencies --enable-tests --allow-newer || FAIL=1
     if [ "$FAIL" = "1" ]; then
         echo Failed because some dependencies failed to install, not my fault
         exit
