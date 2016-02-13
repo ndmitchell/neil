@@ -6,4 +6,4 @@ set -x # echo each line
 
 retry(){ "$@" || "$@" || "$@"; }
 retry git clone https://github.com/ndmitchell/neil
-neil/travis2.sh
+sh neil/travis2.sh
