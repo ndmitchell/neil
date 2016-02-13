@@ -39,7 +39,6 @@ fi
 (cd neil && retry cabal install --flags=small --verbose=3)
 ls -l /home/travis/.cabal/bin
 echo ~
-which neil
 /home/travis/.cabal/bin/neil --version || true
 neil --version || true
 echo $PATH
