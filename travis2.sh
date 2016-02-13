@@ -9,7 +9,7 @@ timer(){
     local before=$(date +%s);
     "$@";
     local after=$(date +%s);
-    echo Took $(expr $after - $before);
+    echo Command $@ took $(expr $after - $before);
 }
 
 #####################################################################
