@@ -5,6 +5,12 @@ set -e # exit on errors
 set -x # echo each line
 
 retry(){ "$@" || "$@" || "$@"; }
+timer(){
+    local before=$(date +%s);
+    "$@";
+    local after=$(date +%s);
+    echo Took $(expr $after - $before);
+}
 
 #####################################################################
 ## GHC SETUP
@@ -21,14 +27,11 @@ fi
 #####################################################################
 ## PACKAGE SETUP
 
-date +%H:%M:%S.%N
-retry cabal update
-retry cabal install --only-dependencies --enable-tests || FAIL=1
-date +%H:%M:%S.%N
+retry timer cabal update
+retry timer cabal install --only-dependencies --enable-tests || FAIL=1
 if [ "$GHCVER" = "head" ] && [ "$FAIL" = "1" ]; then
     FAIL=
-    retry cabal install --only-dependencies --enable-tests --allow-newer || FAIL=1
-    date +%H:%M:%S.%N
+    retry timer cabal install --only-dependencies --enable-tests --allow-newer || FAIL=1
     if [ "$FAIL" = "1" ]; then
         echo Failed because some dependencies failed to install, not my fault
         exit
@@ -39,8 +42,7 @@ fi
 #####################################################################
 ## NEIL SETUP
 
-(cd neil && retry cabal install --flags=small)
-date +%H:%M:%S.%N
+(cd neil && retry timer cabal install --flags=small)
 if [ -e travis.hs ]; then
     # ensure that reinstalling this package won't break the test script
     mkdir travis
