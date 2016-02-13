@@ -18,7 +18,7 @@ if [ -d /opt/alex ]; then
 fi
 if [ "$GHCVER" = "7.2.2" ]; then
     # on GHC 7.2 it is installed, but not exposed
-    sudo /opt/ghc/$GHCVER/bin/ghc-pkg expose binary
+    /opt/ghc/$GHCVER/bin/ghc-pkg expose binary
 fi
 
 
