@@ -37,7 +37,7 @@ fi
 ## NEIL SETUP
 
 retry git clone https://github.com/ndmitchell/neil
-(cd neil && retry cabal install --flags=small)
+(cd neil && retry cabal install --flags=small --verbose)
 if [ -e travis.hs ]; then
     # ensure that reinstalling this package won't break the test script
     mkdir travis
