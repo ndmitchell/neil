@@ -1,10 +1,6 @@
 sudo: false
 language: generic
 
-cache:
-  directories:
-    - $HOME/.cabal
-
 matrix:
   include:
     - env: GHCVER=7.4.2
