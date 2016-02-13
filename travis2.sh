@@ -21,11 +21,14 @@ fi
 #####################################################################
 ## PACKAGE SETUP
 
-retry time cabal update
-retry time cabal install --only-dependencies --enable-tests || FAIL=1
+date +%H:%M:%S.%N
+retry cabal update
+retry cabal install --only-dependencies --enable-tests || FAIL=1
+date +%H:%M:%S.%N
 if [ "$GHCVER" = "head" ] && [ "$FAIL" = "1" ]; then
     FAIL=
-    retry time cabal install --only-dependencies --enable-tests --allow-newer || FAIL=1
+    retry cabal install --only-dependencies --enable-tests --allow-newer || FAIL=1
+    date +%H:%M:%S.%N
     if [ "$FAIL" = "1" ]; then
         echo Failed because some dependencies failed to install, not my fault
         exit
@@ -36,7 +39,8 @@ fi
 #####################################################################
 ## NEIL SETUP
 
-(cd neil && retry time cabal install --flags=small)
+(cd neil && retry cabal install --flags=small)
+date +%H:%M:%S.%N
 if [ -e travis.hs ]; then
     # ensure that reinstalling this package won't break the test script
     mkdir travis
