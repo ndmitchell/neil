@@ -36,7 +36,6 @@ fi
 #####################################################################
 ## NEIL SETUP
 
-retry git clone https://github.com/ndmitchell/neil
 (cd neil && retry cabal install --flags=small --verbose=3)
 ls /home/travis/.cabal/bin
 echo ~
