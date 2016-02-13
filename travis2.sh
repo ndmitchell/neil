@@ -61,7 +61,7 @@ FLAGS=
 if [ "$GHCVER" = "head" ]; then
     FLAGS=--no-warnings
 fi
-neil test --install $FLAGS
+timer neil test --install $FLAGS
 if [ -e travis.hs ]; then
     travis/travis
 fi
