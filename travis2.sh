@@ -9,7 +9,7 @@ retry(){ "$@" || "$@" || "$@"; }
 #####################################################################
 ## GHC SETUP
 
-export PATH=/opt/ghc/$(ls /opt/ghc)/bin:/opt/cabal/$(ls /opt/cabal)/bin:$PATH
+export PATH=~/.cabal/bin:/opt/ghc/$(ls /opt/ghc)/bin:/opt/cabal/$(ls /opt/cabal)/bin:$PATH
 if [ -d /opt/happy ]; then
     export PATH=/opt/happy/$(ls /opt/happy)/bin:$PATH
 fi
