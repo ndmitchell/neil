@@ -100,7 +100,10 @@ withSDist run = withTempDir $ \tdir -> do
 
 run :: Arguments -> Maybe (IO ())
 run Test{..} = Just $ do
-    cabalCheck
+    test <- cabalCheck
+
+    runTest <- maybe (return True) (fmap ("test-suite" `isInfixOf`) . readFile) =<< findCabal
+
     withSDist $ do
         system_ "cabal install --only-dependencies"
         system_ $ "cabal configure --enable-tests --disable-library-profiling " ++
@@ -109,7 +112,7 @@ run Test{..} = Just $ do
               "--ghc-option=-fwarn-tabs " ++
               (if no_warnings then "" else "--ghc-option=-Werror")
         system_ "cabal build"
-        system_ "cabal test --show-details=always"
+        when runTest $ system_ "cabal test --show-details=always"
         when install $ do
             system_ "cabal copy"
             system_ "cabal register"
