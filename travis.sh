@@ -37,6 +37,7 @@ if [ "$GHCVER" != "" ]; then
     fi
 fi
 
+ghc-pkg init || true # required with some GHC versions (seems important for derive)
 retry cabal update
 retry cabal install --only-dependencies --enable-tests || FAIL=1
 if [ "$GHCVER" = "head" ] && [ "$FAIL" = "1" ]; then
