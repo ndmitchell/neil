@@ -112,7 +112,7 @@ run Test{..} = Just $ do
               "--ghc-option=-fwarn-tabs " ++
               (if no_warnings then "" else "--ghc-option=-Werror")
         system_ "cabal build"
-        when runTest $ system_ "cabal test --show-details=always"
+        when runTest $ system_ "cabal test --show-details=streaming"
         when install $ do
             system_ "cabal copy"
             system_ "cabal register"
