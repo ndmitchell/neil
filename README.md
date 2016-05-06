@@ -24,5 +24,6 @@ There are a few places where my opinion on coding differs from other people, so 
 * I am conservative in my use of additional packages, since each additional package complicates a project. I tend to not use upper bounds unless I think they are particularly valuable, but do so on a package-by-package basis.
 * I avoid CPP where possible, trying other techniques to work around API changes through versions.
 * I don't use explicit imports, since I consider the benefits small, but the cost of continually editing imports while developing to be a significant distraction to the flow of coding.
+* I stick to ASCII characters, since I appreciate the ease of typing and complete editor/font compatibility.
 * I don't add stack.yml files if they would be identical to those produced by stack init. I do test that `stack init` works and builds correctly.
 * I try and push my testing to the limit, checking things like timing properties and the copyright year etc that are inherently fragile. As a result, sometimes the tests will fail. That tends to be a transient state, but don't overly worry if tests fail after a PR.
