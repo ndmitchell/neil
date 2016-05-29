@@ -3,6 +3,7 @@
 module Cabal(run, readCabal) where
 
 import Control.Monad.Extra
+import Control.Exception.Extra
 import Data.Char
 import Data.List.Extra
 import Data.Maybe
@@ -223,7 +224,7 @@ checkCabalFile = do
     src <- fmap lines readCabal
     test <- testedWith
     let grab tag = [trimStart $ drop (length tag + 1) x | x <- relines src, (tag ++ ":") `isPrefixOf` x]
-    license <- readFile' $ concat $ grab "license-file"
+    license <- catch_ (readFile' $ concat $ grab "license-file") $ \_ -> return ""
     year <- show . fst3 . toGregorian . utctDay <$> getCurrentTime
     let bad =
             ["Incorrect declaration style: " ++ x
