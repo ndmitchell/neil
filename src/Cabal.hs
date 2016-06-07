@@ -76,6 +76,21 @@ checkTravis = do
             ["Got:"] ++ got
 
 
+-- | Check every function exported is also documented
+checkHoogle :: IO ()
+checkHoogle = whenM (doesDirectoryExist "dist/doc/html") $ do
+    src <- getDirectoryContents "dist/doc/html"
+    forM_ src $ \x -> do
+        contents <- readFileUTF8' $ "dist/doc/html" </> x </> x <.> "txt"
+        -- look for two lines in a row not separated by comments
+        let bad = concat $ map (drop 1) $ wordsBy ("--" `isPrefixOf`) $
+                  filter (not . isPrefixOf "instance ") $
+                  filter (not . isPrefixOf "@version ") $
+                  filter (not . null) $ map trim $ lines contents
+        when (bad /= []) $
+            error $ unlines $ "Bad hoogle:" : bad
+
+
 -- | Run some commands in a temporary directory with the unpacked cabal
 withSDist :: IO a -> IO a
 withSDist run = withTempDir $ \tdir -> do
@@ -113,6 +128,8 @@ run Test{..} = Just $ do
               "--ghc-option=-fwarn-tabs " ++
               (if no_warnings then "" else "--ghc-option=-Werror")
         system_ "cabal build"
+        system_ "cabal haddock --hoogle"
+        checkHoogle
         when runTest $ system_ "cabal test --show-details=streaming"
         when install $ do
             system_ "cabal copy"
