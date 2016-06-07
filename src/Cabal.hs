@@ -84,6 +84,7 @@ checkHoogle = whenM (doesDirectoryExist "dist/doc/html") $ do
         contents <- readFileUTF8' $ "dist/doc/html" </> x </> x <.> "txt"
         -- look for two lines in a row not separated by comments
         let bad = concat $ map (drop 1) $ wordsBy ("--" `isPrefixOf`) $
+                  filter (not . isPrefixOf "infix") $
                   filter (not . isPrefixOf "instance ") $
                   filter (not . isPrefixOf "@version ") $
                   filter (not . null) $ map trim $ lines contents
