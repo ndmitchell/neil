@@ -79,9 +79,9 @@ checkTravis = do
 -- | Check every function exported is also documented
 checkHoogle :: IO ()
 checkHoogle = whenM (doesDirectoryExist "dist/doc/html") $ do
-    src <- getDirectoryContents "dist/doc/html"
-    forM_ src $ \x -> do
-        contents <- readFileUTF8' $ "dist/doc/html" </> x </> x <.> "txt"
+    xs <- listContents "dist/doc/html"
+    forM_ xs $ \x -> do
+        contents <- readFileUTF8' $ x </> takeFileName x <.> "txt"
         -- look for two lines in a row not separated by comments
         let bad = concat $ map (drop 1) $ wordsBy ("--" `isPrefixOf`) $
                   filter (not . isPrefixOf "infix") $
