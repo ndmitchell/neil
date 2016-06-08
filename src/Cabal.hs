@@ -89,7 +89,7 @@ checkHoogle = whenM (doesDirectoryExist "dist/doc/html") $ do
                   filter (not . isPrefixOf "@version ") $
                   filter (not . null) $ map trim $ lines contents
         when (bad /= []) $
-            error $ unlines $ "Bad hoogle:" : bad
+            putStr $ unlines $ "Bad hoogle:" : bad
 
 
 -- | Run some commands in a temporary directory with the unpacked cabal
