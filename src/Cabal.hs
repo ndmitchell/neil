@@ -87,7 +87,7 @@ checkHoogle = whenM (doesDirectoryExist "dist/doc/html") $ do
                   filter (\x -> fst (word1 x) `notElem` docWhitelist) $
                   filter (not . null) $ map trim $ lines contents
         when (bad /= []) $
-            error $ unlines $ "Bad hoogle:" : bad
+            putStr $ unlines $ "Bad hoogle:" : bad
 
 docWhitelist :: [String]
 docWhitelist =
