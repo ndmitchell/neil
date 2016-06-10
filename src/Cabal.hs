@@ -83,13 +83,41 @@ checkHoogle = whenM (doesDirectoryExist "dist/doc/html") $ do
     forM_ xs $ \x -> do
         contents <- readFileUTF8' $ x </> takeFileName x <.> "txt"
         -- look for two lines in a row not separated by comments
-        let bad = concat $ map (drop 1) $ wordsBy ("--" `isPrefixOf`) $
-                  filter (not . isPrefixOf "infix") $
-                  filter (not . isPrefixOf "instance ") $
-                  filter (not . isPrefixOf "@version ") $
+        let bad = missingDocs $ wordsBy ("--" `isPrefixOf`) $
+                  filter (\x -> fst (word1 x) `notElem` docWhitelist) $
                   filter (not . null) $ map trim $ lines contents
         when (bad /= []) $
             error $ unlines $ "Bad hoogle:" : bad
+
+docWhitelist :: [String]
+docWhitelist =
+    ["infix","infixl","infixr"
+    ,"instance"
+    ,"@version"
+    ,"(==)","(/=)" -- not documented in base
+    ]
+
+-- | Given a set of definitions, each preceeded by docs, return the bad definitions.
+--   Generally that's any non-leading definition, but don't require docs on constructors or selectors.
+missingDocs :: [[String]] -> [String]
+missingDocs xss = f "" $ concat [(True,x) : map ((,) False) xs | x:xs <- xss]
+    where
+        isCtor = isUpper . head
+        isSelector ctor x
+            | Just (fields,result) <- unsnoc $ parseType ctor
+            , [first,rest] <- parseType x
+            , first == result
+            , rest `elem` fields
+            = True
+        isSelector _ _ = False
+
+        f ctor ((doc,x):xs) =
+            [x | not $ doc || isCtor x || isSelector ctor x] ++
+            f (if isCtor x then x else ctor) xs
+        f ctor [] = []
+
+parseType :: String -> [String]
+parseType = map trim . splitOn "->" . drop 2 . snd . breakOn "::"
 
 
 -- | Run some commands in a temporary directory with the unpacked cabal
