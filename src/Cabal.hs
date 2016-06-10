@@ -95,7 +95,7 @@ docWhitelist =
     ,"instance "
     ,"@version "
     ,"(==)","(/=)" -- not documented in base
-    ,"class Hashable ","hashWithSalt ","unit "
+    ,"class Hashable ","hashWithSalt ","hash ","unit "
         -- don't seem to end up present when exported through Shake on Travis
     ]
 
