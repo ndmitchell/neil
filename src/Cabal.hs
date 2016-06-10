@@ -84,7 +84,7 @@ checkHoogle = whenM (doesDirectoryExist "dist/doc/html") $ do
         contents <- readFileUTF8' $ x </> takeFileName x <.> "txt"
         -- look for two lines in a row not separated by comments
         let bad = missingDocs $ wordsBy ("--" `isPrefixOf`) $
-                  filter (\x -> not $ any (x `isPrefixOf`) docWhitelist) $
+                  filter (\x -> not $ any (`isPrefixOf` x) docWhitelist) $
                   filter (not . null) $ map trim $ lines contents
         when (bad /= []) $
             error $ unlines $ "Bad hoogle:" : bad
