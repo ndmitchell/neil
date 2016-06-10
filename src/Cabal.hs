@@ -84,17 +84,19 @@ checkHoogle = whenM (doesDirectoryExist "dist/doc/html") $ do
         contents <- readFileUTF8' $ x </> takeFileName x <.> "txt"
         -- look for two lines in a row not separated by comments
         let bad = missingDocs $ wordsBy ("--" `isPrefixOf`) $
-                  filter (\x -> fst (word1 x) `notElem` docWhitelist) $
+                  filter (\x -> not $ any (x `isPrefixOf`) docWhitelist) $
                   filter (not . null) $ map trim $ lines contents
         when (bad /= []) $
             error $ unlines $ "Bad hoogle:" : bad
 
 docWhitelist :: [String]
 docWhitelist =
-    ["infix","infixl","infixr"
-    ,"instance"
-    ,"@version"
+    ["infix ","infixl ","infixr "
+    ,"instance "
+    ,"@version "
     ,"(==)","(/=)" -- not documented in base
+    ,"class Hashable ","hashWithSalt ","unit "
+        -- don't seem to end up present when exported through Shake on Travis
     ]
 
 -- | Given a set of definitions, each preceeded by docs, return the bad definitions.
