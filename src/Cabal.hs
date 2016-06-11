@@ -97,10 +97,6 @@ docWhitelist =
     ,"(==)","(/=)","fromString " -- not documented in base
     ,"class Hashable ","hashWithSalt ","hash ","unit "
         -- don't seem to end up present when exported through Shake on Travis
-    ,"showsPrec ","show ","showList ","typeOf ","put ","get ","rnf ","liftIO "
-        -- don't have docs on older GHC's (7.8 and before)
-    ,"storedValue ","equalValue "
-        -- don't show up on older GHC despite being documented (7.8 and before)
     ]
 
 -- | Given a set of definitions, each preceeded by docs, return the bad definitions.
