@@ -94,7 +94,7 @@ docWhitelist =
     ["infix ","infixl ","infixr "
     ,"instance "
     ,"@version "
-    ,"(==)","(/=)" -- not documented in base
+    ,"(==)","(/=)","fromString " -- not documented in base
     ,"class Hashable ","hashWithSalt ","hash ","unit "
         -- don't seem to end up present when exported through Shake on Travis
     ,"showsPrec ","show ","showList ","typeOf ","put ","get ","rnf ","liftIO "
