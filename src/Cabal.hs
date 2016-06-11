@@ -154,6 +154,7 @@ run Test{..} = Just $ do
     test <- cabalCheck
 
     runTest <- maybe (return True) (fmap ("test-suite" `isInfixOf`) . readFile) =<< findCabal
+    ghcVer <- fst . line1 <$> systemOutput_ "ghc --numeric-version"
 
     withSDist $ do
         system_ "cabal install --only-dependencies"
@@ -164,7 +165,9 @@ run Test{..} = Just $ do
               (if no_warnings then "" else "--ghc-option=-Werror")
         system_ "cabal build"
         system_ "cabal haddock --hoogle"
-        checkHoogle
+        when (ghcVer `notElem` ["7.4.2","7.6.3","7.8.4"]) $ do
+            -- earlier Haddock's forget to document class members in the --hoogle
+            checkHoogle
         when runTest $ system_ "cabal test --show-details=streaming"
         when install $ do
             system_ "cabal copy"
