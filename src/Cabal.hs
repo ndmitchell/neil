@@ -107,7 +107,10 @@ docWhitelist =
 missingDocs :: [[String]] -> [String]
 missingDocs xss = f "" $ concat [(True,x) : map ((,) False) xs | x:xs <- xss]
     where
-        isCtor = isUpper . head
+        isCtor (x:xs) | isUpper x = True
+        isCtor ('[':x:xs) | isUpper x = True -- later Haddock sometimes writes constructors [Foo]
+        isCtor _ = False
+
         isSelector ctor x
             | Just (fields,result) <- unsnoc $ parseType ctor
             , [first,rest] <- parseType x
