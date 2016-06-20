@@ -80,7 +80,8 @@ checkTravis = do
 checkHoogle :: IO ()
 checkHoogle = whenM (doesDirectoryExist "dist/doc/html") $ do
     xs <- listContents "dist/doc/html"
-    forM_ xs $ \x -> do
+    -- I don't care that Derive isn't fully documented
+    forM_ (delete "derive" xs) $ \x -> do
         let file = x </> takeFileName x <.> "txt"
         contents <- readFileUTF8' file
         -- look for two lines in a row not separated by comments
