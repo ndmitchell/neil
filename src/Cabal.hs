@@ -76,21 +76,35 @@ checkTravis = do
             ["Got:"] ++ got
 
 
+undocumented :: [String]
+undocumented =
+    ["derive" -- I plan to stop maintaining it
+    ,"safe" -- The lack of documentation is deliberate, since the pattern is more important
+    ,"nsis" -- Issue to fix it at https://github.com/ndmitchell/nsis/issues/5
+    ]
+
+
 -- | Check every function exported is also documented
 checkHoogle :: IO ()
 checkHoogle = whenM (doesDirectoryExist "dist/doc/html") $ do
     xs <- listContents "dist/doc/html"
     -- I don't care that Derive isn't fully documented
-    forM_ xs $ \x -> when (takeFileName x /= "derive") $ do
+    forM_ xs $ \x -> do
         let file = x </> takeFileName x <.> "txt"
         contents <- readFileUTF8' file
         -- look for two lines in a row not separated by comments
         let bad = missingDocs $ wordsBy ("--" `isPrefixOf`) $
                   filter (\x -> not $ any (`isPrefixOf` x) docWhitelist) $
                   filter (not . null) $ map trim $ lines contents
-        when (bad /= []) $
-            error $ unlines $ "Bad hoogle:" : bad
-        putStrLn $ "Hoogle check successful for " ++ file
+        if bad == [] then
+            putStrLn $ "Hoogle check successful for " ++ file
+         else do
+            putStr $ unlines $ "Bad hoogle:" : bad
+            if (takeFileName x `elem` undocumented) then
+                putStrLn "Lack of complete documentation is known for " ++ file
+             else
+                error "Found bad Hoogle entries"
+
 
 docWhitelist :: [String]
 docWhitelist =
