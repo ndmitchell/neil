@@ -101,7 +101,7 @@ checkHoogle = whenM (doesDirectoryExist "dist/doc/html") $ do
          else do
             putStr $ unlines $ "Bad hoogle:" : bad
             if (takeFileName x `elem` undocumented) then
-                putStrLn "Lack of complete documentation is known for " ++ file
+                putStrLn $ "Lack of complete documentation is known for " ++ file
              else
                 error "Found bad Hoogle entries"
 
