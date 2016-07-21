@@ -25,7 +25,7 @@ if [ "$GHCVER" != "" ]; then
     elif [ "$GHCVER" = "7.10.3" ]; then
         CABALVER=1.22
     else
-        CABALVER=1.20
+        CABALVER=1.24
     fi
     retry sudo add-apt-repository -y ppa:hvr/ghc
     retry sudo apt-get update
