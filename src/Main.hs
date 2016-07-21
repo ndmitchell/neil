@@ -16,6 +16,8 @@ import Travis
 #endif
 import qualified Paper.Main as Paper
 
+foo = error __GLASGOW_HASKELL__
+
 
 main :: IO ()
 main = do
