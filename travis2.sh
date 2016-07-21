@@ -27,6 +27,8 @@ if [ -d /opt/alex ]; then
     export PATH=/opt/alex/$(ls /opt/alex)/bin:$PATH
 fi
 
+echo main = print __GLASGOW_HASKELL__ > t.hs
+runhaskell -XCPP t.hs
 
 #####################################################################
 ## PACKAGE SETUP
