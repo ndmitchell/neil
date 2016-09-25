@@ -1,4 +1,4 @@
-cabal-version:      >= 1.18
+cabal-version:      >= 1.10
 build-type:         Simple
 name:               neil
 version:            0.10
