@@ -303,7 +303,7 @@ checkCabalFile = do
                 | (x,':':_) <- map (break (== ':') . trimStart) src
                 , not $ any isSpace $ trim x, not $ "http" `isSuffixOf` x || "https" `isSuffixOf` x
                 , not $ all (\x -> isLower x || x == '-') x] ++
-            ["Must be cabal-version 1.10" | grab "cabal-version" /= [">= 1.10"]] ++
+-- MORE DISCUSSION REQUIRED            ["Must be cabal-version 1.10" | grab "cabal-version" /= [">= 1.10"]] ++
             [year ++ " is not in the copyright year" | not $ year `isInfixOf` concat (grab "copyright")] ++
             ["copyright string is not at the start of the license-file" | not $ (concat (grab "copyright") `isInfixOf` concat (take 1 $ lines license)) || grab "license" == ["GPL"]] ++
             ["No correct source-repository link"
