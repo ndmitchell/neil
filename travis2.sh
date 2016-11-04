@@ -19,6 +19,9 @@ timer(){
 #####################################################################
 ## GHC SETUP
 
+ls /opt/ghc
+ls /opt/ghc/*.*
+
 export "PATH=$HOME/.cabal/bin:/opt/ghc/$(ls /opt/ghc/*.*)/bin:/opt/cabal/$(ls /opt/cabal)/bin:$PATH"
 if [ -d /opt/happy ]; then
     export PATH=/opt/happy/$(ls /opt/happy)/bin:$PATH
