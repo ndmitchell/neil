@@ -280,6 +280,7 @@ checkReadme = do
              "(https://ci.appveyor.com/project/ndmitchell/" ++ name ++ ")"
             ,"[![Build Status](https://img.shields.io/travis/" ++ qname ++ ".svg)]" ++
              "(https://travis-ci.org/" ++ qname ++ ")"
+            ,"[![Chat on Gitter](https://badges.gitter.im/gitterHQ/gitterHQ.github.io.svg)](https://gitter.im/" ++ name ++ "/Lobby)"
             ]
     let line1 = head $ src ++ [""]
     let bangs = length $ filter (== '!') line1
