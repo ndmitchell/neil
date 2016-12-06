@@ -26,6 +26,7 @@ source-repository head
 flag small
     default: False
     description: Minimise dependencies
+    manual: True
 
 executable neil
     default-language:   Haskell2010
