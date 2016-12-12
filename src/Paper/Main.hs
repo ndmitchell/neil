@@ -126,8 +126,10 @@ dataDir = do
         Nothing -> error "Couldn't find the data directory"
         Just y -> return $ dropFileName y </> "data"
 
+#ifndef SMALL
 settingsDir :: FileData -> IO FilePath
 settingsDir = ensureDir "paper"
+#endif
 
 objDir :: String -> FileData -> IO String
 objDir cmd = ensureDir ("obj" </> cmd)
