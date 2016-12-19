@@ -65,7 +65,6 @@ checkTravis = do
     let got = filter (not . null) $
               replace ["sudo: true"] [] $
               replace ["matrix:","  allow_failures:"] [] $
-              replace ["   - env: GHCVER=8.0.1"] [] $
               replace ["   - env: GHCVER=head"] [] $
               map (trimEnd . takeWhile (/= '#')) $ lines src
     when ("allow_failures:" `isInfixOf` src) $ putStrLn $ "Warning: .travis.yml allows failures with GHC HEAD"
