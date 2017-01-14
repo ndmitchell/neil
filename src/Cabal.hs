@@ -9,7 +9,6 @@ import Data.List.Extra
 import Data.Maybe
 import Data.Functor
 import Data.Tuple.Extra
-import Data.Time
 import System.Directory.Extra
 import System.IO.Extra
 import System.FilePath
@@ -289,6 +288,14 @@ checkReadme = do
         error $ "Unexpected badges, found " ++ show bangs ++ ", but only recognised " ++ show found
 
 
+getLatestYear :: IO String
+getLatestYear = do
+    res <- systemOutput_ "git show -s --format=%ci HEAD"
+    let year = takeWhile isDigit res
+    when (length year /= 4) $ fail $ "Couldn't get date, " ++ res
+    return year
+
+
 checkCabalFile :: IO ()
 checkCabalFile = do
     project <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal 
@@ -296,7 +303,7 @@ checkCabalFile = do
     test <- testedWith
     let grab tag = [trimStart $ drop (length tag + 1) x | x <- relines src, (tag ++ ":") `isPrefixOf` x]
     license <- catch_ (readFile' $ concat $ grab "license-file") $ \_ -> return ""
-    year <- show . fst3 . toGregorian . utctDay <$> getCurrentTime
+    year <- getLatestYear
     let bad =
             ["Incorrect declaration style: " ++ x
                 | (x,':':_) <- map (break (== ':') . trimStart) src

@@ -31,7 +31,7 @@ flag small
 executable neil
     default-language:   Haskell2010
     hs-source-dirs:     src
-    build-depends:      base == 4.*, filepath, directory, time, process, extra >= 0.5,
+    build-depends:      base == 4.*, filepath, directory, process, extra >= 0.5,
                         containers, cmdargs
     if flag(small)
         cpp-options: -DSMALL
