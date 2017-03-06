@@ -24,6 +24,7 @@ There are a few places where my opinion on coding differs from other people, so 
 * I tend to be conservative in my use of extensions. If the project doesn't already use type functions/GADTs, then unless they add compelling benefits, I'm probably not going to like them.
 * I am conservative in my use of additional packages, since each additional package complicates a project. I tend to not use upper bounds unless I think they are particularly valuable, but do so on a package-by-package basis.
 * I avoid CPP where possible, trying other techniques to work around API changes through versions.
+* Where I do use CPP, I make sure the code still loads in `ghci` alone, if all `MIN_VERSION_foo` macros have not been defined.
 * I don't use explicit imports, since I consider the benefits small, but the cost of continually editing imports while developing to be a significant distraction to the flow of coding.
 * I stick to ASCII characters, since I appreciate the ease of typing and complete editor/font compatibility.
 * I don't add stack.yml files if they would be identical to those produced by stack init. I do test that `stack init` works and builds correctly.
