@@ -260,18 +260,19 @@ checkReadme :: IO ()
 checkReadme = do
     name <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal
     src <- fmap lines $ readFile "README.md"
-    let qname = qualify src name
+    let travis = ownerTravis src ++ "/" ++ name
+    let appveyor = ownerAppveyor src ++ "/" ++ name
     let badges =
             ["[![Hackage version](https://img.shields.io/hackage/v/" ++ name ++ ".svg?label=Hackage)]" ++
              "(https://hackage.haskell.org/package/" ++ name ++ ")"
             ,"[![Stackage version](https://www.stackage.org/package/" ++ name ++ "/badge/lts?label=Stackage)]" ++
              "(https://www.stackage.org/package/" ++ name ++ ")"
-            ,"[![Linux Build Status](https://img.shields.io/travis/" ++ qname ++ ".svg?label=Linux%20build)]" ++
-             "(https://travis-ci.org/" ++ qname ++ ")"
-            ,"[![Windows Build Status](https://img.shields.io/appveyor/ci/" ++ qname ++ ".svg?label=Windows%20build)]" ++
-             "(https://ci.appveyor.com/project/" ++ qname ++ ")"
-            ,"[![Build Status](https://img.shields.io/travis/" ++ qname ++ ".svg)]" ++
-             "(https://travis-ci.org/" ++ qname ++ ")"
+            ,"[![Linux Build Status](https://img.shields.io/travis/" ++ travis ++ ".svg?label=Linux%20build)]" ++
+             "(https://travis-ci.org/" ++ travis ++ ")"
+            ,"[![Windows Build Status](https://img.shields.io/appveyor/ci/" ++ appveyor ++ ".svg?label=Windows%20build)]" ++
+             "(https://ci.appveyor.com/project/" ++ appveyor ++ ")"
+            ,"[![Build Status](https://img.shields.io/travis/" ++ travis ++ ".svg)]" ++
+             "(https://travis-ci.org/" ++ travis ++ ")"
             ]
     let line1 = head $ src ++ [""]
     let bangs = length $ filter (== '!') line1
@@ -298,6 +299,7 @@ checkCabalFile = do
     let grab tag = [trimStart $ drop (length tag + 1) x | x <- relines src, (tag ++ ":") `isPrefixOf` x]
     license <- catch_ (readFile' $ concat $ grab "license-file") $ \_ -> return ""
     year <- getLatestYear
+    let github = ownerGithub src ++ "/" ++ project
     let bad =
             ["Incorrect declaration style: " ++ x
                 | (x,':':_) <- map (break (== ':') . trimStart) src
@@ -306,9 +308,9 @@ checkCabalFile = do
             [year ++ " is not in the copyright year" | not $ year `isInfixOf` concat (grab "copyright")] ++
             ["copyright string is not at the start of the license-file" | not $ (concat (grab "copyright") `isInfixOf` concat (take 1 $ lines license)) || grab "license" == ["GPL"]] ++
             ["No correct source-repository link"
-                | let want = "source-repository head type: git location: https://github.com/" ++ qualify src project ++ ".git"
+                | let want = "source-repository head type: git location: https://github.com/" ++ github ++ ".git"
                 , not $ want `isInfixOf` unwords (words $ unlines src)] ++
-            ["No bug-reports link" | grab "bug-reports" /= ["https://github.com/" ++ qualify src project ++ "/issues"]] ++
+            ["No bug-reports link" | grab "bug-reports" /= ["https://github.com/" ++ github ++ "/issues"]] ++
             ["Homepage no longer exists" | "~ndm" `isInfixOf` concat (grab "homepage")] ++
             ["Incorrect license " | grab "license" `notElem` [["BSD3"],["MIT"],["GPL"]]] ++
             ["Invalid tested-with: " ++ show test | not $ validTests test] ++
@@ -321,11 +323,14 @@ checkCabalFile = do
 validTests :: [String] -> Bool
 validTests xs = length xs > 1 && xs `isPrefixOf` reverse defAllow
 
-qualify :: [String] -> String -> String
-qualify src proj = user ++ "/" ++ proj
-    where user1 = takeWhile (/= '/') $ drop 19 $ snd $ breakOn "https://github.com/" $ unlines src
-          user2 = takeWhile (/= '/') $ drop 30 $ snd $ breakOn "https://img.shields.io/travis/" $ unlines src
-          user = if user2 /= "" then user2 else if user1 /= "" then user1 else "ndmitchell"
+ownerGithub = owner "https://github.com/"
+ownerTravis = owner "https://img.shields.io/travis/"
+ownerAppveyor = owner "https://img.shields.io/appveyor/ci/"
+
+owner :: String -> [String] -> String
+owner fragment src = if x == "" then "ndmitchell" else x
+    where x = takeWhile (/= '/') $ drop (length fragment) $ snd $ breakOn fragment $ unlines src
+
 
 relines :: [String] -> [String]
 relines (x:xs) | ":" `isSuffixOf` x = unwords (x:a) : relines b
