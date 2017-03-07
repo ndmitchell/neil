@@ -262,13 +262,7 @@ checkReadme = do
     src <- fmap lines $ readFile "README.md"
     let qname = qualify src name
     let badges =
-            -- DEPRECATED (style=flat is no longer required)
-            ["[![Hackage version](https://img.shields.io/hackage/v/" ++ name ++ ".svg?style=flat)]" ++
-             "(https://hackage.haskell.org/package/" ++ name ++ ") "
-            ,"[![Build Status](https://img.shields.io/travis/" ++ qname ++ ".svg?style=flat)]" ++
-             "(https://travis-ci.org/" ++ qname ++ ")"
-            -- ACTIVE
-            ,"[![Hackage version](https://img.shields.io/hackage/v/" ++ name ++ ".svg?label=Hackage)]" ++
+            ["[![Hackage version](https://img.shields.io/hackage/v/" ++ name ++ ".svg?label=Hackage)]" ++
              "(https://hackage.haskell.org/package/" ++ name ++ ")"
             ,"[![Stackage version](https://www.stackage.org/package/" ++ name ++ "/badge/lts?label=Stackage)]" ++
              "(https://www.stackage.org/package/" ++ name ++ ")"
