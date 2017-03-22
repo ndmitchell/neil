@@ -177,6 +177,7 @@ run Test{..} = Just $ do
               "--ghc-option=-rtsopts " ++
               "--ghc-option=-fwarn-unused-binds --ghc-option=-fwarn-unused-imports " ++
               "--ghc-option=-fwarn-tabs " ++
+              "--flags=testprog " ++
               (if no_warnings then "" else "--ghc-option=-Werror")
         system_ "cabal build"
         system_ "cabal haddock --hoogle"
