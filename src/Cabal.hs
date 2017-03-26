@@ -172,7 +172,7 @@ run Test{..} = Just $ do
     ghcVer <- fst . line1 <$> systemOutput_ "ghc --numeric-version"
 
     withSDist $ do
-        system_ "cabal install --only-dependencies"
+        system_ "cabal install --only-dependencies --enable-tests --flags=testprog"
         system_ $ "cabal configure --enable-tests --disable-library-profiling " ++
               "--ghc-option=-rtsopts " ++
               "--ghc-option=-fwarn-unused-binds --ghc-option=-fwarn-unused-imports " ++
