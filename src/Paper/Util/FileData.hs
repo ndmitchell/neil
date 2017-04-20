@@ -64,7 +64,7 @@ getDir dir = do
     -- now pick the main file
     let mainFile = snd $ maximum [(rank x, x) | x <- files]
         dirs = reverse $ splitDirectories dir
-        rank x = liftM negate $ findIndex (== dropExtension x) dirs
+        rank x = liftM negate $ elemIndex (dropExtension x) dirs
     return (dir, [mainFile | not $ null files] ++ files, [])
 
 

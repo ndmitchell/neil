@@ -1,6 +1,7 @@
 {-# LANGUAGE CPP #-}
 module Paper.Main(main) where
 
+import Control.Monad
 import System.Directory
 import System.Environment
 import System.FilePath
@@ -57,7 +58,7 @@ main = do
 wc :: (FilePath -> IO Int) -> FileData -> IO ()
 wc f files = do
     let shw = fixed ("total" : map dropExtension (allFiles files))
-    res <- flip mapM (allFiles files) $ \file -> do
+    res <- forM (allFiles files) $ \file -> do
         putStr $ shw (dropExtension file) ++ "  "
         count <- f (directory files </> file)
         putStrLn $ int count

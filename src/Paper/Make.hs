@@ -24,16 +24,16 @@ make dataDir objDir srcDir mainFile allFiles = do
     bib <- dataFile "paper.bib" $ files srcDir "bib"
     tex <- dataFile "paper.tex" $ return allFiles
 
-    for (eps2 ++ fmt ++ cls) $
+    forM_ (eps2 ++ fmt ++ cls) $
         \e -> replaceDirectory e objDir <== [e] $ copyFile
     when (not $ null eps1) $ createDirectoryIfMissing True (objDir </> "graphics")
-    for eps1 $
+    forM_ eps1 $
         \e -> replaceDirectory e (objDir </> "graphics") <== [e] $ copyFile
-    for bib $
+    forM_ bib $
         \b -> replaceDirectory b objDir <== [b] $ \from to -> do
             copyFile from to
             system_ sys $ "bibtex -quiet " ++ takeBaseName b
-    for tex $
+    forM_ tex $
         \t -> replaceDirectory t objDir <== (t:fmt) $ \from to -> do
             -- intermediate copy step because lhs2tex has bugs
             -- which means the input can't be an absolute path
@@ -52,8 +52,6 @@ make dataDir objDir srcDir mainFile allFiles = do
 fixLineEndings file = do
     src <- readFile' file
     writeFile file $ filter (/= '\r') src
-
-for x = flip mapM x
 
 files dir ext = do
     b <- doesDirectoryExist dir
