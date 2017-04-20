@@ -1,4 +1,4 @@
-{-# LANGUAGE RecordWildCards, PatternGuards #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module Travis(run) where
 

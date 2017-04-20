@@ -14,7 +14,6 @@
 - ignore: {name: "Redundant bracket"}
 - ignore: {name: "Redundant do"}
 - ignore: {name: "Use <$>"}
-- ignore: {name: "Unused LANGUAGE pragma"}
 - ignore: {name: "Use fmap"}
 - ignore: {name: "Use elemIndex"}
 - ignore: {name: "Use let"}
@@ -23,8 +22,6 @@
 - ignore: {name: "Avoid lambda"}
 - ignore: {name: "Use unless"}
 - ignore: {name: "Eta reduce"}
-- ignore: {name: "Use sequence_"}
-- ignore: {name: "Use forM_"}
 - ignore: {name: "Use :"}
 - ignore: {name: "Use guards"}
 - ignore: {name: "Fuse concatMap/map"}

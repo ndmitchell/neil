@@ -9,7 +9,7 @@ import Paper.Util.Error
 todo :: [FilePath] -> IO ()
 todo files = do
     errs <- liftM concat $ mapM readTodos files
-    sequence errs
+    sequence_ errs
     when (not $ null errs) $
         error $ "Error: " ++ show (length errs) ++ " todo commands found"
     putStrLn "No todo commands found"

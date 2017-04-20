@@ -17,7 +17,7 @@ ref :: [FilePath] -> IO ()
 ref files = do
     r <- mapM readRefs files
     let errs = checkRefs $ foldl addRef Map.empty $ concat r
-    sequence errs
+    sequence_ errs
     when (not $ null errs) $
         error $ "Error: " ++ show (length errs) ++ " references failed"
     putStrLn "All references are correct"

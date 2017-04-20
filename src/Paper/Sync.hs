@@ -15,7 +15,7 @@ sync dir = do
     if b then check dir else do
         xs <- getDirectoryContents dir
         xs <- return [dir </> x | x <- xs, not $ all (== '.') x]
-        flip mapM_ xs $ \x -> do
+        forM_ xs $ \x -> do
             b <- doesDirectoryExist x
             when b $ sync x
 
