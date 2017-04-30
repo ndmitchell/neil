@@ -48,8 +48,8 @@ if [ "$GHCVER" = "head" ] && [ "$FAIL" = "1" ]; then
         exit
     fi
 fi
-retry git clone https://github.com/ndmitchell/neil
-(cd neil && retry cabal install --flags=small)
+retry git clone https://github.com/ndmitchell/neil .neil
+(cd .neil && retry cabal install --flags=small)
 if [ -e travis.hs ]; then
     # ensure that reinstalling this package won't break the test script
     mkdir travis
