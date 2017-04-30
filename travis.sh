@@ -63,4 +63,5 @@ timer neil test --install $FLAGS
 if [ -e travis.hs ]; then
     timer travis/travis
 fi
+wget https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh -O - --quiet | sh -s .
 git diff --exit-code # check regenerating doesn't change anything
