@@ -16,12 +16,16 @@ import System.Process.Extra
 import Arguments
 import Prelude
 
-defAllow = ["7.4.2","7.6.3","7.8.4","7.10.3","8.0.2"]
+-- | GHC releases I test with
+ghcReleases = ["7.4.2","7.6.3","7.8.4","7.10.3","8.0.2"]
+
+-- | The next version of GHC that has not yet been released
+--   (might test it in Travis, but won't be in the tested-with)
+ghcNext = "8.2.1"
 
 
 ---------------------------------------------------------------------
 -- COMMANDS
-
 
 -- | Check the .cabal file is well formed
 cabalCheck :: IO ()
@@ -61,6 +65,7 @@ checkTravis = do
             ]
     src <- readFile' ".travis.yml"
     let got = filter (not . null) $
+              replace [" - GHCVER=" ++ ghcNext] [] $
               replace ["sudo: true"] [] $
               replace ["matrix:","  allow_failures:"] [] $
               replace ["   - env: GHCVER=head"] [] $
@@ -322,7 +327,7 @@ checkCabalFile = do
     unless (null bad) $ error $ unlines bad
 
 validTests :: [String] -> Bool
-validTests xs = length xs > 1 && xs `isPrefixOf` reverse defAllow
+validTests xs = length xs > 1 && xs `isPrefixOf` reverse ghcReleases
 
 ownerGithub = owner "https://github.com/"
 ownerTravis = owner "https://img.shields.io/travis/"
