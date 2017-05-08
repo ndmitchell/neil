@@ -57,18 +57,19 @@ checkTravis :: IO ()
 checkTravis = do
     tests <- testedWith
     let require =
-            ["env:"] ++
-            [" - GHCVER=" ++ t | t <- reverse tests] ++
-            [" - GHCVER=head"
+            ["sudo: required"
+            ,"env:"] ++
+            ["- GHCVER=" ++ t | t <- reverse tests] ++
+            ["- GHCVER=head"
             ,"script:"
-            ," - wget https://raw.github.com/ndmitchell/neil/master/travis.sh -O - --quiet | sh"
+            ,"- wget https://raw.github.com/ndmitchell/neil/master/travis.sh -O - --quiet | sh"
             ]
     src <- readFile' ".travis.yml"
     let got = filter (not . null) $
-              replace [" - GHCVER=" ++ ghcNext] [] $
+              replace ["- GHCVER=" ++ ghcNext] [] $
               replace ["sudo: true"] [] $
               replace ["matrix:","  allow_failures:"] [] $
-              replace ["   - env: GHCVER=head"] [] $
+              replace ["  - env: GHCVER=head"] [] $
               map (trimEnd . takeWhile (/= '#')) $ lines src
     when ("allow_failures:" `isInfixOf` src) $ putStrLn $ "Warning: .travis.yml allows failures with GHC HEAD"
     got <- return $ take (length require - 1) got ++ [last got] -- drop everything between script/wget
