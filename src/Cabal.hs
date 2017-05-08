@@ -312,7 +312,7 @@ checkCabalFile = do
                 , not $ want `isInfixOf` unwords (words $ unlines src)] ++
             ["No bug-reports link" | grab "bug-reports" /= ["https://github.com/" ++ github ++ "/issues"]] ++
             ["Homepage no longer exists" | "~ndm" `isInfixOf` concat (grab "homepage")] ++
-            ["Incorrect license " | grab "license" `notElem` [["BSD3"],["MIT"],["GPL"]]] ++
+            ["Incorrect license" | grab "license" `notElem` [["BSD3"],["MIT"]]] ++
             ["Invalid tested-with: " ++ show test | not $ validTests test] ++
             ["Bad stabilty, should be missing" | grab "stability" /= []] ++
             ["Missing CHANGES.txt in extra-doc-files" | ["CHANGES.txt","changelog.md"] `disjoint` concatMap words (grab "extra-doc-files")] ++
