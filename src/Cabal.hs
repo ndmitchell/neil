@@ -313,6 +313,7 @@ checkCabalFile = do
             ["No bug-reports link" | grab "bug-reports" /= ["https://github.com/" ++ github ++ "/issues"]] ++
             ["Homepage no longer exists" | "~ndm" `isInfixOf` concat (grab "homepage")] ++
             ["Incorrect license" | grab "license" `notElem` [["BSD3"],["MIT"]]] ++
+            ["Incorrect default language" | x <- grab "default-language", x /= "Haskell2010"] ++
             ["Invalid tested-with: " ++ show test | not $ validTests test] ++
             ["Bad stabilty, should be missing" | grab "stability" /= []] ++
             ["Missing CHANGES.txt in extra-doc-files" | ["CHANGES.txt","changelog.md"] `disjoint` concatMap words (grab "extra-doc-files")] ++
