@@ -57,7 +57,7 @@ checkTravis = do
             [" - GHCVER=" ++ t | t <- reverse tests] ++
             [" - GHCVER=head"
             ,"script:"
-            ," - wget https://raw.github.com/ndmitchell/neil/master/travis.sh -O - --no-check-certificate --quiet | sh"
+            ," - wget https://raw.github.com/ndmitchell/neil/master/travis.sh -O - --quiet | sh"
             ]
     src <- readFile' ".travis.yml"
     let got = filter (not . null) $
