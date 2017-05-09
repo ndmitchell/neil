@@ -54,7 +54,7 @@ checkGhci = do
 
 
 checkTravis :: IO ()
-checkTravis = when False $ do
+checkTravis = do
     tests <- testedWith
     let require =
             ["sudo: required"
