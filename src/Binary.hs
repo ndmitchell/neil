@@ -6,7 +6,7 @@ module Binary(run) where
 
 import Arguments
 import Cabal hiding (run)
-import Control.Monad
+import Control.Monad.Extra
 import System.Info.Extra
 import System.IO.Extra
 import System.Process.Extra
@@ -33,7 +33,8 @@ run Binary{..} = Just $ withCurrentDirectory path $ withTempDir $ \tdir -> do
         system_ "cabal build"
         let out = "bin" </> vname
         copy ("dist/build" </> name </> name <.> exe) (out </> name <.> exe)
-        files <- (["CHANGES.txt","LICENSE","README.md"]++) <$> listFiles "data"
+        dataFiles <- ifM (doesDirectoryExist "data") (listFiles "data") (return [])
+        let files = ["CHANGES.txt","LICENSE","README.md"] ++ dataFiles
         forM_ files $ \file ->
             copy file $ out </> file
         withCurrentDirectory "bin" $
