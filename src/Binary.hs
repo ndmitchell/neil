@@ -1,4 +1,4 @@
-{-# LANGUAGE RecordWildCards, PatternGuards, ViewPatterns #-}
+{-# LANGUAGE RecordWildCards #-}
 
 -- This script creates a binary distribution at dist/bin/$package-$ver.zip
 -- or .tar.gz on Linux
