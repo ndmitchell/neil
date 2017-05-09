@@ -10,6 +10,7 @@ import System.IO
 
 import Arguments
 import Cabal
+import Binary
 import Git
 #ifndef SMALL
 import Travis
@@ -28,6 +29,7 @@ main = do
             fromMaybe (error $ "Don't know how to deal with argument: " ++ show args) $ msum
                 [Git.run args
                 ,Cabal.run args
+                ,Binary.run args
 #ifndef SMALL
                 ,Travis.run args
 #endif
