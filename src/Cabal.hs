@@ -194,7 +194,7 @@ run Test{..} = Just $ do
             system_ "cabal copy"
             system_ "cabal register"
 
-run Check = Just cabalCheck
+run Check{..} = Just $ withCurrentDirectory path cabalCheck
 
 run Sdist = Just $ do
     cabalCheck

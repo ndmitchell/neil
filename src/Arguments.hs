@@ -19,7 +19,7 @@ data Arguments
  
     -- cabal stuff
     | Sdist
-    | Check
+    | Check {path :: FilePath}
     | Test {install :: Bool, no_warnings :: Bool}
       deriving (Data,Typeable,Show)
 
@@ -40,7 +40,7 @@ arguments = cmdArgsMode $ modes
     ,Sdist {}
           &= help "Create a cabal sdist with extra checks"
     ,Tag {} &= help "Tag the repo, after a release"
-    ,Check
+    ,Check {path = "." &= args &= typDir}
     ,Docs {username = "NeilMitchell", host = "https://hackage.haskell.org"}
     ,Travis {wait = 0 &= help "Time to wait after each wget request"}
     ,Test {install = False &= help "Install after building", no_warnings = False}
