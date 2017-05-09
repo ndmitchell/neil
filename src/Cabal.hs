@@ -1,6 +1,6 @@
 {-# LANGUAGE RecordWildCards, PatternGuards, ViewPatterns #-}
 
-module Cabal(run, readCabal) where
+module Cabal(run, readCabal, extractCabal) where
 
 import Control.Monad.Extra
 import Control.Exception.Extra
