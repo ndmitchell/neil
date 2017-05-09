@@ -67,7 +67,6 @@ checkTravis = when False $ do
     src <- readFile' ".travis.yml"
     let got = filter (not . null) $
               replace ["- GHCVER=" ++ ghcNext] [] $
-              replace ["sudo: true"] [] $
               replace ["matrix:","  allow_failures:"] [] $
               replace ["  - env: GHCVER=head"] [] $
               map (trimEnd . takeWhile (/= '#')) $ lines src
