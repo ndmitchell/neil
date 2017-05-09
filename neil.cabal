@@ -70,6 +70,7 @@ executable neil
         Paper.Haskell
         Paper.Main
         Arguments
+        Binary
         Cabal
         Git
         Travis
