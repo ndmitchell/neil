@@ -4,12 +4,11 @@
 set -e # exit on errors
 
 PACKAGE=$1
-shift
-
 if [ -z "$PACKAGE" ]; then
     echo No arguments provided, please pass the project name as the first argument
     exit 1
 fi
+shift
 
 echo Downloading and running $PACKAGE...
 RELEASES=$(curl --silent https://api.github.com/repos/ndmitchell/$PACKAGE/releases)
