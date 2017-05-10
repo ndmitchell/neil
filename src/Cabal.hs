@@ -321,7 +321,7 @@ checkCabalFile = do
             ["Incorrect default language" | x <- grab "default-language", x /= "Haskell2010"] ++
             ["Invalid tested-with: " ++ show test | not $ validTests test] ++
             ["Bad stabilty, should be missing" | grab "stability" /= []] ++
-            ["Missing CHANGES.txt in extra-doc-files" | ["CHANGES.txt","changelog.md"] `disjoint` concatMap words (grab "extra-doc-files")] ++
+            ["Missing CHANGES.txt in extra-doc-files" | ["CHANGES.txt","CHANGELOG.md","changelog.md"] `disjoint` concatMap words (grab "extra-doc-files")] ++
             ["Missing README.md in extra-doc-files" | "README.md" `notElem` concatMap words (grab "extra-doc-files")] ++
             ["Not all flag's have manual attributes" | let flag = length $ filter ("flag " `isPrefixOf`) src, let manual = length $ filter ("manual:" `isPrefixOf`) $ map trimStart src, flag /= manual]
     unless (null bad) $ error $ unlines bad
