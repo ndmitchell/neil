@@ -56,14 +56,15 @@ checkGhci = do
 checkTravis :: IO ()
 checkTravis = do
     tests <- testedWith
-    let require =
+    let requirePrefix =
             ["sudo: required"
             ,"env:"] ++
             ["- GHCVER=" ++ t | t <- reverse tests] ++
             ["- GHCVER=head"
             ,"script:"
-            ,"- wget https://raw.github.com/ndmitchell/neil/master/travis.sh -O - --quiet | sh"
             ]
+    let requireAnywhere =
+            ["- wget https://raw.github.com/ndmitchell/neil/master/travis.sh -O - --quiet | sh"]
     src <- readFile' ".travis.yml"
     let got = filter (not . null) $
               replace ["- GHCVER=" ++ ghcNext] [] $
@@ -71,10 +72,9 @@ checkTravis = do
               replace ["  - env: GHCVER=head"] [] $
               map (trimEnd . takeWhile (/= '#')) $ lines src
     when ("allow_failures:" `isInfixOf` src) $ putStrLn $ "Warning: .travis.yml allows failures with GHC HEAD"
-    got <- return $ take (length require - 1) got ++ [last got] -- drop everything between script/wget
-    when (got /= require) $
+    unless (requirePrefix `isPrefixOf` got && requireAnywhere `isInfixOf` got) $
         error $ unlines $
-            [".travis.yml file mismatch","Wanted:"] ++ require ++
+            [".travis.yml file mismatch","Wanted:"] ++ requirePrefix ++ requireAnywhere ++
             ["Got:"] ++ got
 
 
