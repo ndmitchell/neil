@@ -64,7 +64,7 @@ checkTravis = do
             ,"script:"
             ]
     let requireAnywhere =
-            ["- curl --location --silent https://raw.github.com/ndmitchell/neil/master/travis.sh | sh"]
+            ["- curl -sL https://raw.github.com/ndmitchell/neil/master/travis.sh | sh"]
     src <- readFile' ".travis.yml"
     let got = filter (not . null) $
               replace ["- GHCVER=" ++ ghcNext] [] $
