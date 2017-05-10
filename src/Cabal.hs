@@ -339,7 +339,7 @@ owner fragment src = if x == "" then "ndmitchell" else x
 
 
 relines :: [String] -> [String]
-relines (x:xs) | ":" `isSuffixOf` x = unwords (x:a) : relines b
+relines (x:xs) | ":" `isInfixOf` x = unwords (x:a) : relines b
     where (a,b) = break (\x -> trimStart x == x) xs
 relines (x:xs) = x : relines xs
 relines [] = []
