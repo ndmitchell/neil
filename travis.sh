@@ -55,8 +55,13 @@ if [ -e travis.hs ]; then
     mkdir travis
     ghc --make travis.hs -outputdir travis -o travis/travis
 fi
+
 # make sure we hlint check before running the tests, in case they generate non-compliant hlint
+if [ "$HLINT_ARGUMENTS" = "" ]; then
+    HLINT_ARGUMENTS=.
+fi
 wget https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh -O - --quiet | sh -s $HLINT_ARGUMENTS
+
 FLAGS=
 if [ "$GHCVER" = "head" ]; then
     FLAGS=--no-warnings
@@ -64,8 +69,5 @@ fi
 timer neil test --install $FLAGS
 if [ -e travis.hs ]; then
     timer travis/travis
-fi
-if [ "$HLINT_ARGUMENTS" = "" ]; then
-    HLINT_ARGUMENTS=.
 fi
 git diff --exit-code # check regenerating doesn't change anything
