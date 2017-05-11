@@ -16,6 +16,11 @@ timer(){
     set -x;
 }
 
+# make sure we hlint check before running the tests, in case they generate non-compliant hlint
+if [ "$HLINT_ARGUMENTS" = "" ]; then
+    HLINT_ARGUMENTS=.
+fi
+wget https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh -O - --quiet | sh -s $HLINT_ARGUMENTS
 
 if [ "$GHCVER" != "" ]; then
     # Try and use the Cabal that ships with the same GHC version
@@ -55,12 +60,6 @@ if [ -e travis.hs ]; then
     mkdir travis
     ghc --make travis.hs -outputdir travis -o travis/travis
 fi
-
-# make sure we hlint check before running the tests, in case they generate non-compliant hlint
-if [ "$HLINT_ARGUMENTS" = "" ]; then
-    HLINT_ARGUMENTS=.
-fi
-wget https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh -O - --quiet | sh -s $HLINT_ARGUMENTS
 
 FLAGS=
 if [ "$GHCVER" = "head" ]; then
