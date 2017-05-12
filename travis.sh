@@ -20,7 +20,7 @@ timer(){
 if [ "$HLINT_ARGUMENTS" = "" ]; then
     HLINT_ARGUMENTS=.
 fi
-wget https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh -O - --quiet | sh -s $HLINT_ARGUMENTS
+curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s $HLINT_ARGUMENTS
 
 if [ "$GHCVER" != "" ]; then
     # Try and use the Cabal that ships with the same GHC version
