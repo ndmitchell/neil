@@ -1,6 +1,6 @@
 # This script is invoked from my Appveyor commands
 # It bootstraps to install stack and run the tests
-$ErrorActionPreference = "Stop"
+# $ErrorActionPreference = "Stop"
 Set-PSDebug -Trace 1
 
 Invoke-WebRequest 'http://www.stackage.org/stack/windows-i386' -OutFile 'stack.zip'
