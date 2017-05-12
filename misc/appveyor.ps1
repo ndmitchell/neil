@@ -1,5 +1,7 @@
 # This script is invoked from my Appveyor commands
 # It bootstraps to grab the a binary release and run it
+$ErrorActionPreference = "Stop"
+
 $PACKAGE=$args[0]
 if ($args.length -eq 0) {
     Write-Output "No arguments provided, please pass the project name as the first argument"
