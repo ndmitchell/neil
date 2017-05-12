@@ -31,7 +31,7 @@ $TEMP=New-TemporaryFile
 Remove-Item $TEMP
 $TEMP=New-Item $TEMP -type Directory
 $ZIP=Join-Path "$TEMP" "$PACKAGE.zip"
-Invoke-WebRequest -Uri $URL -OutFile $ZIP
+Invoke-WebRequest $URL -OutFile $ZIP
 [System.IO.Compression.ZipFile]::ExtractToDirectory($ZIP, $TEMP)
 $EXE=Join-Path "$TEMP" "$PACKAGE-$VERSION\$PACKAGE.exe"
 & $EXE $args[1 .. ($args.length-1)]
