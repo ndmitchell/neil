@@ -4,7 +4,7 @@
 Set-PSDebug -Trace 1
 
 Invoke-WebRequest 'http://www.stackage.org/stack/windows-i386' -OutFile 'stack.zip'
-7z x stack.zip stack.exe
+7z x -y stack.zip stack.exe 
 
 $HLINT_ARGUMENTS=$env:HLINT_ARGUMENTS
 if ($HLINT_ARGUMENTS -eq '') {
