@@ -16,7 +16,7 @@ $URL = ""
     foreach ($x in $x.assets) {
         if ($x.browser_download_url -match '.*-x86_64-windows\.zip') {
             $URL = $x.browser_download_url
-            break :top
+            break top
         }
     }
 }
@@ -34,3 +34,4 @@ Invoke-WebRequest -Uri $URL -OutFile $ZIP
 [System.IO.Compression.ZipFile]::ExtractToDirectory($ZIP, $TEMP)
 $EXE=Join-Path "$TEMP" "$PACKAGE-$VERSION\$PACKAGE.exe"
 & $EXE $args[1 .. ($args.length-1)]
+Remove-Item $TEMP -Recurse
