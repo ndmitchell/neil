@@ -1,6 +1,5 @@
 # This script is invoked from my Appveyor commands
 # It bootstraps to grab the a binary release and run it
-Add-Type -AssemblyName System.IO.Compression.FileSystem
 Write-Output "DEBUG: args = $args"
 $PACKAGE=$args[0]
 if ($args.length -eq 0) {
@@ -32,6 +31,7 @@ Remove-Item $TEMP
 $TEMP=New-Item $TEMP -type Directory
 $ZIP=Join-Path "$TEMP" "$PACKAGE.zip"
 Invoke-WebRequest $URL -OutFile $ZIP
+Add-Type -AssemblyName System.IO.Compression.FileSystem
 [System.IO.Compression.ZipFile]::ExtractToDirectory($ZIP, $TEMP)
 $EXE=Join-Path "$TEMP" "$PACKAGE-$VERSION\$PACKAGE.exe"
 & $EXE $args[1 .. ($args.length-1)]
