@@ -1,12 +1,13 @@
 # This script is invoked from my Appveyor commands
 # It bootstraps to grab the a binary release and run it
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-
+Write-Output "DEBUG: args = $args"
 $PACKAGE=$args[0]
 if ($args.length -eq 0) {
     Write-Output "No arguments provided, please pass the project name as the first argument"
     exit 1
 }
+Write-Output "DEBUG: PACKAGE = $PACKAGE"
 
 Write-Output "Downloading and running $PACKAGE..."
 $RELEASES=Invoke-WebRequest https://api.github.com/repos/ndmitchell/$PACKAGE/releases
