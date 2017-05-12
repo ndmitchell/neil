@@ -12,7 +12,7 @@ shift
 
 echo Downloading and running $PACKAGE...
 RELEASES=$(curl --silent https://api.github.com/repos/ndmitchell/$PACKAGE/releases)
-URL=$(echo $RELEASES | sed -e 's/.*"browser_download_url" *: *"\([^"]*-x86_64-linux\.tar\.gz\)".*/\1/')
+URL=$(echo $RELEASES | grep -o 'https://[^"]*-x86_64-linux\.tar\.gz' | head -n1)
 VERSION=$(echo $URL | sed -e 's/.*-\([\.0-9]\+\)-x86_64-linux\.tar\.gz/\1/')
 TEMP=$(mktemp --directory .$PACKAGE-XXXXX)
 
