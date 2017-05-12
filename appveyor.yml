@@ -4,4 +4,4 @@ cache:
 
 test_script:
 - ps: Invoke-Expression (Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/neil/master/appveyor.ps1').Content
-- ps: stack exec -- neil --version
+- stack exec -- neil --version

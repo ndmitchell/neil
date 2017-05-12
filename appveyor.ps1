@@ -14,9 +14,9 @@ $Script = Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/hlint/
 Invoke-Command ([Scriptblock]::Create($Script.Content)) -ArgumentList $HLINT_ARGUMENTS
 
 Set-Variable STACK_ROOT 'c:\\sr'
-stack init
-stack setup | Out-Null
-Write-Output "" | stack --no-terminal build --test --bench
+.\stack init
+.\stack setup | Out-Null
+Write-Output "" | .\stack --no-terminal build --test --bench
 if ($LASTEXITCODE -ne 0){
     exit 1
 }
