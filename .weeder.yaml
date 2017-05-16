@@ -1,0 +1,15 @@
+
+# We deliberately compile with flag: small to speed things up
+- message: Module not compiled
+
+- message:
+  - name: Weeds exported
+  - module:
+    # some of the flag: small things don't get used
+    - Arguments
+    # things that are really old
+    - Paper.Haskell
+    - Paper.Haskell.Check
+    - Paper.Haskell.Haskell.Provides
+    - Paper.Util.String
+    - Paper.Haskell2.Type
