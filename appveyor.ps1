@@ -5,7 +5,7 @@ Set-PSDebug -Trace 1
 
 
 $HLINT_ARGUMENTS=$env:HLINT_ARGUMENTS
-if ($HLINT_ARGUMENTS -eq '') {
+if ("$HLINT_ARGUMENTS" -eq '') {
     $HLINT_ARGUMENTS = '.'
 }
 $Script = Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/hlint/master/misc/appveyor.ps1'
