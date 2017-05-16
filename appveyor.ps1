@@ -21,4 +21,4 @@ if ($LASTEXITCODE -ne 0){
 }
 
 $Script = Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/weeder/master/misc/appveyor.ps1'
-Invoke-Command ([Scriptblock]::Create($Script.Content)) -ArgumentList "--help"
+Invoke-Command ([Scriptblock]::Create($Script.Content))
