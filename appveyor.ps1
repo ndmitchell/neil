@@ -21,4 +21,4 @@ if ($LASTEXITCODE -ne 0){
     exit 1
 }
 
-# Invoke-Expression (Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/weeder/master/misc/appveyor.ps1')
+Invoke-Expression (Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/weeder/master/misc/appveyor.ps1')
