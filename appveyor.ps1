@@ -3,7 +3,6 @@
 # $ErrorActionPreference = "Stop"
 Set-PSDebug -Trace 1
 
-
 $HLINT_ARGUMENTS=$env:HLINT_ARGUMENTS
 if ("$HLINT_ARGUMENTS" -eq '') {
     $HLINT_ARGUMENTS = '.'
