@@ -21,4 +21,5 @@ if ($LASTEXITCODE -ne 0){
     exit 1
 }
 
-Invoke-Expression (Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/weeder/master/misc/appveyor.ps1')
+$Script = Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/weeder/master/misc/appveyor.ps1'
+Invoke-Command ([Scriptblock]::Create($Script.Content)) -ArgumentList "--help"
