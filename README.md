@@ -8,6 +8,7 @@ A tool for performing common actions run by Neil Mitchell. Many of these command
 
 These guidelines apply to all my projects, not just this one. I am pretty relaxed, but as guidelines to my preferences:
 
+* I welcome and appreciate contributions. If you've contributed to my code, and we meet in real life, I'll buy you a beer.
 * GitHub pull requests are the preferred mechanism for sending me code.
 * If writing the code will take a significant amount of time, please raise a ticket first, so we can discuss possible approaches and whether I agree with the direction. I'd rather give advice before people use their valuable time, than after.
 * That said, if you have a pull request that fixes something, don't bother raising a separate ticket - just the pull request is fine.
