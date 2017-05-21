@@ -15,7 +15,7 @@ if ($args.length -eq 1) {
 
 Write-Output "Downloading and running $PACKAGE..."
 # Don't go for the API since it hits the Appveyor GitHub API limit and fails
-$RELEASES=Invoke-WebRequest https://github.com/ndmitchell/hlint/releases
+$RELEASES=Invoke-WebRequest https://github.com/ndmitchell/$PACKAGE/releases
 $FOUND = $RELEASES.Content -match '\"([^"]+-x86_64-windows.zip)\"'
 if (-Not $FOUND){
     Write-Output "Failed to find a suitable URL"
