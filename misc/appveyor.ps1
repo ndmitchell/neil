@@ -14,21 +14,14 @@ if ($args.length -eq 1) {
 }
 
 Write-Output "Downloading and running $PACKAGE..."
-$RELEASES=Invoke-WebRequest https://api.github.com/repos/ndmitchell/$PACKAGE/releases
-$JSON = $RELEASES.Content | ConvertFrom-Json
-$URL = ""
-:top foreach ($x in $JSON) {
-    foreach ($x in $x.assets) {
-        if ($x.browser_download_url -match '.*-x86_64-windows\.zip') {
-            $URL = $x.browser_download_url
-            break top
-        }
-    }
-}
-if ($URL -eq "") {
+# Don't go for the API since it hits the Appveyor GitHub API limit and fails
+$RELEASES=Invoke-WebRequest https://github.com/ndmitchell/hlint/releases
+$FOUND = $RELEASES.Content -match '\"([^"]+-x86_64-windows.zip)\"'
+if (-Not $FOUND){
     Write-Output "Failed to find a suitable URL"
     exit 1
 }
+$URL = "https://github.com/" + $matches[1]
 $VERSION = $URL -replace ".*-([\.0-9]+)-x86_64-windows\.zip",'$1'
 
 $TEMP=New-TemporaryFile
