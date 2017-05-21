@@ -1,7 +1,7 @@
 # This script is invoked from my Appveyor commands
 # It bootstraps to install stack and run the tests
 # $ErrorActionPreference = "Stop"
-Set-PSDebug -Trace 1
+Set-PSDebug -Trace 0
 
 $HLINT_ARGUMENTS=$env:HLINT_ARGUMENTS
 if ("$HLINT_ARGUMENTS" -eq '') {
