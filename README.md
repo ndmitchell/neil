@@ -8,6 +8,7 @@ A tool for performing common actions run by Neil Mitchell. Many of these command
 
 These guidelines apply to all my projects, not just this one. I am pretty relaxed, but as guidelines to my preferences:
 
+* I welcome and appreciate contributions. If you've contributed to my code, and we meet in real life, I'll buy you a beer.
 * GitHub pull requests are the preferred mechanism for sending me code.
 * If writing the code will take a significant amount of time, please raise a ticket first, so we can discuss possible approaches and whether I agree with the direction. I'd rather give advice before people use their valuable time, than after.
 * That said, if you have a pull request that fixes something, don't bother raising a separate ticket - just the pull request is fine.
@@ -15,7 +16,7 @@ These guidelines apply to all my projects, not just this one. I am pretty relaxe
 * If I am not responding after a few days, ping me again on the ticket, or via email. I'm probably just busy or lost the email in a pile. I certainly intended to thank you for contribution and give some feedback.
 * If your preferences are vehemently different, then follow yours, I'm really not all that fussed - but sometimes it's easier for people to know what you do like rather than to spend effort thinking about what you like, or doing something they think you will like but you actually don't.
 * After I've merged your patch, if it would be useful to have an immediate release containing the patch (e.g. because you are working on downstream code or can only deploy official releases in production) let me know. Usually I am happy to release after any change, but for smaller changes might wait to collect a bunch of things together.
-* I develop on `master` and update the version just before a release.
+* I develop on `master` and only update the `.cabal` version just before a release.
 
 ### Quirks
 
