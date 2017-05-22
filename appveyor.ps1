@@ -13,8 +13,8 @@ Invoke-Command ([Scriptblock]::Create($Script.Content)) -ArgumentList $HLINT_ARG
 Set-Variable STACK_ROOT 'c:\\sr'
 Invoke-WebRequest 'http://www.stackage.org/stack/windows-i386' -OutFile 'stack.zip'
 7z x -y stack.zip stack.exe
-.\stack init
-.\stack setup | Out-Null
+.\stack init 2>&1
+.\stack setup 2>&1 | Out-Null
 Write-Output "" | .\stack --no-terminal build --test --bench
 if ($LASTEXITCODE -ne 0){
     exit 1
