@@ -34,3 +34,7 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
 $EXE=Join-Path "$TEMP" "$PACKAGE-$VERSION\$PACKAGE.exe"
 cmd /c "$EXE $args 2>&1"
 Remove-Item $TEMP -Recurse
+if ($LASTEXITCODE -ne 0) {
+    Write-Output "Exit code $LASTEXITCODE"
+    exit 1
+}
