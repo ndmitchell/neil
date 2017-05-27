@@ -59,7 +59,7 @@ checkTravis = do
     let requirePrefix =
             ["sudo: required"
             ,"env:"] ++
-            ["- GHCVER=" ++ t | t <- reverse tests] ++
+            ["- GHCVER=" ++ t | t <- reverse tests ++ [ghcNext]] ++
             ["- GHCVER=head"
             ,"script:"
             ]
@@ -67,7 +67,6 @@ checkTravis = do
             ["- curl -sL https://raw.github.com/ndmitchell/neil/master/travis.sh | sh"]
     src <- readFile' ".travis.yml"
     let got = filter (not . null) $
-              replace ["- GHCVER=" ++ ghcNext] [] $
               replace ["matrix:","  allow_failures:"] [] $
               replace ["  - env: GHCVER=head"] [] $
               map (trimEnd . takeWhile (/= '#')) $ lines src
