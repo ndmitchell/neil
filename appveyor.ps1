@@ -15,7 +15,7 @@ Invoke-WebRequest 'http://www.stackage.org/stack/windows-i386' -OutFile 'stack.z
 
 # If powershell ever sees anything on stderr it decides to fail
 # Therefore we use cmd to redirect stderr to stdout before powershell sees it
-cmd /c '.\stack init --force 2>&1'
+cmd /c '.\stack init --ignore-subdirs --force 2>&1'
 cmd /c '.\stack setup 1>&2 2>&1 > nul'
 cmd /c 'echo | .\stack --no-terminal build --test --bench 2>&1'
 
