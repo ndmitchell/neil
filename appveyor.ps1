@@ -1,7 +1,6 @@
 # This script is invoked from my Appveyor commands
 # It bootstraps to install stack and run the tests
-# $ErrorActionPreference = "Stop"
-Set-PSDebug -Trace 0
+$ErrorActionPreference = "Stop"
 
 $HLINT_ARGUMENTS=$env:HLINT_ARGUMENTS
 if ("$HLINT_ARGUMENTS" -eq '') {
@@ -13,8 +12,8 @@ Invoke-Command ([Scriptblock]::Create($Script.Content)) -ArgumentList $HLINT_ARG
 Set-Variable STACK_ROOT 'c:\\sr'
 Invoke-WebRequest 'http://www.stackage.org/stack/windows-i386' -OutFile 'stack.zip'
 7z x -y stack.zip stack.exe
-.\stack init 2>&1
-.\stack setup 2>&1 | Out-Null
+cmd /c '.\stack init --force 2>&1'
+cmd /c '.\stack setup 1>&2 2>&1 > nul'
 Write-Output "" | .\stack --no-terminal build --test --bench
 if ($LASTEXITCODE -ne 0){
     exit 1

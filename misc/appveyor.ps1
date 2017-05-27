@@ -1,6 +1,6 @@
 # This script is invoked from my Appveyor commands
 # It bootstraps to grab the a binary release and run it
-# $ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Stop"
 
 if ($args.length -eq 0) {
     Write-Output "No arguments provided, please pass the project name as the first argument"
@@ -10,7 +10,7 @@ $PACKAGE=$args[0]
 if ($args.length -eq 1) {
     $args = @()
 } else {
-    $args = $args[1 .. ($args.Length-1)]
+    $args =$args[1 .. ($args.Length-1)]
 }
 
 Write-Output "Downloading and running $PACKAGE..."
@@ -32,5 +32,5 @@ Invoke-WebRequest $URL -OutFile $ZIP
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 [System.IO.Compression.ZipFile]::ExtractToDirectory($ZIP, $TEMP)
 $EXE=Join-Path "$TEMP" "$PACKAGE-$VERSION\$PACKAGE.exe"
-& $EXE $args
+cmd /c "$EXE $args 2>&1"
 Remove-Item $TEMP -Recurse
