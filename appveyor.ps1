@@ -14,10 +14,7 @@ Invoke-WebRequest 'http://www.stackage.org/stack/windows-i386' -OutFile 'stack.z
 7z x -y stack.zip stack.exe
 cmd /c '.\stack init --force 2>&1'
 cmd /c '.\stack setup 1>&2 2>&1 > nul'
-Write-Output "" | .\stack --no-terminal build --test --bench
-if ($LASTEXITCODE -ne 0){
-    exit 1
-}
+cmd /c 'type | .\stack --no-terminal build --test --bench 2>&1'
 
 $Script = Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/weeder/master/misc/appveyor.ps1'
 Invoke-Command ([Scriptblock]::Create($Script.Content))
