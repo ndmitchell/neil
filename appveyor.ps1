@@ -12,6 +12,9 @@ Invoke-Command ([Scriptblock]::Create($Script.Content)) -ArgumentList $HLINT_ARG
 Set-Variable STACK_ROOT 'c:\\sr'
 Invoke-WebRequest 'http://www.stackage.org/stack/windows-i386' -OutFile 'stack.zip'
 7z x -y stack.zip stack.exe
+
+# If powershell ever sees anything on stderr it decides to fail
+# Therefore we use cmd to redirect stderr to stdout before powershell sees it
 cmd /c '.\stack init --force 2>&1'
 cmd /c '.\stack setup 1>&2 2>&1 > nul'
 cmd /c 'echo | .\stack --no-terminal build --test --bench 2>&1'
