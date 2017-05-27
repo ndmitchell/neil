@@ -43,6 +43,7 @@ cabalCheck = do
     checkReadme
     checkGhci
     checkTravis
+    checkAppveyor
 
 
 checkGhci :: IO ()
@@ -75,6 +76,19 @@ checkTravis = do
         error $ unlines $
             [".travis.yml file mismatch","Wanted:"] ++ requirePrefix ++ requireAnywhere ++
             ["Got:"] ++ got
+
+checkAppveyor :: IO ()
+checkAppveyor = do
+    let required =
+            ["build: off"
+            ,"cache: \"c:\\\\sr -> appveyor.yml\""
+            ,"test_script:"
+            ,"- ps: Invoke-Expression (Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/neil/master/appveyor.ps1')"]
+    whenM (doesFileExist "appveyor.yml") $ do
+        src <- map (trimEnd . takeWhile (/= '#')) . lines <$> readFile' "appveyor.yml"
+        let missing = required \\ src
+        when (missing /= []) $
+            fail $ unlines $ "Missing some important lines in appveyor.yml" : missing
 
 
 undocumented :: [String]
