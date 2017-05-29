@@ -189,12 +189,11 @@ run Test{..} = Just $ do
     ghcVer <- fst . line1 <$> systemOutput_ "ghc --numeric-version"
 
     withSDist $ do
-        system_ "cabal install --only-dependencies --enable-tests --flags=testprog"
+        system_ "cabal install --only-dependencies --enable-tests"
         system_ $ "cabal configure --enable-tests --disable-library-profiling " ++
               "--ghc-option=-rtsopts " ++
               "--ghc-option=-fwarn-unused-binds --ghc-option=-fwarn-unused-imports " ++
               "--ghc-option=-fwarn-tabs " ++
-              "--flags=testprog " ++
               (if no_warnings then "" else "--ghc-option=-Werror")
         system_ "cabal build"
         system_ "cabal haddock --hoogle"
@@ -215,8 +214,7 @@ run Sdist = Just $ do
         system_ "cabal clean"
         system_ "cabal install --only-dependencies"
         system_ $ "cabal configure --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
-                  "--ghc-option=-Werror --ghc-option=-fno-warn-warnings-deprecations " ++ -- CABAL BUG WORKAROUND :(
-                  "--flags=testprog"
+                  "--ghc-option=-Werror --ghc-option=-fno-warn-warnings-deprecations" -- CABAL BUG WORKAROUND :(
         system_ "cabal build"
         system_ "cabal haddock"
     system_ "cabal sdist"
