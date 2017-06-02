@@ -33,7 +33,7 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
 [System.IO.Compression.ZipFile]::ExtractToDirectory($ZIP, $TEMP)
 $EXE=Join-Path "$TEMP" "$PACKAGE-$VERSION\$PACKAGE.exe"
 cmd /c "$EXE $args 2>&1"
-Remove-Item $TEMP -Recurse
+Remove-Item $TEMP -Recurse -ErrorAction SilentlyContinue
 if ($LASTEXITCODE -ne 0) {
     Write-Output "Exit code $LASTEXITCODE"
     exit 1
