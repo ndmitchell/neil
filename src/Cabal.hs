@@ -214,7 +214,9 @@ run Sdist = Just $ do
         system_ "cabal clean"
         system_ "cabal install --only-dependencies"
         system_ $ "cabal configure --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
-                  "--ghc-option=-Werror --ghc-option=-fno-warn-warnings-deprecations" -- CABAL BUG WORKAROUND :(
+                  "--ghc-option=-Werror " ++
+                  -- Ignore warnings in Cabal generated files :(
+                  "--ghc-option=-fno-warn-warnings-deprecations --ghc-option=-fno-warn-unsupported-calling-conventions"
         system_ "cabal build"
         system_ "cabal haddock"
     system_ "cabal sdist"
