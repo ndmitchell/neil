@@ -28,33 +28,24 @@ if [ "$HLINT_ARGUMENTS" = "" ]; then
 fi
 curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s $HLINT_ARGUMENTS
 
-echo Before with $GHCVER set
+# Try and use the Cabal that ships with the same GHC version
 if [ "$GHCVER" = "head" ]; then
-    # Temporarily totally broken (seems to be ignoring cpp-options in Cabal)
-    echo Exiting
-    exit
+    CABALVER=head
+elif [ "$GHCVER" = "8.0.1" ]; then
+    CABALVER=1.24
+elif [ "$GHCVER" = "7.10.3" ]; then
+    CABALVER=1.22
+else
+    CABALVER=1.24 # Older Cabal just can't find install plans, so use newer
 fi
-
-if [ "$GHCVER" != "" ]; then
-    # Try and use the Cabal that ships with the same GHC version
-    if [ "$GHCVER" = "head" ]; then
-        CABALVER=head
-    elif [ "$GHCVER" = "8.0.1" ]; then
-        CABALVER=1.24
-    elif [ "$GHCVER" = "7.10.3" ]; then
-        CABALVER=1.22
-    else
-        CABALVER=1.24 # Older Cabal just can't find install plans, so use newer
-    fi
-    retry sudo add-apt-repository -y ppa:hvr/ghc
-    retry sudo apt-get update
-    retry sudo apt-get install ghc-$GHCVER cabal-install-$CABALVER happy-1.19.4 alex-3.1.3
-    export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/happy/1.19.4/bin:/opt/alex/3.1.3/bin:/home/travis/.cabal/bin:$PATH
-    ghc --version
-    happy --version
-    alex --version
-    cabal --version
-fi
+retry sudo add-apt-repository -y ppa:hvr/ghc
+retry sudo apt-get update
+retry sudo apt-get install ghc-$GHCVER cabal-install-$CABALVER happy-1.19.4 alex-3.1.3
+export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/happy/1.19.4/bin:/opt/alex/3.1.3/bin:/home/travis/.cabal/bin:$PATH
+ghc --version
+happy --version
+alex --version
+cabal --version
 
 retry cabal update
 retry cabal install --only-dependencies --enable-tests || FAIL=1
