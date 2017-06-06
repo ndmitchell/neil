@@ -23,7 +23,7 @@ fi
 curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s $HLINT_ARGUMENTS
 
 echo Before with $GHCVER set
-if [ "$GHCVER" = "head"]; then
+if [ "$GHCVER" = "head" ]; then
     # Temporarily totally broken (seems to be ignoring cpp-options in Cabal)
     echo Exiting
     exit
