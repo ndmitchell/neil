@@ -275,7 +275,9 @@ checkReadme :: IO ()
 checkReadme = do
     name <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal
     src <- fmap lines $ readFile "README.md"
-    let travis = ownerTravis src ++ "/" ++ name
+    cabal <- fmap lines readCabal
+    let project = projectName cabal
+    let travis = ownerTravis src ++ "/" ++ project
     let appveyor = ownerAppveyor src ++ "/" ++ name
     let badges =
             ["[![Hackage version](https://img.shields.io/hackage/v/" ++ name ++ ".svg?label=Hackage)]" ++
@@ -318,8 +320,8 @@ getLatestYear = do
 
 checkCabalFile :: IO ()
 checkCabalFile = do
-    project <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal
     src <- fmap lines readCabal
+    let project = projectName src
     test <- testedWith
     let grab tag = [trimStart $ drop (length tag + 1) x | x <- relines src, (tag ++ ":") `isPrefixOf` x]
     license <- catch_ (readFile' $ concat $ grab "license-file") $ \_ -> return ""
@@ -349,13 +351,14 @@ checkCabalFile = do
 validTests :: [String] -> Bool
 validTests xs = length xs >= 1 && xs `isPrefixOf` reverse ghcReleases
 
+projectName x = owner ("https://github.com/" ++ ownerGithub x ++ "/") x
 ownerGithub = owner "https://github.com/"
 ownerTravis = owner "https://img.shields.io/travis/"
 ownerAppveyor = owner "https://img.shields.io/appveyor/ci/"
 
 owner :: String -> [String] -> String
 owner fragment src = if x == "" then "ndmitchell" else x
-    where x = takeWhile (/= '/') $ drop (length fragment) $ snd $ breakOn fragment $ unlines src
+    where x = takeWhile (\x -> x /= '/' && x /= '\n') $ drop (length fragment) $ snd $ breakOn fragment $ unlines src
 
 
 relines :: [String] -> [String]
