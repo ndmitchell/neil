@@ -31,12 +31,8 @@ curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s $
 # Try and use the Cabal that ships with the same GHC version
 if [ "$GHCVER" = "head" ]; then
     CABALVER=head
-elif [ "$GHCVER" = "8.0.1" ]; then
-    CABALVER=1.24
-elif [ "$GHCVER" = "7.10.3" ]; then
-    CABALVER=1.22
 else
-    CABALVER=1.24 # Older Cabal just can't find install plans, so use newer
+    CABALVER=1.24
 fi
 retry sudo add-apt-repository -y ppa:hvr/ghc
 retry sudo apt-get update
