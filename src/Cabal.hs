@@ -17,11 +17,11 @@ import Arguments
 import Prelude
 
 -- | GHC releases I test with
-ghcReleases = ["7.4.2","7.6.3","7.8.4","7.10.3","8.0.2"]
+ghcReleases = ["7.4.2","7.6.3","7.8.4","7.10.3","8.0.2","8.2.1"]
 
 -- | The next version of GHC that has not yet been released
 --   (might test it in Travis, but won't be in the tested-with)
-ghcNext = "8.2.1"
+ghcNext = Nothing -- set this to "8.4.1" once rc1 is out
 
 
 ---------------------------------------------------------------------
@@ -60,7 +60,7 @@ checkTravis = do
     let requirePrefix =
             ["sudo: required"
             ,"env:"] ++
-            ["- GHCVER=" ++ t | t <- reverse tests ++ [ghcNext]] ++
+            ["- GHCVER=" ++ t | t <- reverse tests ++ maybeToList ghcNext] ++
             ["- GHCVER=head"
             ,"script:"
             ]
