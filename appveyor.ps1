@@ -9,6 +9,7 @@ if ("$HLINT_ARGUMENTS" -eq '') {
 $Script = Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/hlint/master/misc/appveyor.ps1'
 Invoke-Command ([Scriptblock]::Create($Script.Content)) -ArgumentList $HLINT_ARGUMENTS
 
+Set-Variable PATH "$PATH;$PWD" # Make sure stack.exe is on PATH, even if we change directory
 Set-Variable STACK_ROOT 'c:\\sr'
 Invoke-WebRequest 'http://www.stackage.org/stack/windows-i386' -OutFile 'stack.zip'
 7z x -y stack.zip stack.exe
