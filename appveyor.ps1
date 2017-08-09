@@ -17,7 +17,7 @@ Invoke-WebRequest 'http://www.stackage.org/stack/windows-i386' -OutFile 'stack.z
 # Therefore we use cmd to redirect stderr to stdout before powershell sees it
 cmd /c '.\stack init --ignore-subdirs --force 2>&1'
 cmd /c '.\stack setup 1>&2 2>&1 > nul'
-cmd /c 'echo | .\stack --no-terminal build --test --bench 2>&1'
+cmd /c 'echo | .\stack --no-terminal build --test --bench --ghc-options=-rtsopts 2>&1'
 
 $Script = Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/weeder/master/misc/appveyor.ps1'
 Invoke-Command ([Scriptblock]::Create($Script.Content))
