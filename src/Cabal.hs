@@ -159,9 +159,10 @@ parseType = map trim . splitOn "->" . drop 2 . snd . breakOn "::"
 
 
 -- | Run some commands in a temporary directory with the unpacked cabal
-withSDist :: IO a -> IO a
-withSDist run = withTempDir $ \tdir -> do
-    system_ "git diff --stat --exit-code"
+withSDist :: Bool -> IO a -> IO a
+withSDist no_warnings run = withTempDir $ \tdir -> do
+    unless no_warnings $
+        system_ "git diff --stat --exit-code"
     local <- map normalise . lines <$> systemOutput_ "git ls-files . --others"
     system_ $ "cabal configure --builddir=" ++ tdir
     system_ $ "cabal sdist --builddir=" ++ tdir
@@ -188,7 +189,7 @@ run Test{..} = Just $ do
     runTest <- maybe (return True) (fmap ("test-suite" `isInfixOf`) . readFile) =<< findCabal
     ghcVer <- fst . line1 <$> systemOutput_ "ghc --numeric-version"
 
-    withSDist $ do
+    withSDist no_warnings $ do
         system_ "cabal install --only-dependencies --enable-tests"
         system_ $ "cabal configure --enable-tests --disable-library-profiling " ++
               "--ghc-option=-rtsopts " ++
@@ -210,7 +211,7 @@ run Check{..} = Just $ withCurrentDirectory path cabalCheck
 run Sdist = Just $ do
     cabalCheck
     tested <- testedWith
-    withSDist $ do
+    withSDist False $ do
         system_ "cabal clean"
         system_ "cabal install --only-dependencies"
         system_ $ "cabal configure --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
