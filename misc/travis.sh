@@ -11,8 +11,9 @@ fi
 shift
 
 echo Downloading and running $PACKAGE...
-RELEASES=$(curl --silent https://api.github.com/repos/ndmitchell/$PACKAGE/releases)
-URL=$(echo $RELEASES | grep -o 'https://[^"]*-x86_64-linux\.tar\.gz' | head -n1)
+# Don't go for the API since it hits the Appveyor GitHub API limit and fails
+RELEASES=$(curl --silent https://github.com/ndmitchell/$PACKAGE/releases)
+URL=https://github.com/$(echo $RELEASES | grep -o '\"[^\"]*-x86_64-linux\.tar\.gz\"' | sed s/\"//g | head -n1)
 VERSION=$(echo $URL | sed -e 's/.*-\([\.0-9]\+\)-x86_64-linux\.tar\.gz/\1/')
 TEMP=$(mktemp --directory .$PACKAGE-XXXXX)
 
