@@ -13,12 +13,18 @@ $env:PATH += ";$PWD" # Make sure stack.exe is on PATH, even if we change directo
 $env:STACK_ROOT = 'c:\\sr'
 Invoke-WebRequest 'http://www.stackage.org/stack/windows-i386' -OutFile 'stack.zip'
 7z x -y stack.zip stack.exe
+if ($LASTEXITCODE -ne 0) {exit 1}
 
 # If powershell ever sees anything on stderr it decides to fail
 # Therefore we use cmd to redirect stderr to stdout before powershell sees it
 cmd /c '.\stack init --ignore-subdirs --force 2>&1'
+if ($LASTEXITCODE -ne 0) {exit 1}
+
 cmd /c '.\stack setup 1>&2 2>&1 > nul'
+if ($LASTEXITCODE -ne 0) {exit 1}
+
 cmd /c 'echo | .\stack --no-terminal build --test --bench --ghc-options=-rtsopts 2>&1'
+if ($LASTEXITCODE -ne 0) {exit 1}
 
 $Script = Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/weeder/master/misc/appveyor.ps1'
 Invoke-Command ([Scriptblock]::Create($Script.Content))
