@@ -36,5 +36,5 @@ cmd /c "$EXE $args 2>&1"
 Remove-Item $TEMP -Recurse -ErrorAction SilentlyContinue
 if ($LASTEXITCODE -ne 0) {
     Write-Output "Exit code $LASTEXITCODE"
-    exit 1
+    exit $LASTEXITCODE
 }
