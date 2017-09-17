@@ -2,6 +2,13 @@
 # It bootstraps to install stack and run the tests
 $ErrorActionPreference = "Stop"
 
+# If there is an error, we stop (thanks to the preference above). However, when running commands:
+#
+# * Writing to stderr is an error, despite the fact stack puts its progress messages there.
+#   We fix that by running inside 'cmd' and redirecting stderr to stdout.
+#
+# * Giving a non-zero exit code is NOT an error. We fix that by testing LASTERRORCODE after each command.
+
 $HLINT_ARGUMENTS = $env:HLINT_ARGUMENTS
 if ("$HLINT_ARGUMENTS" -eq '') {
     $HLINT_ARGUMENTS = '.'
