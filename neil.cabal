@@ -37,6 +37,9 @@ executable neil
         cpp-options: -DSMALL
     else
         build-depends: GoogleChart, old-time, json
+        other-modules:
+            Paper.Graph
+            Travis
 
     main-is:            Main.hs
 
@@ -65,7 +68,6 @@ executable neil
         Paper.WordCount
         Paper.Talk
         Paper.Make
-        Paper.Graph
         Paper.Util.FileData
         Paper.Haskell
         Paper.Main
@@ -73,4 +75,3 @@ executable neil
         Binary
         Cabal
         Git
-        Travis
