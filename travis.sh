@@ -32,7 +32,7 @@ curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s $
 if [ "$GHCVER" = "head" ]; then
     CABALVER=head
 else
-    CABALVER=1.24
+    CABALVER=2.0
 fi
 retry sudo add-apt-repository -y ppa:hvr/ghc
 retry sudo apt-get update
