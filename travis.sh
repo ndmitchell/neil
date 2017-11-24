@@ -4,12 +4,6 @@
 set -e # exit on errors
 set -x # echo each line
 
-if [ "$GHCVER" = "head" ]; then
-    echo Exiting due to GHC HEAD, which seems totally broken due to ignoring cpp-options
-    exit
-fi
-
-
 retry(){ "$@" || "$@" || "$@"; }
 timer(){
     set +x;
