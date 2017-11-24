@@ -48,7 +48,7 @@ cabalCheck = do
 
 checkGhci :: IO ()
 checkGhci = do
-    let warns = words "-fwarn-unused-binds -fwarn-unused-imports"
+    let warns = words "-fwarn-unused-binds -fwarn-unused-imports -fwarn-orphans"
     src <- words <$> readFile' ".ghci"
     unless ("-W" `elem` src || all (`elem` src) warns) $
         error $ "The .ghci file does not enough of " ++ unwords ("-W":warns)
