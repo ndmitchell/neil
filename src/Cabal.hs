@@ -23,6 +23,8 @@ ghcReleases = ["7.4.2","7.6.3","7.8.4","7.10.3","8.0.2","8.2.1"]
 --   (might test it in Travis, but won't be in the tested-with)
 ghcNext = Nothing -- set this to "8.4.1" once rc1 is out
 
+ghcWarnings = words "-fwarn-unused-binds -fwarn-unused-imports -fwarn-orphans"
+
 
 ---------------------------------------------------------------------
 -- COMMANDS
@@ -48,10 +50,9 @@ cabalCheck = do
 
 checkGhci :: IO ()
 checkGhci = do
-    let warns = words "-fwarn-unused-binds -fwarn-unused-imports -fwarn-orphans"
     src <- words <$> readFile' ".ghci"
-    unless ("-W" `elem` src || all (`elem` src) warns) $
-        error $ "The .ghci file does not enough of " ++ unwords ("-W":warns)
+    unless ("-W" `elem` src || all (`elem` src) ghcWarnings) $
+        error $ "The .ghci file does not enough of " ++ unwords ("-W":ghcWarnings)
 
 
 checkTravis :: IO ()
@@ -191,11 +192,10 @@ run Test{..} = Just $ do
 
     withSDist no_warnings $ do
         system_ "cabal install --only-dependencies --enable-tests"
-        system_ $ "cabal configure --enable-tests --disable-library-profiling " ++
-              "--ghc-option=-rtsopts " ++
-              "--ghc-option=-fwarn-unused-binds --ghc-option=-fwarn-unused-imports --ghc-option=-fwarn-orphans " ++
-              "--ghc-option=-fwarn-tabs " ++
-              (if no_warnings then "" else "--ghc-option=-Werror")
+        let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++ ["-Werror" | not no_warnings]
+        system_ $ unwords $
+            "cabal configure --enable-tests --disable-library-profiling" :
+            map ("--ghc-option=" ++) ghcOptions
         system_ "cabal build"
         system_ "cabal haddock --hoogle"
         when (ghcVer `notElem` ["7.4.2","7.6.3","7.8.4"]) $ do
