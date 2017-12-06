@@ -19,7 +19,7 @@ import Arguments
 
 
 run :: Arguments -> Maybe (IO ())
-run Releases{..} = Just $ withCurrentDirectory "C:/neil/hexml" $ do
+run Releases{..} = Just $ do
     dir <- getCurrentDirectory
     let project = takeFileName dir
     changes <- lines <$> readFile' "CHANGES.txt"
