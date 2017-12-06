@@ -36,7 +36,7 @@ executable neil
     if flag(small)
         cpp-options: -DSMALL
     else
-        build-depends: GoogleChart, old-time, json
+        build-depends: GoogleChart, old-time, json, tagsoup, deepseq
         other-modules:
             Paper.Graph
             Travis
@@ -75,3 +75,4 @@ executable neil
         Binary
         Cabal
         Git
+        Releases

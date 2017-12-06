@@ -14,6 +14,7 @@ import Binary
 import Git
 #ifndef SMALL
 import Travis
+import Releases
 #endif
 import qualified Paper.Main as Paper
 
@@ -32,5 +33,6 @@ main = do
                 ,Binary.run args
 #ifndef SMALL
                 ,Travis.run args
+                ,Releases.run args
 #endif
                 ]

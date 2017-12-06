@@ -16,6 +16,7 @@ data Arguments
     | Docs {username :: String, host :: String}
 
     | Travis {wait :: Double}
+    | Releases {wait :: Double}
  
     -- cabal stuff
     | Sdist
@@ -44,7 +45,8 @@ arguments = cmdArgsMode $ modes
     ,Check {path = "." &= args &= typDir}
     ,Binary{}
     ,Docs {username = "NeilMitchell", host = "https://hackage.haskell.org"}
-    ,Travis {wait = 0 &= help "Time to wait after each wget request"}
+    ,Travis {wait = 0.1 &= help "Time to wait after each wget request"}
+    ,Releases {wait = 0.1 &= help "Time to wait after each wget request"} &= help "List releases for a project"
     ,Test {install = False &= help "Install after building", no_warnings = False}
     ]
     &= summary "Neil's utility tool"
