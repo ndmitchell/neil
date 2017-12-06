@@ -36,7 +36,7 @@ executable neil
     if flag(small)
         cpp-options: -DSMALL
     else
-        build-depends: GoogleChart, old-time, json, tagsoup, deepseq
+        build-depends: GoogleChart, old-time, json, tagsoup, deepseq, time
         other-modules:
             Paper.Graph
             Travis
