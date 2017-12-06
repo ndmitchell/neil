@@ -7,7 +7,7 @@ import System.Environment
 import System.FilePath
 
 import Paper.Util.FileData
-#ifndef SMALL
+#ifdef NON_STACKAGE_DEPENDENCIES
 import Paper.Graph
 #endif
 import Paper.Make
@@ -64,7 +64,7 @@ wc f files = do
         putStrLn $ int count
         return (file,count)
     putStrLn $ shw "Total" ++ "  " ++ int (sum $ map snd res)
-#ifndef SMALL
+#ifdef NON_STACKAGE_DEPENDENCIES
     root <- settingsDir files
     graphLog (root </> "graph.txt") res
 #endif
@@ -73,7 +73,7 @@ process :: String -> FileData -> IO ()
 process "wc" files = wc wordCountNorm files
 process "wcmin" files = wc wordCountMin files
 
-#ifndef SMALL
+#ifdef NON_STACKAGE_DEPENDENCIES
 process "graph" files = do
     root <- settingsDir files
     let res = root </> "graph.png"
@@ -127,7 +127,7 @@ dataDir = do
         Nothing -> error "Couldn't find the data directory"
         Just y -> return $ dropFileName y </> "data"
 
-#ifndef SMALL
+#ifdef NON_STACKAGE_DEPENDENCIES
 settingsDir :: FileData -> IO FilePath
 settingsDir = ensureDir "paper"
 #endif
