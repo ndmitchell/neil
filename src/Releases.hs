@@ -9,7 +9,7 @@ import Data.Char
 import Text.HTML.TagSoup
 import Data.Time.Format
 import Data.Time.Clock
-import Data.List.Extra hiding (list)
+import Data.List.Extra
 import System.Directory
 import System.IO.Extra
 import System.FilePath
