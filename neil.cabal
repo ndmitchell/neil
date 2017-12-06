@@ -36,7 +36,7 @@ executable neil
     if flag(small)
         cpp-options: -DSMALL
     else
-        build-depends: old-time, json, tagsoup, deepseq, time
+        build-depends: json, tagsoup, deepseq, time
         other-modules:
             Travis
             Releases
