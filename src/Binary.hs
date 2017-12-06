@@ -45,3 +45,4 @@ run Binary{..} = Just $ withCurrentDirectory path $ withTempDir $ \tdir -> do
     let res = "dist/bin" </> zname
     copy (tdir </> "bin" </> zname) res
     putStrLn $ "Completed, produced " ++ res
+run _ = Nothing
