@@ -6,6 +6,7 @@ import Control.Monad.Extra
 import Control.Exception
 import Control.DeepSeq
 import Data.Char
+import Data.Functor
 import Text.HTML.TagSoup
 import Data.Time.Format
 import Data.Time.Clock
@@ -16,6 +17,7 @@ import System.FilePath
 import System.Time.Extra
 import System.Process.Extra
 import Arguments
+import Prelude
 
 
 run :: Arguments -> Maybe (IO ())
