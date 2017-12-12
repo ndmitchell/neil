@@ -38,7 +38,7 @@ executable neil
     else
         build-depends: json, tagsoup, deepseq, time >= 1.5
         other-modules:
-            Travis
+            CI
             Releases
 
     main-is:            Main.hs

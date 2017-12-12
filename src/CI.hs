@@ -1,6 +1,6 @@
 {-# LANGUAGE RecordWildCards #-}
 
-module Travis(run) where
+module CI(run) where
 
 import Control.Monad
 import Data.Char

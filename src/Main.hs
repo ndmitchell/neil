@@ -13,7 +13,7 @@ import Cabal
 import Binary
 import Git
 #ifndef SMALL
-import Travis
+import CI
 import Releases
 #endif
 import qualified Paper.Main as Paper
@@ -32,7 +32,7 @@ main = do
                 ,Cabal.run args
                 ,Binary.run args
 #ifndef SMALL
-                ,Travis.run args
+                ,CI.run args
                 ,Releases.run args
 #endif
                 ]
