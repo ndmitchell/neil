@@ -24,8 +24,11 @@ if ($LASTEXITCODE -ne 0) {exit 1}
 
 # If powershell ever sees anything on stderr it decides to fail
 # Therefore we use cmd to redirect stderr to stdout before powershell sees it
-cmd /c '.\stack init --ignore-subdirs --force || .\stack init --ignore-subdirs --force --solver 2>&1'
-if ($LASTEXITCODE -ne 0) {exit 1}
+cmd /c '.\stack init --ignore-subdirs --force 2>&1'
+if ($LASTEXITCODE -ne 0) {
+   cmd /c '.\stack init --ignore-subdirs --force --solver 2>&1'
+   if ($LASTEXITCODE -ne 0) {exit 1}
+}
 
 cmd /c '.\stack setup 1>&2 2>&1 > nul'
 if ($LASTEXITCODE -ne 0) {exit 1}
