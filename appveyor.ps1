@@ -26,7 +26,7 @@ if ($LASTEXITCODE -ne 0) {exit 1}
 # Therefore we use cmd to redirect stderr to stdout before powershell sees it
 cmd /c '.\stack init --ignore-subdirs --force 2>&1'
 if ($LASTEXITCODE -ne 0) {
-    Invoke-WebRequest 'https://www.haskell.org/cabal/release/cabal-install-2.0.0.1/cabal-install-2.0.0.1-i386-unknown-mingw32.zip' -OutFile 'cabal.zip'
+    Invoke-WebRequest 'https://www.haskell.org/cabal/release/cabal-install-1.24.0.0/cabal-install-1.24.0.0-i386-unknown-mingw32.zip' -OutFile 'cabal.zip'
     7z x -y cabal.zip cabal.exe
     cmd /c '.\stack init --ignore-subdirs --force --solver 2>&1'
     if ($LASTEXITCODE -ne 0) {exit 1}
