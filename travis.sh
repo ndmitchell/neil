@@ -39,7 +39,7 @@ cabal --version
 
 retry cabal update
 retry cabal install --only-dependencies --enable-tests || FAIL=1
-if [ "$GHCVER" = "head" ] && [ "$FAIL" = "1" ]; then
+if ([ "$GHCVER" = "head" ] || [ "$GHCVER" = "8.4.1" ]) && [ "$FAIL" = "1" ]; then
     FAIL=
     retry cabal install --only-dependencies --enable-tests --allow-newer || FAIL=1
     if [ "$FAIL" = "1" ]; then
