@@ -5,12 +5,17 @@ module CI(run) where
 import Control.Monad
 import Data.Char
 import Data.List.Extra hiding (list)
+import Data.Maybe
 import System.Directory
 import System.IO.Extra
 import System.FilePath
 import System.Time.Extra
 import System.Process.Extra
-import Text.JSON
+import Data.Aeson
+import qualified Data.Text as T
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.HashMap.Strict as Map
+import qualified Data.Vector as V
 import Arguments
 
 
@@ -28,12 +33,12 @@ run Travis{..} = Just $ do
                         new <- wgetJSON wait $ "https://api.travis-ci.org/repos/ndmitchell/" ++ name ++ "/builds?after_number=" ++ show i
                         more $ xs ++ list new
     builds <- more []
-    
+
     forM_ (reverse builds) $ \x -> do
         let num = x ! "number"
         let id = show (x ! "id" :: Int)
         let time = x ! "started_at"
-        when (num `notElem` found && x ! "result" /= JSNull) $ do
+        when (num `notElem` found && x ! "result" /= Null) $ do
             build <- wgetJSON wait $ "https://api.travis-ci.org/builds/" ++ id
             sleep 2
 
@@ -76,14 +81,14 @@ wget wait x = withTempFile $ \t -> do
     return res
 
 
-wgetJSON :: Double -> String -> IO JSValue
-wgetJSON wait x = fmap (ok . decode) $ wget wait x
+wgetJSON :: Double -> String -> IO Value
+wgetJSON wait x = fmap (fromJust . decode . LBS.pack) $ wget wait x
 
-ok (Ok x) = x
-ok (Error x) = error x
+(!) :: FromJSON a => Value -> String -> a
+(!) (Object mp) k = fromSuccess $ fromJSON $ mp Map.! T.pack k
 
-(!) :: JSON a => JSValue -> String -> a
-(!) (JSObject mp) k = ok $ valFromObj k mp
+fromSuccess (Error x) = error x
+fromSuccess (Success x) = x
 
-list :: JSValue -> [JSValue]
-list (JSArray x) = x
+list :: Value -> [Value]
+list (Array x) = V.toList x
