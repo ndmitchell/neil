@@ -192,7 +192,9 @@ run Test{..} = Just $ do
 
     withSDist no_warnings $ do
         system_ "cabal install --only-dependencies --enable-tests"
-        let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++ ["-Werror" | not no_warnings]
+        let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
+                         (if "7." `isPrefixOf` ghcVer then [] else  words "-Wcompat -Wnoncanonical-monad-instances -Wnoncanonical-monadfail-instances") ++
+                         ["-Werror" | not no_warnings]
         system_ $ unwords $
             "cabal configure --enable-tests --disable-library-profiling" :
             map ("--ghc-option=" ++) ghcOptions
@@ -312,7 +314,7 @@ getLatestYear = do
 
 checkCabalFile :: IO ()
 checkCabalFile = do
-    project <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal 
+    project <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal
     src <- fmap lines readCabal
     test <- testedWith
     let grab tag = [trimStart $ drop (length tag + 1) x | x <- relines src, (tag ++ ":") `isPrefixOf` x]
