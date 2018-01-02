@@ -4,7 +4,7 @@
 set -e # exit on errors
 set -x # echo each line
 
-retry(){ "$@" || "$@" || "$@"; }
+retry(){ "$@" || (sleep 10s && "$@") || (sleep 10s && "$@"); }
 timer(){
     set +x;
     local before=$(date +%s);
