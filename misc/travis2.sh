@@ -17,10 +17,11 @@ URL=https://github.com/$(echo $RELEASES | grep -o '\"[^\"]*-x86_64-linux\.tar\.g
 VERSION=$(echo $URL | sed -e 's/.*-\([\.0-9]\+\)-x86_64-linux\.tar\.gz/\1/')
 
 echo URL is $URL
-echo SED RESULT1 is $(echo $URL | sed -e 's/.*-\([\.0-9]\+\)-x86_64-linux\.tar\.gz/\1/')
-echo SED RESULT2 is $(echo $URL | sed -e 's/.*-\([\.0-9]\+\)-x86_64-linux\.tar\.gz/\1/g')
-echo SED RESULT3 is $(echo $URL | sed 's/.*-\([\.0-9]\+\)-x86_64-linux\.tar\.gz/\1/g')
-echo SED RESULT4 is $(echo $URL | sed 's/^.*-\(.+\)-x86_64-linux.tar.gz/\1/g')
+echo SED TEST is $(echo '(stuff/thing)' | sed -n 's@.*/\([^)]*\))@\1@p')
+echo SED RESULT1 is $(echo $URL | sed -e 's/.*-\([\.0-9]\+\)-x86_64-linux\.tar\.gz/\1/p')
+echo SED RESULT2 is $(echo $URL | sed -e 's/.*-\([\.0-9]\+\)-x86_64-linux\.tar\.gz/\1/p')
+echo SED RESULT3 is $(echo $URL | sed 's/.*-\([\.0-9]\+\)-x86_64-linux\.tar\.gz/\1/p')
+echo SED RESULT4 is $(echo $URL | sed 's/^.*-\(.+\)-x86_64-linux.tar.gz/\1/p')
 echo VERSION is $VERSION
 
 TEMP=$(mktemp -d .$PACKAGE-XXXXX)
