@@ -18,6 +18,8 @@ VERSION=$(echo $URL | sed -e 's/.*-\([\.0-9]\+\)-x86_64-linux\.tar\.gz/\1/')
 
 echo URL is $URL
 echo SED TEST is $(echo '(stuff/thing)' | sed -n 's@.*/\([^)]*\))@\1@p')
+echo SED MORE1 is $(echo 'https://github.com//ndmitchell/hlint/releases/download/v2.0.12/hlint-2.0.12-x86_64-linux.tar.gz' | sed -n 's@.*-\(.*\)\.tar\.gz@\1@p')
+echo SED MORE2 is $(echo $URL | sed -n 's@.*-\(.*\)\.tar\.gz@\1@p')
 echo SED RESULT1 is $(echo $URL | sed -e 's/.*-\([\.0-9]\+\)-x86_64-linux\.tar\.gz/\1/p')
 echo SED RESULT2 is $(echo $URL | sed -e 's/.*-\([\.0-9]\+\)-x86_64-linux\.tar\.gz/\1/p')
 echo SED RESULT3 is $(echo $URL | sed 's/.*-\([\.0-9]\+\)-x86_64-linux\.tar\.gz/\1/p')
