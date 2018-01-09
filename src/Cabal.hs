@@ -343,7 +343,7 @@ checkCabalFile = do
     unless (null bad) $ error $ unlines bad
 
 validTests :: [String] -> Bool
-validTests xs = length xs > 1 && xs `isPrefixOf` reverse ghcReleases
+validTests xs = length xs >= 1 && xs `isPrefixOf` reverse ghcReleases
 
 ownerGithub = owner "https://github.com/"
 ownerTravis = owner "https://img.shields.io/travis/"
