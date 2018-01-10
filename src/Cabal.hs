@@ -73,7 +73,7 @@ checkTravis = do
               replace ["  - env: GHCVER=head"] [] $
               map (trimEnd . takeWhile (/= '#')) $ lines src
     when ("allow_failures:" `isInfixOf` src) $ putStrLn $ "Warning: .travis.yml allows failures with GHC HEAD"
-    unless (requirePrefix `isPrefixOf` got && requireAnywhere `isInfixOf` got) $
+    unless ((requirePrefix `isPrefixOf` got && requireAnywhere `isInfixOf` got) || "osx" `isInfixOf` src) $
         error $ unlines $
             [".travis.yml file mismatch","Wanted:"] ++ requirePrefix ++ requireAnywhere ++
             ["Got:"] ++ got
