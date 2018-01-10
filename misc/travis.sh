@@ -14,7 +14,7 @@ echo Downloading and running $PACKAGE...
 # Don't go for the API since it hits the Appveyor GitHub API limit and fails
 RELEASES=$(curl --silent https://github.com/ndmitchell/$PACKAGE/releases)
 URL=https://github.com/$(echo $RELEASES | grep -o '\"[^\"]*-x86_64-linux\.tar\.gz\"' | sed s/\"//g | head -n1)
-VERSION=$(echo $URL | sed -e 's/.*-\([\.0-9]\+\)-x86_64-linux\.tar\.gz/\1/')
+VERSION=$(echo $URL | sed -n 's@.*-\(.*\)-x86_64-linux\.tar\.gz@\1@p')
 TEMP=$(mktemp -d .$PACKAGE-XXXXX)
 
 cleanup(){
