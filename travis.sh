@@ -41,9 +41,11 @@ else
 fi
 
 ghc --version
-happy --version
-alex --version
 cabal --version
+if [ "$TRAVIS_OS_NAME" = "linux" ]; then
+    happy --version
+    alex --version
+fi
 
 retry cabal update
 retry cabal install --only-dependencies --enable-tests || FAIL=1
