@@ -75,3 +75,7 @@ if [ -e travis.hs ]; then
     timer travis/travis
 fi
 git diff --exit-code # check regenerating doesn't change anything
+
+# Generate artifacts for release
+neil binary
+cabal sdist
