@@ -24,16 +24,22 @@ if [ "$TRAVIS_OS_NAME" = "linux" ]; then
     curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s $HLINT_ARGUMENTS
 fi
 
-# Try and use the Cabal that ships with the same GHC version
-if [ "$GHCVER" = "head" ]; then
-    CABALVER=head
+if [ "$TRAVIS_OS_NAME" = "linux" ]; then
+    # Try and use the Cabal that ships with the same GHC version
+    if [ "$GHCVER" = "head" ]; then
+        CABALVER=head
+    else
+        CABALVER=2.0
+    fi
+    retry sudo add-apt-repository -y ppa:hvr/ghc
+    retry sudo apt-get update
+    retry sudo apt-get install ghc-$GHCVER cabal-install-$CABALVER happy-1.19.4 alex-3.1.3
+    export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/happy/1.19.4/bin:/opt/alex/3.1.3/bin:/home/travis/.cabal/bin:$PATH
 else
-    CABALVER=2.0
+    brew update
+    brew install ghc cabal-install
 fi
-retry sudo add-apt-repository -y ppa:hvr/ghc
-retry sudo apt-get update
-retry sudo apt-get install ghc-$GHCVER cabal-install-$CABALVER happy-1.19.4 alex-3.1.3
-export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/happy/1.19.4/bin:/opt/alex/3.1.3/bin:/home/travis/.cabal/bin:$PATH
+
 ghc --version
 happy --version
 alex --version
