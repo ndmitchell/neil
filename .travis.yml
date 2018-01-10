@@ -1,25 +1,18 @@
 sudo: required
-os:
-- linux
-- osx
-env:
-- GHCVER=7.4.2
-- GHCVER=7.6.3
-- GHCVER=7.8.4
-- GHCVER=7.10.3
-- GHCVER=8.0.2
-- GHCVER=8.2.1
-- GHCVER=8.4.1
-- GHCVER=head
 
 matrix:
-  exclude:
+  include:
+  - env: GHCVER=7.4.2
+  - env: GHCVER=7.6.3
+  - env: GHCVER=7.8.4
+  - env: GHCVER=7.10.3
+  - env: GHCVER=8.0.2
+  - env: GHCVER=8.2.1
+  - env: GHCVER=8.4.1
+  - env: GHCVER=head
   - os: osx
-    env: GHCVER=7.4.2
+  allow_failures:
   - os: osx
-    env: GHCVER=7.6.3
-  - os: osx
-    env: GHCVER=head
 
 script:
 - curl -sL https://raw.github.com/ndmitchell/neil/master/travis.sh | sh
