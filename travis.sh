@@ -61,7 +61,7 @@ if [ "$ALLOW_NEWER" = "1" ] && [ "$FAIL" = "1" ]; then
     fi
 fi
 retry git clone https://github.com/ndmitchell/neil .neil
-(cd .neil && retry cabal install --flags=small)
+(cd .neil && retry cabal install --flags=small --verbose)
 if [ -e travis.hs ]; then
     # ensure that reinstalling this package won't break the test script
     mkdir travis
