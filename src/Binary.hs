@@ -27,7 +27,7 @@ run Binary{..} = Just $ withCurrentDirectory path $ withTempDir $ \tdir -> do
     system_ $ "cabal sdist --output-directory=" ++ tdir
     let vname = name ++ "-" ++ ver
     let zname = if isWindows then vname ++ "-x86_64-windows.zip"
-                else if isMac then vname ++ "-x86_64-darwin.tar.gz"
+                else if isMac then vname ++ "-x86_64-osx.tar.gz"
                 else vname ++ "-x86_64-linux.tar.gz"
     withCurrentDirectory tdir $ do
         system_ "cabal install --dependencies"
