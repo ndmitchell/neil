@@ -62,7 +62,7 @@ run Tag = Just $ do
     src <- readCabal
     let [name] = [trim $ drop 5 x | x <- lines src, "name:" `isPrefixOf` x]
     let [ver] = [trim $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
-    putStrLn $ "Confirm to tag the release with '" ++ name ++ " " ++ ver ++ "'? Type 'yes':"
+    putStrLn $ "Confirm to tag the release with 'v" ++ ver ++ "'? Type 'yes':"
     "yes" <- getLine
     retry 2 $ system_ "git push"
     system_ $ "git tag -a -s -m \"" ++ name ++ " " ++ ver ++ "\" v" ++ ver
