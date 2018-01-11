@@ -20,10 +20,6 @@ deploy:
   api_key:
     secure: "Gb8kMSJRNUpZgWDiGQ6zCF1oYSwkroBDqBbOjoh/Dwp1pXFnBbWOJ4dp++yhogEvvvxvXFfooxWqQuXXyh3N5Pg6iu8+0F4SVfIZoHdQaw8JPVoL8aZ+W8rneYtKh1G1OCP0UgHydYb8yi4UGTLOwUyKobayhCAs9jam3ZPRVT4="
   file_glob: true
-  file:
-  - dist/bin/*
-  - dist/*.tar.gz
-  skip_cleanup: true
+  file:  travis-release/*
   on:
     tags: true
-condition: $GHCVER = 8.2.1
