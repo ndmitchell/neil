@@ -34,13 +34,12 @@ if [ "$TRAVIS_OS_NAME" = "linux" ]; then
     retry sudo add-apt-repository -y ppa:hvr/ghc
     retry sudo apt-get update
     retry sudo apt-get install ghc-$GHCVER cabal-install-$CABALVER happy-1.19.4 alex-3.1.3
-    export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/happy/1.19.4/bin:/opt/alex/3.1.3/bin:/home/travis/.cabal/bin:$PATH
+    export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/happy/1.19.4/bin:/opt/alex/3.1.3/bin:$PATH
 else
     brew update
     brew install ghc cabal-install
-    export PATH=/Users/travis/.cabal/bin:$PATH
 fi
-echo HOME VARIABLE IS $HOME
+export PATH=$HOME/.cabal/bin:$PATH
 
 ghc --version
 cabal --version
