@@ -38,7 +38,9 @@ if [ "$TRAVIS_OS_NAME" = "linux" ]; then
 else
     brew update
     brew install ghc cabal-install
+    export PATH=/Users/travis/.cabal/bin:$PATH
 fi
+echo HOME VARIABLE IS $HOME
 
 ghc --version
 cabal --version
