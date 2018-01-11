@@ -10,11 +10,16 @@ if [ -z "$PACKAGE" ]; then
 fi
 shift
 
+OS=$TRAVIS_OS_NAME
+if [ -z "$OS" ]; then
+    OS=linux
+fi
+
 echo Downloading and running $PACKAGE...
 # Don't go for the API since it hits the Appveyor GitHub API limit and fails
 RELEASES=$(curl --silent https://github.com/ndmitchell/$PACKAGE/releases)
-URL=https://github.com/$(echo $RELEASES | grep -o '\"[^\"]*-x86_64-linux\.tar\.gz\"' | sed s/\"//g | head -n1)
-VERSION=$(echo $URL | sed -n 's@.*-\(.*\)-x86_64-linux\.tar\.gz@\1@p')
+URL=https://github.com/$(echo $RELEASES | grep -o '\"[^\"]*-x86_64-$OS\.tar\.gz\"' | sed s/\"//g | head -n1)
+VERSION=$(echo $URL | sed -n 's@.*-\(.*\)-x86_64-$OS\.tar\.gz@\1@p')
 TEMP=$(mktemp -d .$PACKAGE-XXXXX)
 
 cleanup(){
