@@ -57,26 +57,16 @@ checkGhci = do
 
 checkTravis :: IO ()
 checkTravis = do
-    tests <- testedWith
-    let requirePrefix =
-            ["sudo: required"
-            ,"env:"] ++
-            ["- GHCVER=" ++ t | t <- reverse tests ++ maybeToList ghcNext] ++
-            ["- GHCVER=head"
-            ,"script:"
-            ]
-    let requireAnywhere =
-            ["- curl -sL https://raw.github.com/ndmitchell/neil/master/travis.sh | sh"]
-    src <- readFile' ".travis.yml"
-    let got = filter (not . null) $
-              replace ["matrix:","  allow_failures:"] [] $
-              replace ["  - env: GHCVER=head"] [] $
-              map (trimEnd . takeWhile (/= '#')) $ lines src
-    when ("allow_failures:" `isInfixOf` src) $ putStrLn $ "Warning: .travis.yml allows failures with GHC HEAD"
-    unless ((requirePrefix `isPrefixOf` got && requireAnywhere `isInfixOf` got) || "osx" `isInfixOf` src) $
-        error $ unlines $
-            [".travis.yml file mismatch","Wanted:"] ++ requirePrefix ++ requireAnywhere ++
-            ["Got:"] ++ got
+    src <- lines <$> readFile' ".travis.yml"
+
+    let script = "- curl -sL https://raw.github.com/ndmitchell/neil/master/travis.sh | sh"
+    when (script `notElem` src) $
+        fail $ "Expect to see script but missing, please add: " ++ script
+
+    claimed <- (\xs -> sort $ "head" : maybeToList ghcNext ++ xs) <$> testedWith
+    let tested = sort [num | Just (_, num) <- map (stripInfix "GHCVER=") src]
+    when (claimed /= tested) $
+        fail $ "Difference between the .cabal and the travis, " ++ show claimed ++ " vs " ++ show tested
 
 checkAppveyor :: IO ()
 checkAppveyor = do
