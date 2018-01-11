@@ -11,8 +11,6 @@ matrix:
   - env: GHCVER=8.4.1
   - env: GHCVER=head
   - os: osx
-  allow_failures:
-  - os: osx
 
 script:
 - curl -sL https://raw.github.com/ndmitchell/neil/master/travis.sh | sh
