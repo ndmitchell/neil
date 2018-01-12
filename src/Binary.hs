@@ -29,22 +29,29 @@ run Binary{..} = Just $ withCurrentDirectory path $ withTempDir $ \tdir -> do
     let zname = if isWindows then vname ++ "-x86_64-windows.zip"
                 else if isMac then vname ++ "-x86_64-osx.tar.gz"
                 else vname ++ "-x86_64-linux.tar.gz"
-    withCurrentDirectory tdir $ do
+    b <- withCurrentDirectory tdir $ do
         system_ "cabal install --dependencies"
         system_ "cabal configure --datadir=nul --disable-library-profiling"
         system_ "cabal build"
         let out = "bin" </> vname
-        copy ("dist/build" </> name </> name <.> exe) (out </> name <.> exe)
-        dataFiles <- ifM (doesDirectoryExist "data") (listFiles "data") (return [])
-        let files = ["CHANGES.txt","LICENSE","README.md"] ++ dataFiles
-        forM_ files $ \file ->
-            copy file $ out </> file
-        withCurrentDirectory "bin" $
-            if isWindows then
-                system_ $ "zip -r " ++ zname ++ " " ++ vname
-            else
-                system_ $ "tar -czvf " ++ zname ++ " " ++ vname
-    let res = "dist/bin" </> zname
-    copy (tdir </> "bin" </> zname) res
-    putStrLn $ "Completed, produced " ++ res
+        let built = "dist/build" </> name </> name <.> exe
+        b <- doesFileExist built
+        if not b then return False else do
+            copy built (out </> name <.> exe)
+            dataFiles <- ifM (doesDirectoryExist "data") (listFiles "data") (return [])
+            let files = ["CHANGES.txt","LICENSE","README.md"] ++ dataFiles
+            forM_ files $ \file ->
+                copy file $ out </> file
+            withCurrentDirectory "bin" $
+                if isWindows then
+                    system_ $ "zip -r " ++ zname ++ " " ++ vname
+                else
+                    system_ $ "tar -czvf " ++ zname ++ " " ++ vname
+            return True
+    if not b then
+        putStrLn "Completed, but package does not have a similarly named binary"
+     else do
+        let res = "dist/bin" </> zname
+        copy (tdir </> "bin" </> zname) res
+        putStrLn $ "Completed, produced " ++ res
 run _ = Nothing
