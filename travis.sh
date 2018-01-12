@@ -21,7 +21,8 @@ if [ "$HLINT_ARGUMENTS" = "" ]; then
     HLINT_ARGUMENTS=.
 fi
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
-    curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s $HLINT_ARGUMENTS
+    curl -sL https://raw.github.com/ndmitchell/neil/master/misc/travis2.sh | sh -s -- hlint $HLINT_ARGUMENTS
+#    curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s $HLINT_ARGUMENTS
 fi
 
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
