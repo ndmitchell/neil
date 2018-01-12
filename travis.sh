@@ -84,10 +84,14 @@ fi
 git diff --exit-code # check regenerating doesn't change anything
 
 # Generate artifacts for release
+mkdir travis-release
 if [ "$GHCVER" = "8.2.1" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then
-    mkdir -p dist/bin
     neil binary
+    if [ -d dist/bin ]; then
+        cp dist/bin/* travis-release
+    fi
+fi
+if [ "$GHCVER" = "8.2.1" ]; then
     cabal sdist
-    mkdir travis-release
     cp dist/bin/* dist/*.tar.gz travis-release
 fi
