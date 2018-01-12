@@ -35,9 +35,11 @@ if [ "$TRAVIS_OS_NAME" = "linux" ]; then
     retry sudo apt-get update
     retry sudo apt-get install ghc-$GHCVER cabal-install-$CABALVER happy-1.19.4 alex-3.1.3
     export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/happy/1.19.4/bin:/opt/alex/3.1.3/bin:$PATH
+    retry cabal update
 else
     brew update
     brew install ghc cabal-install
+    retry cabal update
     cabal install alex happy haddock
 fi
 export PATH=$HOME/.cabal/bin:$PATH
@@ -48,7 +50,6 @@ happy --version
 alex --version
 haddock --version
 
-retry cabal update
 retry cabal install --only-dependencies --enable-tests || FAIL=1
 if [ "$GHCVER" = "head" ] || [ "$GHCVER" = "8.4.1" ]; then
     ALLOW_NEWER=1
