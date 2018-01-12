@@ -93,5 +93,5 @@ if [ "$GHCVER" = "8.2.1" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then
 fi
 if [ "$GHCVER" = "8.2.1" ]; then
     cabal sdist
-    cp dist/bin/* dist/*.tar.gz travis-release
+    cp dist/*.tar.gz travis-release
 fi
