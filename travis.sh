@@ -38,15 +38,15 @@ if [ "$TRAVIS_OS_NAME" = "linux" ]; then
 else
     brew update
     brew install ghc cabal-install
+    cabal install alex happy haddock
 fi
 export PATH=$HOME/.cabal/bin:$PATH
 
 ghc --version
 cabal --version
-if [ "$TRAVIS_OS_NAME" = "linux" ]; then
-    happy --version
-    alex --version
-fi
+happy --version
+alex --version
+haddock --version
 
 retry cabal update
 retry cabal install --only-dependencies --enable-tests || FAIL=1
