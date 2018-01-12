@@ -84,6 +84,7 @@ git diff --exit-code # check regenerating doesn't change anything
 
 # Generate artifacts for release
 if [ "$GHCVER" = "8.2.1" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then
+    mkdir -p dist/bin
     neil binary
     cabal sdist
     mkdir travis-release
