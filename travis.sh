@@ -24,7 +24,6 @@ if [ "$TRAVIS_OS_NAME" = "linux" ]; then
     curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s $HLINT_ARGUMENTS
 fi
 
-echo travis_fold:start:install-ghc
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
     # Try and use the Cabal that ships with the same GHC version
     if [ "$GHCVER" = "head" ]; then
@@ -42,7 +41,6 @@ else
     cabal install alex happy haddock
 fi
 export PATH=$HOME/.cabal/bin:$PATH
-echo travis_fold:end:install-ghc
 
 ghc --version
 cabal --version
@@ -50,7 +48,6 @@ happy --version
 alex --version
 haddock --version
 
-echo travis_fold:start:install-packages
 retry cabal update
 retry cabal install --only-dependencies --enable-tests || FAIL=1
 if [ "$GHCVER" = "head" ] || [ "$GHCVER" = "8.4.1" ]; then
@@ -64,12 +61,9 @@ if [ "$ALLOW_NEWER" = "1" ] && [ "$FAIL" = "1" ]; then
         exit
     fi
 fi
-echo travis_fold:end:install-packages
 
-echo travis_fold:start:install-neil
 retry git clone https://github.com/ndmitchell/neil .neil
 (cd .neil && retry cabal install --flags=small)
-echo travis_fold:end:install-neil
 
 if [ -e travis.hs ]; then
     # ensure that reinstalling this package won't break the test script
@@ -81,23 +75,17 @@ FLAGS=
 if [ "$GHCVER" = "head" ]; then
     FLAGS=--no-warnings
 fi
-echo travis_fold:start:test-neil
 timer neil test --install $FLAGS
-echo travis_fold:end:test-neil
 
 if [ -e travis.hs ]; then
-    echo travis_fold:start:test-travis.hs
     timer travis/travis
-    echo travis_fold:end:test-travis.hs
 fi
 git diff --exit-code # check regenerating doesn't change anything
 
 # Generate artifacts for release
 if [ "$GHCVER" = "8.2.1" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then
-    echo travis_fold:start:dist
     neil binary
     cabal sdist
     mkdir travis-release
     cp dist/bin/* dist/*.tar.gz travis-release
-    echo travis_fold:end:dist
 fi
