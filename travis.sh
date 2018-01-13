@@ -20,9 +20,7 @@ timer(){
 if [ "$HLINT_ARGUMENTS" = "" ]; then
     HLINT_ARGUMENTS=.
 fi
-if [ "$TRAVIS_OS_NAME" = "linux" ]; then
-    curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s $HLINT_ARGUMENTS
-fi
+curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s $HLINT_ARGUMENTS
 
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
     # Try and use the Cabal that ships with the same GHC version
