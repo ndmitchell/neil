@@ -43,6 +43,7 @@ cabalCheck = do
 
     checkCabalFile
     checkReadme
+    checkChangelog
     checkGhci
     checkTravis
     checkAppveyor
@@ -292,6 +293,16 @@ checkReadme = do
         error $ "Expected first line of README.md to end with at least 2 badges, got " ++ show found
     when (found /= bangs) $
         error $ "Unexpected badges, found " ++ show bangs ++ ", but only recognised " ++ show found
+
+
+checkChangelog :: IO ()
+checkChangelog = do
+    res <- fromMaybe (error "Couldn't find changelog") <$>
+        findM doesFileExist ["CHANGES.txt","changelog.md"]
+    src <- lines <$> readFile res
+    let missingDate = filter (all $ isDigit ||^ (== '.')) $ filter (not . null) src
+    when (missingDate /= []) $
+        error $ "Expected dates for all releases, but missing for " ++ show missingDate
 
 
 getLatestYear :: IO String
