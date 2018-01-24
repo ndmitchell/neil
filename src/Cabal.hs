@@ -65,7 +65,8 @@ checkTravis = do
         fail $ "Expect to see script but missing, please add: " ++ script
 
     claimed <- (\xs -> sort $ "head" : maybeToList ghcNext ++ xs) <$> testedWith
-    let tested = sort [num | Just (_, num) <- map (stripInfix "GHCVER=") src]
+    -- Add a nub since you might write an entry twice, once with expected_failures
+    let tested = nubOrd $ sort [fst $ word1 num | Just (_, num) <- map (stripInfix "GHCVER=") src]
     when (claimed /= tested) $
         fail $ "Difference between the .cabal and the travis, " ++ show claimed ++ " vs " ++ show tested
 
