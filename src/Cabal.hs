@@ -89,6 +89,7 @@ undocumented =
     ,"safe" -- The lack of documentation is deliberate, since the pattern is more important
     ,"nsis" -- Issue to fix it at https://github.com/ndmitchell/nsis/issues/5
     ,"bake" -- Issue to fix it at https://github.com/ndmitchell/bake/issues/38
+    ,"debug" -- Issue to fix it at https://github.com/ndmitchell/debug/issues/29
     ]
 
 
