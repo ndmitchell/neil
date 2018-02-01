@@ -282,7 +282,7 @@ checkReadme = do
              "(https://hackage.haskell.org/package/" ++ name ++ ")"
             ,"[![Stackage version](https://www.stackage.org/package/" ++ name ++ "/badge/lts?label=Stackage)]" ++
              "(https://www.stackage.org/package/" ++ name ++ ")"
-            ,"[![Linux Build Status](https://img.shields.io/travis/" ++ travis ++ ".svg?label=Linux%20build)]" ++
+            ,"[![Linux Build Status](https://img.shields.io/travis/" ++ travis ++ "/master.svg?label=Linux%20build)]" ++
              "(https://travis-ci.org/" ++ travis ++ ")"
             ,"[![Windows Build Status](https://img.shields.io/appveyor/ci/" ++ appveyor ++ ".svg?label=Windows%20build)]" ++
              "(https://ci.appveyor.com/project/" ++ appveyor ++ ")"
