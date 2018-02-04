@@ -25,7 +25,8 @@ curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s $
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
     # Try and use the Cabal that ships with the same GHC version
     if [ "$GHCVER" = "head" ]; then
-        CABALVER=head
+        CABALVER=2.0
+        # Should be HEAD but see https://github.com/haskell/cabal/issues/5108
     else
         CABALVER=2.0
     fi
