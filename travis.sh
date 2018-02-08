@@ -49,11 +49,15 @@ happy --version
 alex --version
 haddock --version
 
-retry cabal install --only-dependencies --enable-tests || FAIL=1
 if [ "$GHCVER" = "head" ] || [ "$GHCVER" = "8.4.1" ]; then
-    ALLOW_NEWER=1
+    GHC_HEAD=1
 fi
-if [ "$ALLOW_NEWER" = "1" ] && [ "$FAIL" = "1" ]; then
+if [ "$GHCVER" = "8.2.2" ]; then
+    GHC_STABLE=1
+fi
+
+retry cabal install --only-dependencies --enable-tests || FAIL=1
+if [ "$GHC_HEAD" = "1" ] && [ "$FAIL" = "1" ]; then
     FAIL=
     retry cabal install --only-dependencies --enable-tests --allow-newer || FAIL=1
     if [ "$FAIL" = "1" ]; then
@@ -84,13 +88,13 @@ git diff --exit-code # check regenerating doesn't change anything
 
 # Generate artifacts for release
 mkdir travis-release
-if [ "$GHCVER" = "8.2.2" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then
+if [ "$GHC_STABLE" = "1" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then
     neil binary
     if [ -d dist/bin ]; then
         cp dist/bin/* travis-release
     fi
 fi
-if [ "$GHCVER" = "8.2.2" ]; then
+if [ "$GHC_STABLE" = "1" ]; then
     cabal sdist
     cp dist/*.tar.gz travis-release
 fi
