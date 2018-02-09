@@ -49,11 +49,15 @@ happy --version
 alex --version
 haddock --version
 
+if [ "$GHCVER" = "" ]; then
+    # Only happens on Mac where ghc is installed via brew
+    export GHC_VER=$(ghc --numeric-version)
+fi
 if [ "$GHCVER" = "head" ] || [ "$GHCVER" = "8.4.1" ]; then
-    GHC_HEAD=1
+    export GHC_HEAD=1
 fi
 if [ "$GHCVER" = "8.2.2" ]; then
-    GHC_STABLE=1
+    export GHC_STABLE=1
 fi
 
 retry cabal install --only-dependencies --enable-tests || FAIL=1
