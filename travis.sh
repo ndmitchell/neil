@@ -51,7 +51,7 @@ haddock --version
 
 if [ "$GHCVER" = "" ]; then
     # Only happens on Mac where ghc is installed via brew
-    export GHC_VER=$(ghc --numeric-version)
+    export GHCVER=$(ghc --numeric-version)
 fi
 if [ "$GHCVER" = "head" ] || [ "$GHCVER" = "8.4.1" ]; then
     export GHC_HEAD=1
