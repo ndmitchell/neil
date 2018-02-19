@@ -10,6 +10,7 @@ import Control.Monad.Extra
 import System.Info.Extra
 import System.IO.Extra
 import System.Process.Extra
+import Data.List.Extra
 import System.FilePath
 import System.Directory.Extra
 
@@ -24,6 +25,8 @@ run Binary{..} = Just $ withCurrentDirectory path $ withTempDir $ \tdir -> do
     src <- readCabal
     let ver = extractCabal "version" src
     let name = extractCabal "name" src
+    let grab tag = concat [words $ drop (length tag + 1) x | x <- relines $ lines src, (tag ++ ":") `isPrefixOf` x]
+    let files = grab "extra-doc-files" ++ grab "data-files"
     system_ $ "cabal sdist --output-directory=" ++ tdir
     let vname = name ++ "-" ++ ver
     let zname = if isWindows then vname ++ "-x86_64-windows.zip"
@@ -38,8 +41,6 @@ run Binary{..} = Just $ withCurrentDirectory path $ withTempDir $ \tdir -> do
         b <- doesFileExist built
         if not b then return False else do
             copy built (out </> name <.> exe)
-            dataFiles <- ifM (doesDirectoryExist "data") (listFiles "data") (return [])
-            let files = ["CHANGES.txt","LICENSE","README.md"] ++ dataFiles
             forM_ files $ \file ->
                 copy file $ out </> file
             withCurrentDirectory "bin" $
