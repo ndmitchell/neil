@@ -42,7 +42,7 @@ run Binary{..} = Just $ withCurrentDirectory path $ withTempDir $ \tdir -> do
         b <- doesFileExist built
         if not b then return False else do
             copy built (out </> name <.> exe)
-            forM_ files $ \file ->
+            forM_ files $ \file -> when ('*' `notElem` file) $
                 copy file $ out </> file
             withCurrentDirectory "bin" $
                 if isWindows then
