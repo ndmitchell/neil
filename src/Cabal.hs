@@ -193,7 +193,7 @@ run Test{..} = Just $ do
             map ("--ghc-option=" ++) ghcOptions
         system_ "cabal build"
         system_ "cabal haddock --hoogle"
-        when (ghcVer `notElem` ["7.4.2","7.6.3","7.8.4"]) $ do
+        when (ghcVer `elem` takeEnd 2 ghcReleases) $ do
             -- earlier Haddock's forget to document class members in the --hoogle
             checkHoogle
         when runTest $ system_ "cabal test --show-details=streaming"
