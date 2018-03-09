@@ -60,10 +60,10 @@ if [ "$GHCVER" = "8.2.2" ]; then
     export GHC_STABLE=1
 fi
 
-retry cabal install --only-dependencies --enable-tests || FAIL=1
+retry cabal install --only-dependencies --enable-tests --force-reinstalls || FAIL=1
 if [ "$GHC_HEAD" = "1" ] && [ "$FAIL" = "1" ]; then
     FAIL=
-    retry cabal install --only-dependencies --enable-tests --allow-newer || FAIL=1
+    retry cabal install --only-dependencies --enable-tests --force-reinstalls --allow-newer || FAIL=1
     if [ "$FAIL" = "1" ]; then
         echo Failed because some dependencies failed to install, not my fault
         exit
