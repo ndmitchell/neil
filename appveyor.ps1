@@ -35,7 +35,7 @@ if ($LASTEXITCODE -ne 0) {
 cmd /c '.\stack setup 1>&2 2>&1 > nul'
 if ($LASTEXITCODE -ne 0) {exit 1}
 
-cmd /c 'echo | .\stack --no-terminal build network -v3 2>&1'
+cmd /c 'echo | .\stack --no-terminal build network -v --ghc-options=-v3 2>&1'
 if ($LASTEXITCODE -ne 0) {exit 1}
 
 cmd /c 'echo | .\stack --no-terminal build --test --bench --ghc-options=-rtsopts 2>&1'
