@@ -18,7 +18,8 @@ Invoke-Command ([Scriptblock]::Create($Script.Content)) -ArgumentList $HLINT_ARG
 
 $env:PATH += ";$PWD" # Make sure stack.exe is on PATH, even if we change directory
 $env:STACK_ROOT = 'c:\\sr'
-Invoke-WebRequest 'http://www.stackage.org/stack/windows-i386' -OutFile 'stack.zip'
+# Would like to use i386 for wider testing, but it's bust - https://github.com/fpco/stackage/issues/3385
+Invoke-WebRequest 'http://www.stackage.org/stack/windows-x86_64' -OutFile 'stack.zip'
 7z x -y stack.zip stack.exe
 if ($LASTEXITCODE -ne 0) {exit 1}
 
@@ -33,9 +34,6 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 cmd /c '.\stack setup 1>&2 2>&1 > nul'
-if ($LASTEXITCODE -ne 0) {exit 1}
-
-cmd /c 'echo | .\stack --no-terminal build network -v --ghc-options=-v3 2>&1'
 if ($LASTEXITCODE -ne 0) {exit 1}
 
 cmd /c 'echo | .\stack --no-terminal build --test --bench --ghc-options=-rtsopts 2>&1'
