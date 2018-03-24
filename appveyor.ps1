@@ -17,7 +17,7 @@ $Script = Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/hlint/
 Invoke-Command ([Scriptblock]::Create($Script.Content)) -ArgumentList $HLINT_ARGUMENTS
 
 $env:PATH += ";$PWD" # Make sure stack.exe is on PATH, even if we change directory
-$env:STACK_ROOT = 'c:\\sr'
+$env:STACK_ROOT = 'C:\sr'
 # Would like to use i386 for wider testing, but it's bust - https://github.com/fpco/stackage/issues/3385
 Invoke-WebRequest 'http://www.stackage.org/stack/windows-x86_64' -OutFile 'stack.zip'
 7z x -y stack.zip stack.exe
