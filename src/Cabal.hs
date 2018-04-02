@@ -37,6 +37,8 @@ cabalCheck = do
     let allowed = ["No errors or warnings could be found in the package."
                   ,"These warnings may cause trouble when distributing the package:"
                   ,"* 'ghc-options: -main-is' is not portable."
+                  ,"* Packages relying on Cabal 1.12 or later should specify a version range of"
+                  ,"the form 'cabal-version: x.y'. Use 'cabal-version: 1.18'."
                   ,""]
     let bad = lines res \\ allowed
     when (bad /= []) $ error $ unlines $ "Cabal check gave bad warnings:" : map show bad
