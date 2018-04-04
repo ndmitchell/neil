@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 744.09448819 1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="drawing.svg"
+   inkscape:export-filename="C:\Neil\t-shirts\applicative.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.43"
+     inkscape:cx="158.47952"
+     inkscape:cy="692.72468"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1680"
+     inkscape:window-height="987"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:97.00000286%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="125.71429"
+       y="120.93363"
+       id="text3336"
+       sodipodi:linespacing="97.000003%"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><tspan
+         sodipodi:role="line"
+         id="tspan3338"
+         x="125.71429"
+         y="120.93363"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:48.75px;line-height:122.00000286%;font-family:Impact;-inkscape-font-specification:'Impact Condensed'">DON'T FEAR THE</tspan><tspan
+         sodipodi:role="line"
+         x="125.71429"
+         y="196.40193"
+         id="tspan3340"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:81.25px;line-height:97.00000286%;font-family:Impact;-inkscape-font-specification:'Impact Condensed'">FUNCTOR</tspan><tspan
+         sodipodi:role="line"
+         x="125.71429"
+         y="223.57349"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;line-height:122.00000286%;font-family:Consolas;-inkscape-font-specification:Consolas"
+         id="tspan3344" /><tspan
+         sodipodi:role="line"
+         x="125.71429"
+         y="244.92349"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.25px;line-height:122.00000286%;font-family:Consolas;-inkscape-font-specification:Consolas"
+         id="tspan3346">fmap :: (a -&gt; b) -&gt; M a -&gt; M b</tspan><tspan
+         sodipodi:role="line"
+         x="125.71429"
+         y="266.2735"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:81.25px;line-height:122.00000286%;font-family:Impact;-inkscape-font-specification:'Impact Condensed'"
+         id="tspan3342" /></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:97.00000286%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="115.26942"
+       y="414.48038"
+       id="text3336-5"
+       sodipodi:linespacing="97.000003%"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><tspan
+         sodipodi:role="line"
+         id="tspan3338-9"
+         x="115.26942"
+         y="414.48038"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:48.75px;line-height:122.00000286%;font-family:Impact;-inkscape-font-specification:'Impact Condensed'">DON'T FEAR THE</tspan><tspan
+         sodipodi:role="line"
+         x="115.26942"
+         y="472.90088"
+         id="tspan3340-0"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:60px;line-height:97.00000286%;font-family:Impact;-inkscape-font-specification:'Impact Condensed'">APPLICATIVE</tspan><tspan
+         sodipodi:role="line"
+         x="115.26942"
+         y="531.10089"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;line-height:122.00000286%;font-family:Consolas;-inkscape-font-specification:Consolas"
+         id="tspan3344-6" /><tspan
+         sodipodi:role="line"
+         x="115.26942"
+         y="553.74048"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.25px;line-height:122.00000286%;font-family:Consolas;-inkscape-font-specification:Consolas"
+         id="tspan3380"> &lt;*&gt; :: M (a -&gt; b) -&gt; M a -&gt; M b</tspan><tspan
+         sodipodi:role="line"
+         x="115.26942"
+         y="573.56549"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.25px;line-height:122.00000286%;font-family:Consolas;-inkscape-font-specification:Consolas"
+         id="tspan3386">pure :: a -&gt; M a</tspan><tspan
+         sodipodi:role="line"
+         x="115.26942"
+         y="593.3905"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;line-height:122.00000286%;font-family:Consolas;-inkscape-font-specification:Consolas"
+         id="tspan3378" /><tspan
+         sodipodi:role="line"
+         x="115.26942"
+         y="613.21545"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:81.25px;line-height:122.00000286%;font-family:Impact;-inkscape-font-specification:'Impact Condensed'"
+         id="tspan3342-1" /></text>
+  </g>
+</svg>
