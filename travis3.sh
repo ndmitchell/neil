@@ -4,8 +4,6 @@
 set -e # exit on errors
 set -x # echo each line
 
-exit 1 # Not supported
-
 retry(){ "$@" || "$@" || "$@"; }
 retry git clone https://github.com/ndmitchell/neil
 ls neil
