@@ -4,8 +4,4 @@
 set -e # exit on errors
 set -x # echo each line
 
-retry(){ "$@" || "$@" || "$@"; }
-retry git clone https://github.com/ndmitchell/neil
-ls neil
-chmod +x neil/travis2.sh
-sh neil/travis2.sh
+cabal update && cabal install
