@@ -4,4 +4,6 @@
 set -e # exit on errors
 set -x # echo each line
 
+export "PATH=$HOME/.cabal/bin:/opt/ghc/$(ls /opt/ghc/*.*)/bin:/opt/cabal/$(ls /opt/cabal)/bin:$PATH"
+
 cabal update && cabal install
