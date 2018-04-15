@@ -8,6 +8,6 @@ echo /opt/cabal/*.*
 echo /opt/ghc/*.*
 echo $HOME/.cabal/bin:/opt/ghc/*.*/bin:/opt/cabal/*.*/bin:$PATH
 echo $HOME/.cabal/bin:/opt/ghc/$(echo /opt/ghc/*.*)/bin:/opt/cabal/$(echo /opt/cabal/*.*)/bin:$PATH
-export "PATH=$HOME/.cabal/bin:/opt/ghc/$(echo /opt/ghc/*.*)/bin:/opt/cabal/$(echo /opt/cabal/*.*)/bin:$PATH"
+export "PATH=$HOME/.cabal/bin:/opt/ghc/7.8.4/bin:/opt/cabal/1.20/bin:$PATH"
 
 cabal update && cabal install
