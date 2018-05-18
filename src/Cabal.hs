@@ -282,7 +282,7 @@ checkReadme = do
     let badges =
             ["[![Hackage version](https://img.shields.io/hackage/v/" ++ name ++ ".svg?label=Hackage)]" ++
              "(https://hackage.haskell.org/package/" ++ name ++ ")"
-            ,"[![Stackage version](https://www.stackage.org/package/" ++ name ++ "/badge/lts?label=Stackage)]" ++
+            ,"[![Stackage version](https://www.stackage.org/package/" ++ name ++ "/badge/nightly?label=Stackage)]" ++
              "(https://www.stackage.org/package/" ++ name ++ ")"
             ,"[![Linux Build Status](https://img.shields.io/travis/" ++ travis ++ "/master.svg?label=Linux%20build)]" ++
              "(https://travis-ci.org/" ++ travis ++ ")"
