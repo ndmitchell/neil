@@ -39,7 +39,7 @@ else
     brew update
     brew install ghc cabal-install
     retry cabal update
-    cabal install alex happy haddock
+    cabal install alex happy
 fi
 export PATH=$HOME/.cabal/bin:$PATH
 
