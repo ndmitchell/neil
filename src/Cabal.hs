@@ -13,8 +13,9 @@ import System.Directory.Extra
 import System.IO.Extra
 import System.FilePath
 import System.Process.Extra
-import Text.ParserCombinators.ReadP
+import Text.ParserCombinators.ReadP hiding (many)
 import Arguments
+import Control.Applicative
 import Prelude
 
 -- | GHC releases I test with
