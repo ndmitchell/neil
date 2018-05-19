@@ -13,6 +13,7 @@ import System.Directory.Extra
 import System.IO.Extra
 import System.FilePath
 import System.Process.Extra
+import Text.ParserCombinators.ReadP
 import Arguments
 import Prelude
 
@@ -61,8 +62,31 @@ checkTravis :: IO ()
 checkTravis = do
     src <- lines <$> readFile' ".travis.yml"
 
-    let script = "- curl -sL https://raw.github.com/ndmitchell/neil/master/travis.sh | sh"
-    when (script `notElem` src) $
+    let parse = (,,) <$> (string "- curl -sL https://raw.github.com/" *> until_ '/')
+                     <*> (string "/neil/" *> until_ '/')
+                     <*  string "/travis.sh | sh -s"
+                     <*> shArgs
+                     <*  eof
+
+          where shArgs :: ReadP (Maybe (String, String))
+                shArgs = pure Nothing
+                         +++ (Just <$> ((,) <$> (string " " *> until_ ' ')
+                                            <*> (string " " *> rest)))
+
+                until_ c = many (satisfy (/= c))
+                rest     = many get
+
+        scriptOccurs = or $ flip map src $ \line -> case readP_to_S parse line of
+          [] -> False
+          [((github_user1, commit1, shArgs), "")] -> case shArgs of
+            Nothing ->
+              (github_user1 == "ndmitchell") && (commit1 == "master")
+            Just (github_user2, commit2) ->
+              (github_user1 == github_user2) && (commit1 == commit2)
+          _ -> error "Impossible situation: More than one match in Travis parse"
+
+    let script = "- curl -sL https://raw.github.com/<github_user>/neil/<commit>/travis.sh | sh -s <github_user> <commit>"
+    when (not scriptOccurs) $
         fail $ "Expect to see script but missing, please add: " ++ script
 
     claimed <- (\xs -> sort $ "head" : maybeToList ghcNext ++ xs) <$> testedWith
