@@ -30,8 +30,8 @@ ghcWarnings = words "-fwarn-unused-binds -fwarn-unused-imports -fwarn-orphans"
 -- COMMANDS
 
 -- | Check the .cabal file is well formed
-cabalCheck :: IO ()
-cabalCheck = do
+cabalCheck :: String -> String -> IO ()
+cabalCheck github_user commit = do
     -- a lot of the warnings aren't real problems, so whitelist some
     (_, res) <- systemOutput "cabal check"
     let allowed = ["No errors or warnings could be found in the package."
@@ -46,7 +46,7 @@ cabalCheck = do
     checkReadme
     checkChangelog
     checkGhci
-    checkTravis
+    checkTravis github_user commit
     checkAppveyor
 
 
@@ -57,11 +57,11 @@ checkGhci = do
         error $ "The .ghci file does not enough of " ++ unwords ("-W":ghcWarnings)
 
 
-checkTravis :: IO ()
-checkTravis = do
+checkTravis :: String -> String -> IO ()
+checkTravis github_user commit = do
     src <- lines <$> readFile' ".travis.yml"
 
-    let script = "- curl -sL https://raw.github.com/ndmitchell/neil/master/travis.sh | sh"
+    let script = "- curl -sL https://raw.github.com/" ++ github_user ++ "/neil/" ++ commit ++ "/travis.sh | sh -s " ++ github_user ++ " " ++ commit
     when (script `notElem` src) $
         fail $ "Expect to see script but missing, please add: " ++ script
 
@@ -179,7 +179,7 @@ withSDist no_warnings run = withTempDir $ \tdir -> do
 
 run :: Arguments -> Maybe (IO ())
 run Test{..} = Just $ do
-    test <- cabalCheck
+    test <- cabalCheck github_user commit
 
     runTest <- maybe (return True) (fmap ("test-suite" `isInfixOf`) . readFile) =<< findCabal
     ghcVer <- fst . line1 <$> systemOutput_ "ghc --numeric-version"
@@ -202,10 +202,10 @@ run Test{..} = Just $ do
             system_ "cabal copy"
             system_ "cabal register"
 
-run Check{..} = Just $ withCurrentDirectory path cabalCheck
+run Check{..} = Just $ withCurrentDirectory path (cabalCheck github_user commit)
 
-run Sdist = Just $ do
-    cabalCheck
+run Sdist{..} = Just $ do
+    (cabalCheck github_user commit)
     tested <- testedWith
     withSDist False $ do
         system_ "cabal clean"
