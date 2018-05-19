@@ -65,13 +65,13 @@ checkTravis = do
 
     let parse = (,,) <$> (string "- curl -sL https://raw.github.com/" *> until_ '/')
                      <*> (string "/neil/" *> until_ '/')
-                     <*  string "/travis.sh | sh -s"
+                     <*  string "/travis.sh | sh"
                      <*> shArgs
                      <*  eof
 
           where shArgs :: ReadP (Maybe (String, String))
                 shArgs = pure Nothing
-                         +++ (Just <$> ((,) <$> (string " " *> until_ ' ')
+                         +++ (Just <$> ((,) <$> (string " -s " *> until_ ' ')
                                             <*> (string " " *> rest)))
 
                 until_ c = many (satisfy (/= c))
