@@ -4,6 +4,9 @@
 set -e # exit on errors
 set -x # echo each line
 
+GITHUB_USER=$1
+COMMIT=$2
+
 retry(){ "$@" || (sleep 30s && "$@") || (sleep 30s && "$@"); }
 timer(){
     set +x;
@@ -70,8 +73,8 @@ if [ "$GHC_HEAD" = "1" ] && [ "$FAIL" = "1" ]; then
     fi
 fi
 
-retry git clone https://github.com/ndmitchell/neil .neil
-(cd .neil && retry cabal install --flags=small)
+retry git clone -n "https://github.com/$GITHUB_USER/neil" .neil
+(cd .neil && git checkout $COMMIT && retry cabal install --flags=small)
 
 if [ -e travis.hs ]; then
     # ensure that reinstalling this package won't break the test script
@@ -83,7 +86,7 @@ FLAGS=
 if [ "$GHCVER" = "head" ]; then
     FLAGS=--no-warnings
 fi
-timer neil test --install $FLAGS
+timer neil test --install $FLAGS --github-user=$GITHUB_USER --commit=$COMMIT
 
 if [ -e travis.hs ]; then
     timer travis/travis
