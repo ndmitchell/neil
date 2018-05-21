@@ -363,7 +363,7 @@ ownerAppveyor = owner "https://img.shields.io/appveyor/ci/"
 
 owner :: String -> [String] -> String
 owner fragment src = if x == "" then "ndmitchell" else x
-    where x = takeWhile (\x -> x /= '/' && x /= '\n') $ drop (length fragment) $ snd $ breakOn fragment $ unlines src
+    where x = takeWhile (`notElem` "/#\n") $ drop (length fragment) $ snd $ breakOn fragment $ unlines src
 
 
 relines :: [String] -> [String]
