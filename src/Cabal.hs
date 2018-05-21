@@ -13,9 +13,7 @@ import System.Directory.Extra
 import System.IO.Extra
 import System.FilePath
 import System.Process.Extra
-import Text.ParserCombinators.ReadP hiding (many)
 import Arguments
-import Control.Applicative
 import Prelude
 
 -- | GHC releases I test with
@@ -63,32 +61,14 @@ checkTravis :: IO ()
 checkTravis = do
     src <- lines <$> readFile' ".travis.yml"
 
-    let parse = (,,) <$> (string "- curl -sL https://raw.github.com/" *> until_ '/')
-                     <*> (string "/neil/" *> until_ '/')
-                     <*  string "/travis.sh | sh"
-                     <*> shArgs
-                     <*  eof
-
-          where shArgs :: ReadP (Maybe (String, String))
-                shArgs = pure Nothing
-                         +++ (Just <$> ((,) <$> (string " -s " *> until_ ' ')
-                                            <*> (string " " *> rest)))
-
-                until_ c = many (satisfy (/= c))
-                rest     = many get
-
-        scriptOccurs = or $ flip map src $ \line -> case readP_to_S parse line of
-          [] -> False
-          [((github_user1, commit1, shArgs), "")] -> case shArgs of
-            Nothing ->
-              (github_user1 == "ndmitchell") && (commit1 == "master")
-            Just (github_user2, commit2) ->
-              (github_user1 == github_user2) && (commit1 == commit2)
-          _ -> error "Impossible situation: More than one match in Travis parse"
-
     let script = "- curl -sL https://raw.github.com/<github_user>/neil/<commit>/travis.sh | sh -s <github_user> <commit>"
-    when (not scriptOccurs) $
-        fail $ "Expect to see script but missing, please add: " ++ script
+    let isScript x = case words x of
+            ["-","curl","-sL","https://raw.github.com/ndmitchell/neil/master/travis.sh","|","sh"] -> True
+            ["-","curl","-sL",url,"|","sh","-s",user,commit] -> url == ("https://raw.github.com/" ++ user ++ "/neil/" ++ commit ++ "/travis.sh")
+            _ -> False
+
+    when (length (filter isScript src) /= 1) $
+        fail $ "Expect to see exactly one script but not, please add: " ++ script
 
     claimed <- (\xs -> sort $ "head" : maybeToList ghcNext ++ xs) <$> testedWith
     -- Add a nub since you might write an entry twice, once with expected_failures
