@@ -291,7 +291,7 @@ checkReadme = do
              "(https://www.stackage.org/package/" ++ name ++ ")"
             ,"[![Linux Build Status](https://img.shields.io/travis/" ++ travis ++ "/master.svg?label=Linux%20build)]" ++
              "(https://travis-ci.org/" ++ travis ++ ")"
-            ,"[![Windows Build Status](https://img.shields.io/appveyor/ci/" ++ appveyor ++ ".svg?label=Windows%20build)]" ++
+            ,"[![Windows Build Status](https://img.shields.io/appveyor/ci/" ++ appveyor ++ "/master.svg?label=Windows%20build)]" ++
              "(https://ci.appveyor.com/project/" ++ appveyor ++ ")"
             ,"[![Build Status](https://img.shields.io/travis/" ++ travis ++ "/master.svg)]" ++
              "(https://travis-ci.org/" ++ travis ++ ")"
