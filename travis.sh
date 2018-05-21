@@ -4,8 +4,6 @@
 set -e # exit on errors
 set -x # echo each line
 
-export
-
 GITHUB_USER=$1
 COMMIT=$2
 
