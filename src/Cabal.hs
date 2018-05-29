@@ -339,7 +339,7 @@ checkCabalFile = do
                 , not $ all (\x -> isLower x || x == '-') x] ++
             [year ++ " is not in the copyright year" | not $ year `isInfixOf` concat (grab "copyright")] ++
             ["copyright string is not at the start of the license-file" | not $ (concat (grab "copyright") `isInfixOf` concat (take 1 $ lines license)) || grab "license" == ["GPL"]] ++
-            ["No correct source-repository link"
+            ["No correct source-repository link, wanted: " ++ want
                 | let want = "source-repository head type: git location: https://github.com/" ++ github ++ ".git"
                 , not $ want `isInfixOf` unwords (words $ unlines src)] ++
             ["No bug-reports link" | grab "bug-reports" /= ["https://github.com/" ++ github ++ "/issues"]] ++
