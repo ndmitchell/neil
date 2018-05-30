@@ -42,8 +42,8 @@ if [ "$TRAVIS_OS_NAME" = "linux" ]; then
         CABALVER=2.0
     fi
     retry sudo add-apt-repository -y ppa:hvr/ghc
-    retry sudo apt-get update
-    retry sudo apt-get install ghc-$GHCVER cabal-install-$CABALVER happy-1.19.4 alex-3.1.3
+    # Sometimes apt-get update fails silently, but then apt-get install fails loudly, so retry both
+    retry sudo (apt-get update && apt-get install ghc-$GHCVER cabal-install-$CABALVER happy-1.19.4 alex-3.1.3)
     export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/happy/1.19.4/bin:/opt/alex/3.1.3/bin:$PATH
     retry cabal update
 else
