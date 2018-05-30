@@ -16,15 +16,16 @@ if [ -z "$COMMIT" ]; then
 fi
 
 retry(){ "$@" || (sleep 30s && "$@") || (sleep 30s && "$@"); }
+}
 timer(){
-    set +x;
-    local before=$(date +%s);
-    set -x;
-    "$@";
-    set +x;
-    local after=$(date +%s);
-    echo Timing: $(expr $after - $before) spent doing $@;
-    set -x;
+    set +x
+    local before=$(date +%s)
+    set -x
+    $@
+    set +x
+    local after=$(date +%s)
+    echo Timing: $(expr $after - $before) spent doing $@
+    set -x
 }
 
 # make sure we hlint check before running the tests, in case they generate non-compliant hlint
