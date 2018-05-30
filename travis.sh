@@ -15,7 +15,12 @@ if [ -z "$COMMIT" ]; then
     COMMIT=master
 fi
 
-retry(){ "$@" || (sleep 30s && "$@") || (sleep 30s && "$@"); }
+retry(){
+    ($@) && return
+    sleep 15
+    ($@) && return
+    sleep 15
+    $@
 }
 timer(){
     set +x
@@ -44,7 +49,10 @@ if [ "$TRAVIS_OS_NAME" = "linux" ]; then
     fi
     retry sudo add-apt-repository -y ppa:hvr/ghc
     # Sometimes apt-get update fails silently, but then apt-get install fails loudly, so retry both
-    retry sudo (apt-get update && apt-get install ghc-$GHCVER cabal-install-$CABALVER happy-1.19.4 alex-3.1.3)
+    update_install(){
+        apt-get update && apt-get install ghc-$GHCVER cabal-install-$CABALVER happy-1.19.4 alex-3.1.3
+    }
+    retry sudo update_install
     export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/happy/1.19.4/bin:/opt/alex/3.1.3/bin:$PATH
     retry cabal update
 else
