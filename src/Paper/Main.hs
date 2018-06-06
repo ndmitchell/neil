@@ -159,4 +159,3 @@ int = padL maxIntWidth . show
 fixed :: [String] -> String -> String
 fixed ss = let n = maximum $ map length ss
            in \s -> padR n s
-
