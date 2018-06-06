@@ -3,7 +3,7 @@ module Paper.Graph(graphLog, graphCreate) where
 
 import Data.List
 import qualified Data.Map as Map
-import Data.Ord
+import Data.Tuple.Extra
 import System.Time
 import System.Process.Extra
 
@@ -23,9 +23,7 @@ graphLoad :: FilePath -> [String] -> IO [(Date,String,Int)]
 graphLoad src files = do
     src <- readFile src
     res <- return [(date a,b,c) | s <- lines src, not $ null s, let (a,b,c) = read s, b `elem` files]
-    return $ sortBy (comparing fst3) res
-
-fst3 (x,_,_) = x
+    return $ sortOn fst3 res
 
 -- year, month (1 based), day (1 based)
 type Date = (Int,Int,Int)
