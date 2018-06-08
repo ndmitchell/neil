@@ -1,3 +1,4 @@
+{-# LANGUAGE TupleSections #-}
 
 module Paper.Haskell2.Stage1(stage1) where
 
@@ -98,7 +99,7 @@ hsCustom "deflist" x = [(Stmt,unlines $ map f ls)]
             | otherwise = x
 
 -- each line started at column 1 is a new expr
-hsCustom "exprlist" x = map ((,) Expr) $ f $ lines x
+hsCustom "exprlist" x = map (Expr,) $ f $ lines x
     where
         f (x:(y:ys):z) | isSpace y = f ((x ++ '\n':y:ys) : z)
         f (x:xs) = x : f xs

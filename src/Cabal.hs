@@ -1,4 +1,4 @@
-{-# LANGUAGE RecordWildCards, PatternGuards, ViewPatterns #-}
+{-# LANGUAGE RecordWildCards, PatternGuards, ViewPatterns, TupleSections #-}
 
 module Cabal(run, readCabal, extractCabal, relines) where
 
@@ -135,7 +135,7 @@ docWhitelist =
 -- | Given a set of definitions, each preceeded by docs, return the bad definitions.
 --   Generally that's any non-leading definition, but don't require docs on constructors or selectors.
 missingDocs :: [[String]] -> [String]
-missingDocs xss = f "" $ concat [(True,x) : map ((,) False) xs | x:xs <- xss]
+missingDocs xss = f "" $ concat [(True,x) : map (False,) xs | x:xs <- xss]
     where
         isCtor (x:xs) | isUpper x = True
         isCtor ('[':x:xs) | isUpper x = True -- later Haddock sometimes writes constructors [Foo]
