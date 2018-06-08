@@ -27,6 +27,14 @@ cleanup(){
 }
 trap cleanup EXIT
 
-curl --progress-bar --location -o$TEMP/$PACKAGE.tar.gz $URL
+retry(){
+    ($@) && return
+    sleep 15
+    ($@) && return
+    sleep 15
+    $@
+}
+
+retry curl --progress-bar --location -o$TEMP/$PACKAGE.tar.gz $URL
 tar -xzf $TEMP/$PACKAGE.tar.gz -C$TEMP
 $TEMP/$PACKAGE-$VERSION/$PACKAGE $*
