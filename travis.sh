@@ -47,7 +47,7 @@ if [ "$TRAVIS_OS_NAME" = "linux" ]; then
     else
         CABALVER=2.0
     fi
-    retry sudo add-apt-repository -y ppa:hvr/ghc
+    retry sudo add-apt-repository -y --allow-unauthenticated ppa:hvr/ghc
     # Sometimes apt-get update fails silently, but then apt-get install fails loudly, so retry both
     update_install(){
         sudo apt-get update && sudo apt-get install ghc-$GHCVER cabal-install-$CABALVER happy-1.19.4 alex-3.1.3
