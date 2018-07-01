@@ -73,7 +73,7 @@ if [ "$GHCVER" = "" ]; then
     # Only happens on Mac where ghc is installed via brew
     export GHCVER=$(ghc --numeric-version)
 fi
-if [ "$GHCVER" = "head" ]; then
+if [ "$GHCVER" = "head" ] || [ "$GHCVER" = "8.6.1" ]; then
     export GHC_HEAD=1
 fi
 if [ "$GHCVER" = "8.2.2" ]; then
