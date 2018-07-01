@@ -80,9 +80,6 @@ if [ "$GHCVER" = "8.2.2" ]; then
     export GHC_STABLE=1
 fi
 
-retry git clone -n "https://github.com/$GITHUB_USER/neil" .neil
-(cd .neil && git checkout $COMMIT && retry cabal install --allow-newer --flags=small)
-
 retry cabal install --only-dependencies --enable-tests --force-reinstalls || FAIL=1
 if [ "$GHC_HEAD" = "1" ] && [ "$FAIL" = "1" ]; then
     FAIL=
@@ -92,6 +89,9 @@ if [ "$GHC_HEAD" = "1" ] && [ "$FAIL" = "1" ]; then
         exit
     fi
 fi
+
+retry git clone -n "https://github.com/$GITHUB_USER/neil" .neil
+(cd .neil && git checkout $COMMIT && retry cabal install --allow-newer --flags=small)
 
 if [ -e travis.hs ]; then
     # ensure that reinstalling this package won't break the test script
