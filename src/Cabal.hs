@@ -61,10 +61,10 @@ checkTravis :: IO ()
 checkTravis = do
     src <- lines <$> readFile' ".travis.yml"
 
-    let script = "- curl -sL https://raw.github.com/<github_user>/neil/<commit>/travis.sh | sh -s <github_user> <commit>"
+    let script = "- curl -sSL https://raw.github.com/<github_user>/neil/<commit>/travis.sh | sh -s <github_user> <commit>"
     let isScript x = case words x of
-            ["-","curl","-sL","https://raw.github.com/ndmitchell/neil/master/travis.sh","|","sh"] -> True
-            ["-","curl","-sL",url,"|","sh","-s",user,commit] -> url == ("https://raw.github.com/" ++ user ++ "/neil/" ++ commit ++ "/travis.sh")
+            ["-","curl","-sSL","https://raw.github.com/ndmitchell/neil/master/travis.sh","|","sh"] -> True
+            ["-","curl","-sSL",url,"|","sh","-s",user,commit] -> url == ("https://raw.github.com/" ++ user ++ "/neil/" ++ commit ++ "/travis.sh")
             _ -> False
 
     when (length (filter isScript src) /= 1) $
