@@ -16,7 +16,8 @@ These guidelines apply to all my projects, not just this one. I am pretty relaxe
 * If I am not responding after a few days, ping me again on the ticket, or via email. I'm probably just busy or lost the email in a pile. I certainly intended to thank you for contribution and give some feedback.
 * If your preferences are vehemently different, then follow yours, I'm really not all that fussed - but sometimes it's easier for people to know what you do like rather than to spend effort thinking about what you like, or doing something they think you will like but you actually don't.
 * After I've merged your patch, if it would be useful to have an immediate release containing the patch (e.g. because you are working on downstream code or can only deploy official releases in production) let me know. Usually I am happy to release after any change, but for smaller changes might wait to collect a bunch of things together.
-* I develop on `master` and only update the `.cabal` version just before a release.
+* I develop on `master` and only update the `.cabal` version just before a release. I don't expect submitted PR's to update version numbers.
+* I require all contributions to my repositories to be licensed under the license of that project.
 
 ### Quirks
 
