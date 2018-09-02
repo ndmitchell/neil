@@ -48,6 +48,7 @@ cabalCheck = do
     checkGhci
     checkTravis
     checkAppveyor
+    checkPullRequestTemplate
 
 
 checkGhci :: IO ()
@@ -311,6 +312,20 @@ checkChangelog = do
     let missingDate = filter (all $ isDigit ||^ (== '.')) $ filter (not . null) src
     when (missingDate /= []) $
         error $ "Expected dates for all releases, but missing for " ++ show missingDate
+
+
+checkPullRequestTemplate :: IO ()
+checkPullRequestTemplate = do
+    res <- lines <$> readFile "PULL_REQUEST_TEMPLATE.md"
+    let required =
+            ["Thanks for the pull request!"
+            ,""
+            ,"By raising this pull request you confirm you are licensing your contributions under the project license (see LICENSE) and that you have no patents covering your contribution."
+            ,""
+            ,"If you care, my PR preferences are at https://github.com/ndmitchell/neil#contributions, but they're all guidelines, and I'm not too fussy - you don't have to read them."
+            ]
+    when (res /= required) $
+        error $ "Expected pull request template in the right form, but not found"
 
 
 getLatestYear :: IO String
