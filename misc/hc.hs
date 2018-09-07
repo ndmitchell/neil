@@ -9,7 +9,7 @@ import System.Directory
 import System.FilePath
 
 
-data Args = Setup | Checkout | Pull | Build | Ghcid | Run
+data Args = Setup | Checkout | Pull | Build | Ghcid | Run | Clean
     deriving (Show, Enum, Bounded)
 
 args :: [(String, Args)]
@@ -30,6 +30,7 @@ main = do
                 Pull -> pull
                 Ghcid -> ghcid xs
                 Run -> run xs
+                Clean -> clean
             putStrLn "SUCCESS"
         x:_ -> putStrLn $ "Unknown command " ++ x ++ ", expected one of: " ++ unwords (map fst args)
         [] -> putStrLn $ "Add a command, one of: " ++ unwords (map fst args)
@@ -70,3 +71,7 @@ ghcid xs = do
 run xs = do
     checkGhcDir
     system_ $ unwords $ "_build\\stage1\\bin\\ghc.exe" : xs
+
+clean = do
+    checkGhcDir
+    system_ "hadrian\\build.bat clean"
