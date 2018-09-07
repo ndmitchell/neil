@@ -1,1 +1,1 @@
-runhaskell %~dp0\..\misc\hc.hs %*
+@runhaskell %~dp0\..\misc\hc.hs %*
