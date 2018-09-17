@@ -38,7 +38,13 @@ cabalCheck = do
                   ,"These warnings may cause trouble when distributing the package:"
                   ,"* 'ghc-options: -main-is' is not portable."
                   ,"* Packages relying on Cabal 1.12 or later should specify a version range of"
-                  ,"the form 'cabal-version: x.y'. Use 'cabal-version: 1.18'."]
+                  ,"the form 'cabal-version: x.y'. Use 'cabal-version: 1.18'."
+                  ,"Warning: These warnings may cause trouble when distributing the package:"
+                  ,"Warning: 'ghc-options: -main-is' is not portable."
+                  ,"Warning: Packages relying on Cabal 1.12 or later should specify a specific"
+                  ,"version of the Cabal spec of the form 'cabal-version: x.y'. Use"
+                  ,"'cabal-version: 1.18'."
+                  ]
     let bad = filter (not . null) (lines res) \\ allowed
     when (bad /= []) $ error $ unlines $ "Cabal check gave bad warnings:" : map show bad
 
