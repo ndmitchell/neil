@@ -313,7 +313,7 @@ checkReadme = do
 checkChangelog :: IO ()
 checkChangelog = do
     res <- fromMaybe (error "Couldn't find changelog") <$>
-        findM doesFileExist ["CHANGES.txt","changelog.md"]
+        findM doesFileExist ["CHANGES.txt","changelog.md", "CHANGELOG.md"]
     src <- lines <$> readFile res
     let missingDate = filter (all $ isDigit ||^ (== '.')) $ filter (not . null) src
     when (missingDate /= []) $
