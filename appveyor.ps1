@@ -9,6 +9,8 @@ $ErrorActionPreference = "Stop"
 #
 # * Giving a non-zero exit code is NOT an error. We fix that by testing LASTERRORCODE after each command.
 
+[Console]::OutputEncoding = [Text.UTF8Encoding]::UTF8
+
 $HLINT_ARGUMENTS = $env:HLINT_ARGUMENTS
 if ("$HLINT_ARGUMENTS" -eq '') {
     $HLINT_ARGUMENTS = '.'
