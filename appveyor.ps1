@@ -47,7 +47,7 @@ if ($LASTEXITCODE -ne 0) {
 cmd /c '.\stack setup 1>&2 2>&1 > nul'
 if ($LASTEXITCODE -ne 0) {exit 1}
 
-cmd /c 'echo | .\stack --no-terminal build --test --bench --ghc-options=-rtsopts 2>&1'
+cmd /c 'echo | chcp 65001 && .\stack --no-terminal build --test --bench --ghc-options=-rtsopts 2>&1'
 if ($LASTEXITCODE -ne 0) {exit 1}
 
 $Script = Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/weeder/master/misc/appveyor.ps1'
