@@ -39,14 +39,14 @@ if [ "$HLINT_ARGUMENTS" = "" ]; then
 fi
 curl -sSL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s $HLINT_ARGUMENTS
 
-if [ "$GHCVER" = "7.4" ]; then; GHCVER=7.4.2; fi
-if [ "$GHCVER" = "7.6" ]; then; GHCVER=7.6.3; fi
-if [ "$GHCVER" = "7.8" ]; then; GHCVER=7.8.4; fi
-if [ "$GHCVER" = "7.10" ]; then; GHCVER=7.10.3; fi
-if [ "$GHCVER" = "8.0" ]; then; GHCVER=8.0.2; fi
-if [ "$GHCVER" = "8.2" ]; then; GHCVER=8.2.2; fi
-if [ "$GHCVER" = "8.4" ]; then; GHCVER=8.4.4; fi
-if [ "$GHCVER" = "8.6" ]; then; GHCVER=8.6.3; fi
+if [ "$GHCVER" = "7.4" ]; then GHCVER=7.4.2; fi
+if [ "$GHCVER" = "7.6" ]; then GHCVER=7.6.3; fi
+if [ "$GHCVER" = "7.8" ]; then GHCVER=7.8.4; fi
+if [ "$GHCVER" = "7.10" ]; then GHCVER=7.10.3; fi
+if [ "$GHCVER" = "8.0" ]; then GHCVER=8.0.2; fi
+if [ "$GHCVER" = "8.2" ]; then GHCVER=8.2.2; fi
+if [ "$GHCVER" = "8.4" ]; then GHCVER=8.4.4; fi
+if [ "$GHCVER" = "8.6" ]; then GHCVER=8.6.3; fi
 
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
     # Try and use the Cabal that ships with the same GHC version
