@@ -78,8 +78,9 @@ checkTravis = do
         fail $ "Expect to see exactly one script but not, please add: " ++ script
 
     claimed <- (\xs -> sort $ "head" : maybeToList ghcNext ++ xs) <$> testedWith
+    let extend x = fromMaybe x $ lookup (x++".") [(dropWhileEnd (/= '.') v, v) | v <- ghcReleases]
     -- Add a nub since you might write an entry twice, once with expected_failures
-    let tested = nubSort [fst $ word1 num | Just (_, num) <- map (stripInfix "GHCVER=") src]
+    let tested = nubSort [extend $ fst $ word1 num | Just (_, num) <- map (stripInfix "GHCVER=") src]
     when (claimed /= tested) $
         fail $ "Difference between the .cabal and the travis, " ++ show claimed ++ " vs " ++ show tested
 
