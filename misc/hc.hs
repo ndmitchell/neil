@@ -44,7 +44,7 @@ setup = do
     system_ "stack exec -- pacman -S autoconf automake-wrapper make patch python tar --noconfirm"
 
 checkout = do
-    system_ "git clone git://git.haskell.org/ghc.git --recursive"
+    system_ "git clone https://gitlab.haskell.org/ghc/ghc.git --recursive"
     putStrLn "\nYou need to change to the 'ghc' directory to continue"
 
 pull = do
