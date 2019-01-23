@@ -3,6 +3,7 @@ module Main(main) where
 
 import System.Environment
 import System.Process.Extra
+import System.Time.Extra
 import Control.Monad.Extra
 import Data.List.Extra
 import System.Directory
@@ -23,7 +24,7 @@ main = do
     xs <- getArgs
     case xs of
         x:xs | Just x <- lookup (lower x) args -> do
-            case x of
+            (t, ()) <- duration $ case x of
                 Setup -> setup
                 Checkout -> checkout
                 Build -> build xs
@@ -31,7 +32,7 @@ main = do
                 Ghcid -> ghcid xs
                 Run -> run xs
                 Clean -> clean
-            putStrLn "SUCCESS"
+            putStrLn $ "SUCCESS (" ++ showDuration t ++ ")"
         x:_ -> putStrLn $ "Unknown command " ++ x ++ ", expected one of: " ++ unwords (map fst args)
         [] -> putStrLn $ "Add a command, one of: " ++ unwords (map fst args)
 
