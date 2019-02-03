@@ -13,7 +13,7 @@ shift
 case "$(uname)" in
     "Darwin")
         OS=osx;;
-    MSYS_NT-*)
+    MINGW64_NT-*|MSYS_NT-*)
         OS=windows;;
     *)
         OS=linux
