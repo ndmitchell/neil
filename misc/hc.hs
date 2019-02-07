@@ -56,7 +56,7 @@ pull = do
 
 build xs = do
     checkGhcDir
-    system_ $ unwords $ "hadrian\\build.bat -j --flavour=quickest --configure" : xs
+    system_ $ unwords $ "hadrian\\build.stack.bat -j --flavour=quickest --integer-simple --configure" : xs
 
 ghcid xs = do
     checkGhcDir
