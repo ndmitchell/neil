@@ -10,10 +10,14 @@ if [ -z "$PACKAGE" ]; then
 fi
 shift
 
-OS=$TRAVIS_OS_NAME
-if [ -z "$OS" ]; then
-    OS=linux
-fi
+case "$(uname)" in
+    "Darwin")
+        OS=osx;;
+    MINGW64_NT-*|MSYS_NT-*)
+        OS=windows;;
+    *)
+        OS=linux
+esac
 
 if [ "$OS" = "windows" ]; then
     EXT=.zip
