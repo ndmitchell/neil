@@ -3,10 +3,6 @@
 # It bootstraps to grab the a binary release and run it
 set -e # exit on errors
 
-#####################################################################
-## NOTE: USE run.sh in preference (this was never exposed publicly)
-#####################################################################
-
 PACKAGE=$1
 if [ -z "$PACKAGE" ]; then
     echo No arguments provided, please pass the project name as the first argument
