@@ -32,7 +32,7 @@ echo Downloading and running $PACKAGE...
 RELEASES=$(curl --silent --show-error https://github.com/ndmitchell/$PACKAGE/releases)
 URL=https://github.com/$(echo $RELEASES | grep -o '\"[^\"]*-x86_64-'$OS$ESCEXT'\"' | sed s/\"//g | head -n1)
 VERSION=$(echo $URL | sed -n 's@.*-\(.*\)-x86_64-'$OS$ESCEXT'@\1@p')
-TEMP=$(mktemp -d .$PACKAGE-XXXXX)
+TEMP=$(mktemp -d .$PACKAGE-XXXXXX)
 
 cleanup(){
     rm -r $TEMP
