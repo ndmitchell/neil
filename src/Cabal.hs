@@ -377,7 +377,7 @@ validTests :: [String] -> Bool
 validTests xs = length xs >= 1 && xs `isPrefixOf` reverse ghcReleases
 
 projectName x = owner ("https://github.com/" ++ ownerGithub x ++ "/") x
-ownerGithub = owner "https://github.com/"
+ownerGithub = owner " https://github.com/" -- leading space ensures other <https:// links don't pollute the owner
 ownerTravis = owner "https://img.shields.io/travis/"
 ownerAppveyor = owner "https://img.shields.io/appveyor/ci/"
 
