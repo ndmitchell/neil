@@ -29,8 +29,7 @@ $env:STACK_ROOT = 'C:\sr'
 $env:TMP = 'C:\tmp' 
 New-Item -ItemType directory -Path C:\tmp
 
-# Would like to use i386 for wider testing, but it's bust - https://github.com/fpco/stackage/issues/3385
-Invoke-WebRequest 'http://www.stackage.org/stack/windows-x86_64' -OutFile 'stack.zip'
+Invoke-WebRequest 'https://www.stackage.org/stack/windows-x86_64' -OutFile 'stack.zip'
 7z x -y stack.zip stack.exe
 if ($LASTEXITCODE -ne 0) {exit 1}
 
