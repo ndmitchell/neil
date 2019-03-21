@@ -295,11 +295,11 @@ checkReadme = do
              "(https://hackage.haskell.org/package/" ++ name ++ ")"
             ,"[![Stackage version](https://www.stackage.org/package/" ++ name ++ "/badge/nightly?label=Stackage)]" ++
              "(https://www.stackage.org/package/" ++ name ++ ")"
-            ,"[![Linux Build Status](https://img.shields.io/travis/" ++ travis ++ "/master.svg?label=Linux%20build)]" ++
+            ,"[![Linux build status](https://img.shields.io/travis/" ++ travis ++ "/master.svg?label=Linux%20build)]" ++
              "(https://travis-ci.org/" ++ travis ++ ")"
-            ,"[![Windows Build Status](https://img.shields.io/appveyor/ci/" ++ appveyor ++ "/master.svg?label=Windows%20build)]" ++
+            ,"[![Windows build status](https://img.shields.io/appveyor/ci/" ++ appveyor ++ "/master.svg?label=Windows%20build)]" ++
              "(https://ci.appveyor.com/project/" ++ appveyor ++ ")"
-            ,"[![Build Status](https://img.shields.io/travis/" ++ travis ++ "/master.svg?label=Build)]" ++
+            ,"[![Build status](https://img.shields.io/travis/" ++ travis ++ "/master.svg?label=Build)]" ++
              "(https://travis-ci.org/" ++ travis ++ ")"
             ]
     let line1 = head $ src ++ [""]
