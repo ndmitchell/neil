@@ -136,6 +136,7 @@ docWhitelist =
     ,"(==)","(/=)","fromString " -- not documented in base
     ,"class Hashable ","hashWithSalt ","hash ","unit "
         -- don't seem to end up present when exported through Shake on Travis
+    ,"cmd" -- reexported from shake through rattle, so lacks docs
     ]
 
 -- | Given a set of definitions, each preceeded by docs, return the bad definitions.
