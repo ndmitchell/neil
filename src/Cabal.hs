@@ -367,7 +367,7 @@ checkCabalFile = do
             ["Homepage no longer exists" | "~ndm" `isInfixOf` concat (grab "homepage")] ++
             ["Incorrect license" | grab "license" `notElem` [["BSD3"],["MIT"]]] ++
             ["Incorrect default language" | x <- grab "default-language", x /= "Haskell2010"] ++
-            ["Invalid tested-with: " ++ show test | not $ validTests test] ++
+            ["Invalid tested-with: " ++ show test ++ "\nShould be prefix of " ++ show (reverse ghcReleases) | not $ validTests test] ++
             ["Bad stabilty, should be missing" | grab "stability" /= []] ++
             ["Missing CHANGES.txt in extra-doc-files" | ["CHANGES.txt","CHANGELOG.md","changelog.md"] `disjoint` concatMap words (grab "extra-doc-files")] ++
             ["Missing README.md in extra-doc-files" | "README.md" `notElem` concatMap words (grab "extra-doc-files")] ++
