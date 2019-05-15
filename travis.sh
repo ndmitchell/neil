@@ -85,7 +85,7 @@ fi
 if [ "$GHCVER" = "head" ]; then
     export GHC_HEAD=1
 fi
-if [ "$GHCVER" = "8.2.2" ]; then
+if [ "$GHCVER" = "8.6.5" ]; then
     export GHC_STABLE=1
 fi
 
