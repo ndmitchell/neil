@@ -50,12 +50,7 @@ if [ "$GHCVER" = "8.6" ]; then GHCVER=8.6.5; fi
 
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
     # Try and use the Cabal that ships with the same GHC version
-    if [ "$GHCVER" = "head" ]; then
-        CABALVER=2.0
-        # Should be HEAD but see https://github.com/haskell/cabal/issues/5108
-    else
-        CABALVER=2.0
-    fi
+    CABALVER=2.4
     retry sudo add-apt-repository -y ppa:hvr/ghc
     # Sometimes apt-get update fails silently, but then apt-get install fails loudly, so retry both
     update_install(){
