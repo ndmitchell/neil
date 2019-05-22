@@ -26,7 +26,7 @@ $env:PATH += ";$PWD"
 $env:STACK_ROOT = 'C:\sr'
 
 # Workaround https://github.com/haskell/cabal/issues/5386
-$env:TMP = 'C:\tmp' 
+$env:TMP = 'C:\tmp'
 New-Item -ItemType directory -Path C:\tmp
 
 Invoke-WebRequest 'https://www.stackage.org/stack/windows-x86_64' -OutFile 'stack.zip'
