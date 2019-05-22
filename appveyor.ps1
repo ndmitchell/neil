@@ -36,7 +36,7 @@ if ($LASTEXITCODE -ne 0) {exit 1}
 Invoke-WebRequest 'https://downloads.haskell.org/~cabal/cabal-install-latest/cabal-install-2.4.1.0-x86_64-unknown-mingw32.zip' -OutFile 'cabal.zip'
 7z x -y cabal.zip cabal.exe
 if ($LASTEXITCODE -ne 0) {exit 1}
-cabal update
+cabal v1-update
 
 # If powershell ever sees anything on stderr it decides to fail
 # Therefore we use cmd to redirect stderr to stdout before powershell sees it
