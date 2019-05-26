@@ -9,11 +9,9 @@ import Data.List.Extra
 import Data.Maybe
 import Data.Functor
 import Data.Tuple.Extra
-import System.Environment
 import System.Directory.Extra
 import System.IO.Extra
 import System.FilePath
-import System.Exit
 import System.Process.Extra
 import Arguments
 import Prelude
@@ -209,26 +207,17 @@ run Test{..} = Just $ do
         pwd <- getCurrentDirectory
         system_ $ unwords $
             "cabal configure --enable-tests --disable-library-profiling" :
-            ("--prefix=" ++ pwd) : "--bindir=bin" :
             map ("--ghc-option=" ++) ghcOptions
         system_ "cabal build"
         system_ "cabal haddock --hoogle"
         when (ghcVer `elem` takeEnd 2 ghcReleases) $ do
             -- earlier Haddock's forget to document class members in the --hoogle
             checkHoogle
-        when runTest $ do
-            -- make sure the binaries from this program are on $PATH
-            system_ "cabal copy"
-            env <- getEnvironment
-            let f ("PATH",x) = ("PATH", x ++ [searchPathSeparator] ++ pwd </> "bin")
-                f x = x
-            (_,_,_,p) <- createProcess (shell "cabal test --show-details=streaming"){env = Just $ map f env}
-            e <- waitForProcess p
-            when (e /= ExitSuccess) $
-                fail "Failure when running: cabal test --show-details=streaming"
         when install $ do
             system_ "cabal copy"
             system_ "cabal register"
+        when runTest $
+            system_ "cabal test --show-details=streaming"
 
 run Check{..} = Just $ withCurrentDirectory path cabalCheck
 
