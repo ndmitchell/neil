@@ -11,6 +11,7 @@ import Data.Functor
 import Data.Tuple.Extra
 import System.Directory.Extra
 import System.IO.Extra
+import System.Info.Extra
 import System.FilePath
 import System.Process.Extra
 import Arguments
@@ -207,7 +208,7 @@ run Test{..} = Just $ do
         pwd <- getCurrentDirectory
         system_ $ unwords $
             "cabal configure --enable-tests --disable-library-profiling" :
-            ["--prefix=" ++ pwd, "--bindir="] ++
+            ("--prefix=" ++ pwd) : "--bindir=" :
             map ("--ghc-option=" ++) ghcOptions
         system_ "cabal build"
         system_ "cabal copy"
@@ -215,7 +216,10 @@ run Test{..} = Just $ do
         when (ghcVer `elem` takeEnd 2 ghcReleases) $ do
             -- earlier Haddock's forget to document class members in the --hoogle
             checkHoogle
-        when runTest $ system_ "cabal test --show-details=streaming"
+        when runTest $
+            if isWindows
+                then system_ "cabal test --show-details=streaming"
+                else system_ $ "PATH=$PATH:" ++ pwd ++ " cabal test --show-details=streaming"
         when install $ do
             system_ "cabal copy"
             system_ "cabal register"
