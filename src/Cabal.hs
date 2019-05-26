@@ -183,10 +183,13 @@ withSDist no_warnings run = withTempDir $ \tdir -> do
     let binary = [".png",".gz",".bat",".zip",".gif",""]
     bad <- flip filterM lst $ \file ->
         return (takeExtension file `notElem` binary) &&^
-        fmap ('\r' `elem`) (readFileBinary' file)
+        fmap badWhite (readFileBinary' file)
     when (bad /= []) $ do
-        error $ unlines $ "The following files have \\r characters in, Windows newlines?" : bad
+        error $ unlines $ "The following files have \\r characters, trailing whitespace or excess newlines." : bad
     withCurrentDirectory (tdir </> dropExtension (dropExtension $ takeFileName tarball)) run
+
+badWhite :: String -> Bool
+badWhite x = '\r' `elem` x || " \n" `isInfixOf` x || "\n\n" `isSuffixOf` x
 
 
 run :: Arguments -> Maybe (IO ())
