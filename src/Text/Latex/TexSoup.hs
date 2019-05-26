@@ -199,7 +199,7 @@ comment _= Nothing
 ---------------------------------------------------------------------
 -- HIGH LEVEL PARSERS
 
-commentEnv = parserOne (Environ "comment") "\\begin{comment}" "\\end{comment}" text 
+commentEnv = parserOne (Environ "comment") "\\begin{comment}" "\\end{comment}" text
 
 verb = parserOne (Environ "verbatim") "\\begin{verbatim}" "\\end{verbatim}" text
 

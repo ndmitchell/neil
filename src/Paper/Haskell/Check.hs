@@ -25,7 +25,7 @@ checkFragments debug test prefix xs = mapM_ f xs
         insts = split [drop 12 x | x <- lines prefix, "-- instance " `isPrefixOf` x]
         split = concatMap (map trim . lines . map (\x -> if x == ';' then '\n' else x))
         trim = reverse . dropWhile isSpace . reverse . dropWhile isSpace
-    
+
         f (Expr i s)
             | test i && s `elem` (names ++ builtin ++ concat [has | Stmt _ has _ <- xs])
             = putStrLn $ "Checking line " ++ show i ++ "... success"
@@ -52,7 +52,7 @@ checkFragments debug test prefix xs = mapM_ f xs
                         blur = filter (isUpper . head) . lexemes
                     in g (Fail $ "No instance: " ++ show x) s [add | not $ null add]
                 _ -> return res
-        
+
         g err s [] = return err
         g err s (x:xs) = do
             r <- check (s ++ "\n" ++ x)
@@ -66,7 +66,7 @@ checkCode debug orig = do
         x <- readFileStrict "temp.txt"
         let s = unlines $ filter (not . null) $ drop 1 $ lines x
             err = parseError s
-        
+
         when debug $ do
             putStrLn orig
             putStrLn s
@@ -101,10 +101,10 @@ insts = map (unwords . words) . lines . map rep . sel
         rep x = if x == ',' then '\n'
                 else if x `elem` "()" then ' '
                 else x
-    
+
         sel (' ':'o':'f':' ':xs) = g xs
         sel (x:xs) = sel xs
-        
+
         g (' ':'r':xs) = []
         g (x:xs) = x : g xs
 

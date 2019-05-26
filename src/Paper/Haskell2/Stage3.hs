@@ -55,7 +55,7 @@ collectImports xs = imports ++ map f xs
         imports = filter (\x -> "import " `isPrefixOf` x && g x `notElem` modules) xs
         modules = map g (filter ("module " `isPrefixOf`) xs) \\ ["Prelude"]
         g = takeWhile (\x -> isAlphaNum x || x `elem` "._") . dropWhile isSpace . dropWhile (not . isSpace)
-    
+
         f x | any (`isPrefixOf` x) ["import ","module "] = "-- HIDE " ++ x
             | otherwise = x
 

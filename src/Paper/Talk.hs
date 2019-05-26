@@ -104,7 +104,7 @@ text ('\\':xs) | "begin" `isPrefixOf` xs =
         rep = [("figure",""),("table",""),("comment","")
               ,("tabular","Table."),("verbatim","Code."),("code","Code.")]
 
-text ('\\':xs) 
+text ('\\':xs)
         -- lists
         | a == "item" && "[" `isPrefixOf` b =
             let (c,d) = break (== ']') (tail b) in

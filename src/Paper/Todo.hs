@@ -28,4 +28,3 @@ readTodos file = liftM (f 1) $ readFile file
 
         g ('{':xs) = "{" ++ takeWhile (`notElem` "\n}") xs ++ "}"
         g _ = ""
-

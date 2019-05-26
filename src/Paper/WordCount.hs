@@ -25,7 +25,7 @@ isEndComment   = isPrefixOf "\\end{comment}"
 
 
 wordCountNorm = wordCount wordsBlock
-    
+
 
 wordsBlock :: [String] -> Int
 wordsBlock = sum . map f

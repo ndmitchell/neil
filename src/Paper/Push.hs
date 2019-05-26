@@ -30,4 +30,3 @@ mapping = [("http://www.cs.york.ac.uk/fp/darcs/","ndm@community.haskell.org:/hom
           ,("http://community.haskell.org/~ndm/darcs/","ndm@community.haskell.org:/home/ndm/darcs/")
           ,("http://code.haskell.org/","ndm@code.haskell.org:/srv/code/")
           ]
-

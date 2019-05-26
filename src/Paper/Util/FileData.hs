@@ -37,7 +37,7 @@ getFileData args = do
 
     let dir = head dirs
     darcs <- getDarcs dir
-    
+
     return $ FileData
         dir
         (nullErr $ head $ explicit)
@@ -79,5 +79,3 @@ getDarcs = f . reverse . map joinPath . tail . inits . splitDirectories
         f (x:xs) = do
             b <- doesDirectoryExist (x </> "_darcs")
             if b then return $ dropTrailingPathSeparator x else f xs
-
-

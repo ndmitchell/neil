@@ -32,7 +32,7 @@ readRefs file = liftM (f 1) $ readFile file
         f n (x:xs) = f n xs
         f n [] = []
 
-        g n b ('{':xs) | "}" `isPrefixOf` post = (pre, Ref file n b) : f n (tail post) 
+        g n b ('{':xs) | "}" `isPrefixOf` post = (pre, Ref file n b) : f n (tail post)
             where (pre,post) = span (`notElem` "\n}") xs
         g n b (x:xs) | isSpace x || x == '{' =
             error $ file ++ "(" ++ show n ++ ") Unrecognised label: " ++ take 25 xs

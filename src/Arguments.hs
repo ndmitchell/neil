@@ -17,7 +17,7 @@ data Arguments
 
     | Travis {wait :: Double}
     | Releases {wait :: Double}
- 
+
     -- cabal stuff
     | Sdist
     | Check {path :: FilePath}
