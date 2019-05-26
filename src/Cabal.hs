@@ -204,10 +204,13 @@ run Test{..} = Just $ do
         let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
                          (if "7." `isPrefixOf` ghcVer then [] else  words "-Wcompat -Wnoncanonical-monad-instances -Wnoncanonical-monadfail-instances") ++
                          ["-Werror" | not no_warnings]
+        pwd <- getCurrentDirectory
         system_ $ unwords $
             "cabal configure --enable-tests --disable-library-profiling" :
+            ["--prefix=" ++ pwd, "--bindir="] ++
             map ("--ghc-option=" ++) ghcOptions
         system_ "cabal build"
+        system_ "cabal copy"
         system_ "cabal haddock --hoogle"
         when (ghcVer `elem` takeEnd 2 ghcReleases) $ do
             -- earlier Haddock's forget to document class members in the --hoogle
