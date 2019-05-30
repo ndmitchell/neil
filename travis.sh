@@ -86,7 +86,7 @@ fi
 
 ghc-pkg list
 
-retry cabal install --only-dependencies --enable-tests --force-reinstalls --constraint=time>1.8 || FAIL=1
+retry cabal install --only-dependencies --enable-tests --force-reinstalls || FAIL=1
 if [ "$GHC_HEAD" = "1" ] && [ "$FAIL" = "1" ]; then
     FAIL=
     retry cabal install --only-dependencies --enable-tests --force-reinstalls --allow-newer || FAIL=1
