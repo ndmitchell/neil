@@ -52,5 +52,6 @@ if ($LASTEXITCODE -ne 0) {exit 1}
 cmd /c 'echo | chcp 65001 && .\stack --no-terminal build --test --bench --ghc-options=-rtsopts 2>&1'
 if ($LASTEXITCODE -ne 0) {exit 1}
 
-$Script = Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/weeder/master/misc/appveyor.ps1'
-Invoke-Command ([Scriptblock]::Create($Script.Content))
+# Disable Weeder since its broken with the latest 'stack'
+# $Script = Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/weeder/master/misc/appveyor.ps1'
+# Invoke-Command ([Scriptblock]::Create($Script.Content))
