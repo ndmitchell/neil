@@ -45,6 +45,8 @@ if ($LASTEXITCODE -ne 0) {
     cmd /c '.\stack init --resolver=nightly --ignore-subdirs --force --solver 2>&1'
     if ($LASTEXITCODE -ne 0) {exit 1}
 }
+# Required to get Weeder working with the latest Stack
+Add-Content "stack.yaml" "\nghc-options: {\"\$locals\": -ddump-to-file -ddump-hi}\n"
 
 cmd /c '.\stack setup 1>&2 2>&1 > nul'
 if ($LASTEXITCODE -ne 0) {exit 1}
@@ -52,6 +54,5 @@ if ($LASTEXITCODE -ne 0) {exit 1}
 cmd /c 'echo | chcp 65001 && .\stack --no-terminal build --test --bench --ghc-options=-rtsopts 2>&1'
 if ($LASTEXITCODE -ne 0) {exit 1}
 
-# Disable Weeder since its broken with the latest 'stack'
-# $Script = Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/weeder/master/misc/appveyor.ps1'
-# Invoke-Command ([Scriptblock]::Create($Script.Content))
+$Script = Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/weeder/master/misc/appveyor.ps1'
+Invoke-Command ([Scriptblock]::Create($Script.Content))
