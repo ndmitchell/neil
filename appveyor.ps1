@@ -47,7 +47,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 # Required to get Weeder working with the latest Stack
 Write-Output "Before writing"
-Add-Content "stack.yaml" '\nghc-options: {"$locals": "-ddump-to-file -ddump-hi"}\n'
+Add-Content "stack.yaml" 'ghc-options: {"$locals": "-ddump-to-file -ddump-hi"}'
 Write-Output "After writing"
 
 cmd /c 'type stack.yaml'
