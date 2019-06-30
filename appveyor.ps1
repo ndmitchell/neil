@@ -50,8 +50,8 @@ Write-Output "Before writing"
 Add-Content "stack.yaml" '\nghc-options: {"$locals": "-ddump-to-file -ddump-hi"}\n'
 Write-Output "After writing"
 
-Get-Content stack.yaml | foreach {Write-Output $_}
-
+cmd /c 'type stack.yaml'
+Write-Output "Total output done"
 
 cmd /c '.\stack setup 1>&2 2>&1 > nul'
 if ($LASTEXITCODE -ne 0) {exit 1}
