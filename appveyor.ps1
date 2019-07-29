@@ -40,11 +40,7 @@ cabal v1-update
 
 # If powershell ever sees anything on stderr it decides to fail
 # Therefore we use cmd to redirect stderr to stdout before powershell sees it
-cmd /c '.\stack init --resolver=nightly --ignore-subdirs --force 2>&1'
-if ($LASTEXITCODE -ne 0) {
-    cmd /c '.\stack init --resolver=nightly --ignore-subdirs --force --solver 2>&1'
-    if ($LASTEXITCODE -ne 0) {exit 1}
-}
+cmd /c '.\stack init --resolver=nightly --ignore-subdirs --force --omit-packages=hlint 2>&1'
 # Required to get Weeder working with the latest Stack
 Add-Content "stack.yaml" 'ghc-options: {"$locals": -ddump-to-file -ddump-hi}'
 
