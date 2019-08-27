@@ -51,7 +51,7 @@ if [ "$GHCVER" = "8.8" ]; then GHCVER=8.8.1; fi
 
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
     # Try and use the Cabal that ships with the same GHC version
-    CABALVER=2.4
+    CABALVER=3.0
     retry sudo add-apt-repository -y ppa:hvr/ghc
     # Sometimes apt-get update fails silently, but then apt-get install fails loudly, so retry both
     update_install(){
