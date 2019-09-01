@@ -50,7 +50,7 @@ if [ "$GHCVER" = "8.6" ]; then GHCVER=8.6.5; fi
 if [ "$GHCVER" = "8.8" ]; then GHCVER=8.8.1; fi
 
 # Temporary until I get it working
-if [ "$GHCVER" = "8.8.1" ]; then exit; fi
+# if [ "$GHCVER" = "8.8.1" ]; then exit; fi
 
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
     # Try and use the Cabal that ships with the same GHC version
@@ -94,10 +94,10 @@ fi
 
 ghc-pkg list
 
-retry cabal install --only-dependencies --enable-tests || FAIL=1
+retry cabal v1-install --only-dependencies --enable-tests || FAIL=1
 if [ "$GHC_HEAD" = "1" ] && [ "$FAIL" = "1" ]; then
     FAIL=
-    retry cabal install --only-dependencies --enable-tests --force-reinstalls --allow-newer || FAIL=1
+    retry cabal v1-install --only-dependencies --enable-tests --force-reinstalls --allow-newer || FAIL=1
     if [ "$FAIL" = "1" ]; then
         echo Failed because some dependencies failed to install, not my fault
         exit
@@ -134,6 +134,6 @@ if [ "$GHC_STABLE" = "1" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then
     fi
 fi
 if [ "$GHC_STABLE" = "1" ]; then
-    cabal sdist
+    cabal v1-sdist
     cp dist/*.tar.gz travis-release
 fi
