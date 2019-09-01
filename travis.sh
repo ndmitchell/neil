@@ -49,8 +49,10 @@ if [ "$GHCVER" = "8.4" ]; then GHCVER=8.4.4; fi
 if [ "$GHCVER" = "8.6" ]; then GHCVER=8.6.5; fi
 if [ "$GHCVER" = "8.8" ]; then GHCVER=8.8.1; fi
 
-# Temporary until I get it working
-# if [ "$GHCVER" = "8.8.1" ]; then exit; fi
+# Temporary until I get it working properly
+if [ "$GHCVER" = "8.8.1" ]; then
+    export CABALFLAGS=--allow-newer
+fi
 
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
     # Try and use the Cabal that ships with the same GHC version
@@ -94,8 +96,8 @@ fi
 
 ghc-pkg list
 
-retry cabal v1-install --only-dependencies --enable-tests || FAIL=1
-if ([ "$GHC_HEAD" = "1" ] || [ "$GHCVER" = "8.8.1" ]) && [ "$FAIL" = "1" ]; then
+retry cabal v1-install --only-dependencies --enable-tests $CABALFLAGS || FAIL=1
+if [ "$GHC_HEAD" = "1" ] && [ "$FAIL" = "1" ]; then
     FAIL=
     retry cabal v1-install --only-dependencies --enable-tests --force-reinstalls --allow-newer || FAIL=1
     if [ "$FAIL" = "1" ]; then

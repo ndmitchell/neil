@@ -171,8 +171,8 @@ withSDist no_warnings run = withTempDir $ \tdir -> do
     unless no_warnings $
         system_ "git diff --stat --exit-code"
     local <- map normalise . lines <$> systemOutput_ "git ls-files . --others"
-    system_ $ "cabal configure --builddir=" ++ tdir
-    system_ $ "cabal sdist --builddir=" ++ tdir
+    system_ $ "cabal v1-configure --builddir=" ++ tdir
+    system_ $ "cabal v1-sdist --builddir=" ++ tdir
     files <- getDirectoryContents tdir
     let tarball = head $ [x | x <- files, ".tar.gz" `isSuffixOf` x]
     withCurrentDirectory tdir $ system_ $ "tar -xf " ++ tarball
@@ -200,24 +200,24 @@ run Test{..} = Just $ do
     ghcVer <- fst . line1 <$> systemOutput_ "ghc --numeric-version"
 
     withSDist no_warnings $ do
-        system_ "cabal install --only-dependencies --enable-tests"
+        system_ "cabal v1-install --only-dependencies --enable-tests"
         let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
                          (if "7." `isPrefixOf` ghcVer then [] else  words "-Wcompat -Wnoncanonical-monad-instances -Wnoncanonical-monadfail-instances") ++
                          ["-Werror" | not no_warnings]
         pwd <- getCurrentDirectory
         system_ $ unwords $
-            "cabal configure --enable-tests --disable-library-profiling" :
+            "cabal v1-configure --enable-tests --disable-library-profiling" :
             map ("--ghc-option=" ++) ghcOptions
-        system_ "cabal build"
-        system_ "cabal haddock --hoogle"
+        system_ "cabal v1-build"
+        system_ "cabal v1-haddock --hoogle"
         when (ghcVer `elem` takeEnd 2 ghcReleases) $ do
             -- earlier Haddock's forget to document class members in the --hoogle
             checkHoogle
         when install $ do
-            system_ "cabal copy"
-            system_ "cabal register"
+            system_ "cabal v1-copy"
+            system_ "cabal v1-register"
         when runTest $
-            system_ "cabal test --show-details=streaming"
+            system_ "cabal v1-test --show-details=streaming"
 
 run Check{..} = Just $ withCurrentDirectory path cabalCheck
 
@@ -225,22 +225,22 @@ run Sdist = Just $ do
     cabalCheck
     tested <- testedWith
     withSDist False $ do
-        system_ "cabal clean"
-        system_ "cabal install --only-dependencies"
-        system_ $ "cabal configure --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
+        system_ "cabal v1-clean"
+        system_ "cabal v1-install --only-dependencies"
+        system_ $ "cabal v1-configure --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
                   "--ghc-option=-Werror " ++
                   -- Ignore warnings in Cabal generated files :(
                   "--ghc-option=-fno-warn-warnings-deprecations --ghc-option=-fno-warn-unsupported-calling-conventions"
-        system_ "cabal build"
-        system_ "cabal haddock"
-    system_ "cabal sdist"
+        system_ "cabal v1-build"
+        system_ "cabal v1-haddock"
+    system_ "cabal v1-sdist"
     putStrLn $ "Ready to release! (remember to neil tag after uploading)"
 
 run Docs{..} = Just $ do
     src <- readCabal
     let ver = extractCabal "version" src
     let name = extractCabal "name" src
-    system_ $ "cabal haddock --hoogle --html --hyperlink-source " ++
+    system_ $ "cabal v1-haddock --hoogle --html --hyperlink-source " ++
           "--contents-location=/package/" ++ name
     withTempDir $ \dir -> do
         system_ $ "cp -R dist/doc/html/" ++ name ++ " \"" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs\""
