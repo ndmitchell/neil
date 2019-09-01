@@ -95,7 +95,7 @@ fi
 ghc-pkg list
 
 retry cabal v1-install --only-dependencies --enable-tests || FAIL=1
-if [ "$GHC_HEAD" = "1" ] && [ "$FAIL" = "1" ]; then
+if ([ "$GHC_HEAD" = "1" ] || [ "$GHCVER" = "8.8.1" ]) && [ "$FAIL" = "1" ]; then
     FAIL=
     retry cabal v1-install --only-dependencies --enable-tests --force-reinstalls --allow-newer || FAIL=1
     if [ "$FAIL" = "1" ]; then
