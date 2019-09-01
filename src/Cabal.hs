@@ -202,7 +202,6 @@ run Test{..} = Just $ do
     withSDist no_warnings $ do
         system_ "cabal v1-install --only-dependencies --enable-tests"
         let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
-                         (if "7." `isPrefixOf` ghcVer then [] else  words "-Wcompat -Wnoncanonical-monad-instances -Wnoncanonical-monadfail-instances") ++
                          ["-Werror" | not no_warnings]
         pwd <- getCurrentDirectory
         system_ $ unwords $
