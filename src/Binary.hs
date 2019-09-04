@@ -28,15 +28,15 @@ run Binary{..} = Just $ withCurrentDirectory path $ withTempDir $ \tdir -> do
     let grab tag = concat [words $ drop (length tag + 1) x | x <- relines $ lines src, (tag ++ ":") `isPrefixOf` x]
     let dataDir = case grab "data-dir" of [] -> id; [x] -> (x </>)
     let files = grab "extra-doc-files" ++ map dataDir (grab "data-files")
-    system_ $ "cabal sdist --output-directory=" ++ tdir
+    system_ $ "cabal v1-sdist --output-directory=" ++ tdir
     let vname = name ++ "-" ++ ver
     let zname = if isWindows then vname ++ "-x86_64-windows.zip"
                 else if isMac then vname ++ "-x86_64-osx.tar.gz"
                 else vname ++ "-x86_64-linux.tar.gz"
     b <- withCurrentDirectory tdir $ do
-        system_ "cabal install --dependencies"
-        system_ "cabal configure --datadir=nul --disable-library-profiling"
-        system_ "cabal build"
+        system_ "cabal v1-install --dependencies"
+        system_ "cabal v1-configure --datadir=nul --disable-library-profiling"
+        system_ "cabal v1-build"
         let out = "bin" </> vname
         let built = "dist/build" </> name </> name <.> exe
         b <- doesFileExist built
