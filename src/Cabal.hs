@@ -203,7 +203,6 @@ run Test{..} = Just $ do
         system_ "cabal v1-install --only-dependencies --enable-tests"
         let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
                          ["-Werror" | not no_warnings]
-        pwd <- getCurrentDirectory
         system_ $ unwords $
             "cabal v1-configure --enable-tests --disable-library-profiling" :
             map ("--ghc-option=" ++) ghcOptions
@@ -309,9 +308,10 @@ checkReadme = do
             ]
     let line1 = head $ src ++ [""]
     let bangs = length $ filter (== '!') line1
-    let found = length $ filter (`isInfixOf` line1) badges
+    let foundBadges = filter (`isInfixOf` line1) badges
+    let found = length foundBadges
     when (found < 2) $
-        error $ "Expected first line of README.md to end with at least 2 badges, got " ++ show found
+        error $ "Expected first line of README.md to end with at least 2 badges, got:\n" ++ unlines foundBadges ++ "Expected from:\n" ++ unlines badges
     when (found /= bangs) $
         error $ "Unexpected badges, found " ++ show bangs ++ ", but only recognised " ++ show found
 
