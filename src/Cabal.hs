@@ -203,7 +203,6 @@ run Test{..} = Just $ do
         system_ "cabal v1-install --only-dependencies --enable-tests"
         let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
                          ["-Werror" | not no_warnings]
-        pwd <- getCurrentDirectory
         system_ $ unwords $
             "cabal v1-configure --enable-tests --disable-library-profiling" :
             map ("--ghc-option=" ++) ghcOptions
