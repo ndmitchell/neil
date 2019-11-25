@@ -48,10 +48,11 @@ if [ "$GHCVER" = "8.2" ]; then GHCVER=8.2.2; fi
 if [ "$GHCVER" = "8.4" ]; then GHCVER=8.4.4; fi
 if [ "$GHCVER" = "8.6" ]; then GHCVER=8.6.5; fi
 if [ "$GHCVER" = "8.8" ]; then GHCVER=8.8.1; fi
+if [ "$GHCVER" = "8.10" ]; then GHCVER=8.10.1; fi
 
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
     # Try and use the Cabal that ships with the same GHC version
-    if [ "$GHCVER" = "8.8.1" ]; then
+    if [ "$GHCVER" = "8.8.1" ] || [ "$GHCVER" = "8.10.1" ]; then
         CABALVER=3.0
     else
         CABALVER=2.4
