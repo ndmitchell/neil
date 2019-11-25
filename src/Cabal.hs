@@ -80,7 +80,7 @@ checkTravis = do
     claimed <- (\xs -> sort $ "head" : maybeToList ghcNext ++ xs) <$> testedWith
     let extend x = fromMaybe x $ lookup (x++".") [(dropWhileEnd (/= '.') v, v) | v <- ghcReleases ++ maybeToList ghcNext]
     -- Add a nub since you might write an entry twice, once with expected_failures
-    let tested = nubSort [extend $ fst $ word1 num | Just (_, num) <- map (stripInfix "GHCVER=") src]
+    let tested = nubSort [extend $ fst $ word1 num | Just (pre, num) <- map (stripInfix "GHCVER=") src, '#' `notElem` pre]
     when (claimed /= tested) $
         fail $ "Difference between the .cabal and the travis, " ++ show claimed ++ " vs " ++ show tested
 
