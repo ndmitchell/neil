@@ -40,7 +40,7 @@ fi
 curl -sSL https://raw.github.com/ndmitchell/hlint/master/misc/run.sh | sh -s $HLINT_ARGUMENTS
 
 # Temporary until GHC 8.10 is released
-if [ "$GHCVER" = "8.10" ]; then
+if [ "$GHCVER" = "head" ]; then
     GHCVER=8.10.1
     export GHC_HEAD=1
 fi
