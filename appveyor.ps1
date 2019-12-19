@@ -45,7 +45,7 @@ if (!(Test-Path "stack.yaml")) {
     if ($LASTEXITCODE -ne 0) {exit 1}
 }
 # Required to get Weeder working with the latest Stack
-Add-Content "stack.yaml" '\nghc-options: {"$locals": -ddump-to-file -ddump-hi}'
+Add-Content "stack.yaml" "\nghc-options: {\"$locals\": -ddump-to-file -ddump-hi}"
 
 cmd /c '.\stack setup 1>&2 2>&1 > nul'
 if ($LASTEXITCODE -ne 0) {exit 1}
