@@ -33,7 +33,7 @@ Invoke-WebRequest 'https://www.stackage.org/stack/windows-x86_64' -OutFile 'stac
 7z x -y stack.zip stack.exe
 if ($LASTEXITCODE -ne 0) {exit 1}
 
-Invoke-WebRequest 'https://downloads.haskell.org/~cabal/cabal-install-1.24.0.2/cabal-install-1.24.0.2-x86_64-unknown-mingw32.zip' -OutFile 'cabal.zip'
+Invoke-WebRequest 'https://downloads.haskell.org/~cabal/cabal-install-2.4.1.0/cabal-install-2.4.1.0-x86_64-unknown-mingw32.zip' -OutFile 'cabal.zip'
 7z x -y cabal.zip cabal.exe
 if ($LASTEXITCODE -ne 0) {exit 1}
 cabal update
