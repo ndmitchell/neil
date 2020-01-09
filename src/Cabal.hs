@@ -415,4 +415,4 @@ extractCabal find = f . words . replace ":" " : "
 findCabal :: IO (Maybe FilePath)
 findCabal = do
     x <- getDirectoryContents "."
-    return $ listToMaybe $ filter ((==) ".cabal" . takeExtension) x
+    return $ find ((==) ".cabal" . takeExtension) x
