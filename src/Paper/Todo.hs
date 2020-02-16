@@ -3,6 +3,7 @@ module Paper.Todo(todo) where
 
 import Control.Monad
 import Data.Char
+import Data.List.Extra
 import Paper.Util.Error
 
 
@@ -22,7 +23,7 @@ readTodos file = liftM (f 1) $ readFile file
         f n ('\\':t:'o':'d':'o':x:xs)
                 | toLower t == 't' && not (isAlpha x) && x /= '}'
                 = errorMsg file n "\\todo" msg : f n xs
-            where msg = g $ dropWhile isSpace (x:xs)
+            where msg = g $ trimStart (x:xs)
         f n (x:xs) = f n xs
         f n [] = []
 

@@ -2,7 +2,7 @@
 module Paper.Haskell2.Stage3(stage3) where
 
 import Data.Char
-import Data.List
+import Data.List.Extra
 import System.FilePath
 import Paper.Haskell2.Type
 import Paper.Haskell2.Haskell
@@ -54,7 +54,7 @@ collectImports xs = imports ++ map f xs
     where
         imports = filter (\x -> "import " `isPrefixOf` x && g x `notElem` modules) xs
         modules = map g (filter ("module " `isPrefixOf`) xs) \\ ["Prelude"]
-        g = takeWhile (\x -> isAlphaNum x || x `elem` "._") . dropWhile isSpace . dropWhile (not . isSpace)
+        g = takeWhile (\x -> isAlphaNum x || x `elem` "._") . trimStart . dropWhile (not . isSpace)
 
         f x | any (`isPrefixOf` x) ["import ","module "] = "-- HIDE " ++ x
             | otherwise = x

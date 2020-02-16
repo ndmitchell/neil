@@ -2,7 +2,7 @@
 module Paper.Talk(talk) where
 
 import Control.Monad
-import Data.List
+import Data.List.Extra
 import Data.Char
 import Data.Maybe
 import Paper.Util.CmdNumber
@@ -161,7 +161,7 @@ skipSquare = snd . spanPair '[' ']'
 
 spanPair start stop xs | [start] `isPrefixOf` rest = f 1 $ drop 1 rest
     where
-        rest = dropWhile isSpace xs
+        rest = trimStart xs
         f 1 (x:xs) | x == stop  = ([],xs)
         f n (x:xs) | x == stop  = g (n-1)
                    | x == start = g (n+1)

@@ -3,7 +3,7 @@
 module Paper.Haskell2.Stage1(stage1) where
 
 import Data.Char
-import Data.List
+import Data.List.Extra
 import Paper.Util.String
 import Paper.Util.Error
 import Paper.Haskell2.Type
@@ -95,7 +95,7 @@ hsCustom "deflist" x = [(Stmt,unlines $ map f ls)]
     where
         ls = lines x
         prefix = takeWhile (/= '=') $ head $ dropWhile (all isSpace) ls
-        f x | "=" `isPrefixOf` dropWhile isSpace x = prefix ++ x
+        f x | "=" `isPrefixOf` trimStart x = prefix ++ x
             | otherwise = x
 
 -- each line started at column 1 is a new expr

@@ -58,7 +58,7 @@ findRelevant = do
     src <- fmap lines $ readFile ".travis.yml"
     src <- return $ takeWhile (isPrefixOf " ") $ drop 1 $ dropWhile (not . isPrefixOf "relevant") src
     when (null src) $ error "No relevant lines in the travis file"
-    return $ map (dropWhile isSpace) src
+    return $ map trimStart src
 
 
 findEntries :: IO [String]

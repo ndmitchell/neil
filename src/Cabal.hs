@@ -196,7 +196,7 @@ run :: Arguments -> Maybe (IO ())
 run Test{..} = Just $ do
     test <- cabalCheck
 
-    runTest <- maybe (return True) (fmap ("test-suite" `isInfixOf`) . readFile) =<< findCabal
+    runTest <- maybeM (return True) (fmap ("test-suite" `isInfixOf`) . readFile) findCabal
     ghcVer <- fst . line1 <$> systemOutput_ "ghc --numeric-version"
 
     withSDist no_warnings $ do

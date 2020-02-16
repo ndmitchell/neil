@@ -1,8 +1,7 @@
 
 module Paper.Util.String where
 
-import Data.Char
-import Data.List
+import Data.List.Extra
 
 
 dropUntilStr s xs | s `isPrefixOf` xs = drop (length s) xs
@@ -24,7 +23,3 @@ splitStr s xs = a : case splitStr s (drop (length s) b) of
                          [] -> []
                          x:xs -> (s++x):xs
     where (a,b) = breakStr s xs
-
-
-
-trim = reverse . dropWhile isSpace . reverse . dropWhile isSpace

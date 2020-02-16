@@ -12,7 +12,7 @@ And only lexing inside comments in \begin{code}
 
 import Control.Monad
 import Data.Char
-import Data.List
+import Data.List.Extra
 import Data.Maybe
 
 
@@ -187,7 +187,7 @@ line _ = Nothing
 command ('\\':cs,n) = Just (s, Command a : r)
     where
         (a,b) = span isAlpha cs
-        b2 = dropWhile isSpace b
+        b2 = trimStart b
         (s,r) = fromMaybe ((b2,n),[]) $ square (b2,n)
 command _ = Nothing
 

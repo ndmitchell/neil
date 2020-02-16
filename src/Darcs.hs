@@ -37,7 +37,7 @@ findRepos x = do
             if b then return [dir] else do
                 xs <- getDirectoryContents dir
                 xs <- return [dir </> x | x <- xs, not $ all (== '.') x]
-                fmap concat $ forM xs $ \x -> do
+                concatForM xs $ \x -> do
                     b <- doesDirectoryExist x
                     if b then searchDown x else return []
 
