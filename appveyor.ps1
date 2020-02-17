@@ -51,6 +51,12 @@ Add-Content "stack.yaml" "`nghc-options: {`"`$locals`": -ddump-to-file -ddump-hi
 cmd /c '.\stack setup 1>&2 2>&1 > nul'
 if ($LASTEXITCODE -ne 0) {exit 1}
 
+$HASKELL_DEPENDENCIES = $env:HASKELL_DEPENDENCIES
+if ($HASKELL_DEPENDENCIES -ne '') {
+    cmd /c "echo | chcp 65001 && .\stack --no-terminal install $HASKELL_DEPENDENCIES 2>&1"
+    if ($LASTEXITCODE -ne 0) {exit 1}
+}
+
 cmd /c 'echo | chcp 65001 && .\stack --no-terminal build --test --bench --ghc-options=-rtsopts 2>&1'
 if ($LASTEXITCODE -ne 0) {exit 1}
 

@@ -98,6 +98,11 @@ fi
 
 ghc-pkg list
 
+if [ "$HASKELL_DEPENDENCIES" = "" ]; then
+else
+    retry cabal v1-install $HASKELL_DEPENDENCIES
+fi
+
 retry cabal v1-install --only-dependencies --enable-tests $CABALFLAGS || FAIL=1
 if [ "$GHC_HEAD" = "1" ] && [ "$FAIL" = "1" ]; then
     FAIL=
