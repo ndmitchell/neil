@@ -98,8 +98,7 @@ fi
 
 ghc-pkg list
 
-if [ "$HASKELL_DEPENDENCIES" = "" ]; then
-else
+if [ "$HASKELL_DEPENDENCIES" != "" ]; then
     retry cabal v1-install $HASKELL_DEPENDENCIES
 fi
 
