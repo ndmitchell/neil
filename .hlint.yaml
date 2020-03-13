@@ -31,3 +31,4 @@
 - ignore: {name: "Use drop1"}
 - ignore: {name: "Use dropEnd1"}
 - ignore: {name: "Use headDef"}
+- ignore: {name: "Use pure"}
