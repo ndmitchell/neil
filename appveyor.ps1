@@ -12,16 +12,12 @@ $ErrorActionPreference = "Stop"
 $env:LC_ALL='C.UTF-8'
 chcp 65001
 
-Write-Output "HLINT"
 $HLINT_ARGUMENTS = $env:HLINT_ARGUMENTS
 if ("$HLINT_ARGUMENTS" -eq '') {
     $HLINT_ARGUMENTS = '.'
 }
-Write-Output "HLINT: PRE INVOKE"
 $Script = Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/hlint/master/misc/appveyor.ps1'
-Write-Output "HLINT: PRE RUN"
 Invoke-Command ([Scriptblock]::Create($Script.Content)) -ArgumentList $HLINT_ARGUMENTS
-Write-Output "HLINT: AFTER RUN"
 
 # Make sure stack.exe is on PATH, even if we change directory
 $env:PATH += ";$PWD"
@@ -33,8 +29,9 @@ $env:STACK_ROOT = 'C:\sr'
 $env:TMP = 'C:\tmp'
 New-Item -ItemType directory -Path C:\tmp
 
-Write-Output "STACK: PRE INVOKE"
-Invoke-WebRequest 'https://www.stackage.org/stack/windows-x86_64' -OutFile 'stack.zip'
+# Workaround https://github.com/fpco/stackage-server/issues/290
+# Invoke-WebRequest 'https://www.stackage.org/stack/windows-x86_64' -OutFile 'stack.zip'
+Invoke-WebRequest 'https://github.com/commercialhaskell/stack/releases/download/v2.1.3/stack-2.1.3-windows-x86_64.zip' -OutFile 'stack.zip'
 7z x -y stack.zip stack.exe
 if ($LASTEXITCODE -ne 0) {exit 1}
 
