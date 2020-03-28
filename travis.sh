@@ -49,7 +49,7 @@ if [ "$GHCVER" = "8.0" ]; then GHCVER=8.0.2; fi
 if [ "$GHCVER" = "8.2" ]; then GHCVER=8.2.2; fi
 if [ "$GHCVER" = "8.4" ]; then GHCVER=8.4.4; fi
 if [ "$GHCVER" = "8.6" ]; then GHCVER=8.6.5; fi
-if [ "$GHCVER" = "8.8" ]; then GHCVER=8.8.1; fi
+if [ "$GHCVER" = "8.8" ]; then GHCVER=8.8.3; fi
 if [ "$GHCVER" = "8.10" ]; then GHCVER=8.10.1; fi
 
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
