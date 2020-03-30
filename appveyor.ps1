@@ -30,6 +30,7 @@ $env:TMP = 'C:\tmp'
 New-Item -ItemType directory -Path C:\tmp
 
 # Workaround https://github.com/fpco/stackage-server/issues/290
+# Invoke-WebRequest 'https://www.stackage.org/stack/windows-x86_64' -OutFile 'stack.zip'
 Invoke-WebRequest 'https://github.com/commercialhaskell/stack/releases/download/v2.1.3/stack-2.1.3-windows-x86_64.zip' -OutFile 'stack.zip'
 7z x -y stack.zip stack.exe
 if ($LASTEXITCODE -ne 0) {exit 1}
