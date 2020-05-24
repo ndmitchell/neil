@@ -37,7 +37,7 @@ timer(){
 if [ "$HLINT_ARGUMENTS" = "" ]; then
     HLINT_ARGUMENTS=.
 fi
-curl -sSL https://raw.github.com/ndmitchell/hlint/master/misc/run.sh | sh -s $HLINT_ARGUMENTS # --with-group=extra # TEMPORARY
+curl -sSL https://raw.github.com/ndmitchell/hlint/master/misc/run.sh | sh -s $HLINT_ARGUMENTS --with-group=extra --with-group=future
 
 # Temporary until GHC 8.10 is released
 # if [ "$GHCVER" = "head" ]; then
