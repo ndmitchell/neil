@@ -31,6 +31,7 @@ run Releases{..} = Just $ do
             res <- wget wait $ "http://hackage.haskell.org/package/" ++ project ++ "-" ++ x
             let hackageFormat = "%a %b %e %k:%M:%S UTC %Y"
             let t :: UTCTime = parseTimeOrError True defaultTimeLocale hackageFormat $ fst $ breakOn " by " $ innerText $ drop 1 $ dropWhile (/= TagText "Uploaded") $ parseTags res
+            evaluate t -- Make sure errors occur early
             let s = formatTime defaultTimeLocale (iso8601DateFormat Nothing) t
             return $ x ++ ", released " ++ s
     evaluate $ rnf changes
