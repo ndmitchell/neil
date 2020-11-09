@@ -22,6 +22,9 @@ Invoke-Command ([Scriptblock]::Create($Script.Content)) -ArgumentList $HLINT_ARG
 # Make sure stack.exe is on PATH, even if we change directory
 $env:PATH += ";$PWD"
 
+# Stack currently installs things here, and wants it to be on the PATH
+$env:PATH += ";C:\Users\appveyor\AppData\Roaming\local\bin"
+
 # Short Stack root to avoid overflowing path lengths
 $env:STACK_ROOT = 'C:\sr'
 
