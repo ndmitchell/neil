@@ -65,7 +65,7 @@ ghc-pkg list
 retry git clone -n "https://github.com/$GITHUB_USER/neil" .neil
 (cd .neil && git checkout $COMMIT && retry cabal install --allow-newer --flags=small --verbose)
 
-export PATH="~/.cabal/bin:$PATH"
+export PATH="$HOME/.cabal/bin:$PATH"
 
 echo $PATH
 ls /home/runner/.cabal/bin
