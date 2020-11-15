@@ -1,0 +1,7 @@
+on: [push]
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: curl -sSL https://raw.github.com/ndmitchell/neil/master/travis.sh | sh
