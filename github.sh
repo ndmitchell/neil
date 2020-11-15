@@ -39,58 +39,11 @@ if [ "$HLINT_ARGUMENTS" = "" ]; then
 fi
 curl -sSL https://raw.github.com/ndmitchell/hlint/master/misc/run.sh | sh -s $HLINT_ARGUMENTS --with-group=extra --with-group=future
 
-# Temporary until GHC 8.10 is released
-# if [ "$GHCVER" = "head" ]; then
-#     GHCVER=8.10.1
-#     export GHC_HEAD=1
-# fi
-
-if [ "$GHCVER" = "8.0" ]; then GHCVER=8.0.2; fi
-if [ "$GHCVER" = "8.2" ]; then GHCVER=8.2.2; fi
-if [ "$GHCVER" = "8.4" ]; then GHCVER=8.4.4; fi
-if [ "$GHCVER" = "8.6" ]; then GHCVER=8.6.5; fi
-if [ "$GHCVER" = "8.8" ]; then GHCVER=8.8.4; fi
-if [ "$GHCVER" = "8.10" ]; then GHCVER=8.10.2; fi
-
-if [ "$TRAVIS_OS_NAME" = "linux" ]; then
-    # Try and use the Cabal that ships with the same GHC version
-    if [ "$GHCVER" = "8.8.4" ] || [ "$GHCVER" = "8.10.2" ]; then
-        CABALVER=3.0
-    else
-        CABALVER=2.4
-    fi
-    retry sudo add-apt-repository -y ppa:hvr/ghc
-    # Sometimes apt-get update fails silently, but then apt-get install fails loudly, so retry both
-    update_install(){
-        sudo apt-get  --allow-unauthenticated update && sudo apt-get --allow-unauthenticated install ghc-$GHCVER cabal-install-$CABALVER # happy-1.19.4 alex-3.1.3
-    }
-    retry update_install
-    export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/happy/1.19.4/bin:/opt/alex/3.1.3/bin:$PATH
-    retry cabal update
-else
-    brew update
-    brew install ghc cabal-install
-    retry cabal update
-    cabal install alex happy
-fi
-export PATH=$HOME/.cabal/bin:$PATH
-
 ghc --version
 cabal --version
-happy --version
-alex --version
+# happy --version
+# alex --version
 haddock --version
-
-if [ "$GHCVER" = "" ]; then
-    # Only happens on Mac where ghc is installed via brew
-    export GHCVER=$(ghc --numeric-version)
-fi
-if [ "$GHCVER" = "head" ]; then
-    export GHC_HEAD=1
-fi
-if [ "$GHCVER" = "8.6.5" ]; then
-    export GHC_STABLE=1
-fi
 
 ghc-pkg list
 
@@ -128,16 +81,3 @@ if [ -e travis.hs ]; then
     timer travis/travis
 fi
 git diff --exit-code # check regenerating doesn't change anything
-
-# Generate artifacts for release
-mkdir travis-release
-if [ "$GHC_STABLE" = "1" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then
-    neil binary
-    if [ -d dist/bin ]; then
-        cp dist/bin/* travis-release
-    fi
-fi
-if [ "$GHC_STABLE" = "1" ]; then
-    cabal v1-sdist
-    cp dist/*.tar.gz travis-release
-fi
