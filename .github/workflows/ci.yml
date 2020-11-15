@@ -6,5 +6,5 @@ jobs:
       - uses: actions/checkout@v2
       - run: curl -sSL https://raw.github.com/ndmitchell/neil/master/travis.sh | sh
         env:
-          GHCVER: 8.10
+          GHCVER: '8.10'
           TRAVIS_OS_NAME: linux
