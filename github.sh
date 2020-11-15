@@ -67,6 +67,10 @@ retry git clone -n "https://github.com/$GITHUB_USER/neil" .neil
 
 export PATH="~/.cabal/bin:$PATH"
 
+echo $PATH
+ls /home/runner/.cabal/bin
+
+
 if [ -e travis.hs ]; then
     # ensure that reinstalling this package won't break the test script
     mkdir travis
