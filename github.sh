@@ -75,6 +75,8 @@ if [ -e travis.hs ]; then
     ghc --make travis.hs -outputdir travis -o travis/travis
 fi
 
+ls -R .neil
+
 timer .neil/neil test --install
 
 if [ -e travis.hs ]; then
