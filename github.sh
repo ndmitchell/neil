@@ -65,11 +65,7 @@ ghc-pkg list
 retry git clone -n "https://github.com/$GITHUB_USER/neil" .neil
 (cd .neil && git checkout $COMMIT && retry cabal install --allow-newer --flags=small --verbose)
 
-export PATH="$HOME/.cabal/bin:$PATH"
-
-echo $PATH
-ls /home/runner/.cabal/bin
-
+export PATH="$HOME/.cabal/bin:/home/runner/.cabal/bin:$PATH"
 
 if [ -e travis.hs ]; then
     # ensure that reinstalling this package won't break the test script
