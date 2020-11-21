@@ -77,11 +77,7 @@ if [ -e travis.hs ]; then
     ghc --make travis.hs -outputdir travis -o travis/travis
 fi
 
-FLAGS=
-if [ "$GHCVER" = "head" ]; then
-    FLAGS=--no-warnings
-fi
-timer neil test --install $FLAGS
+timer neil test --install
 
 if [ -e travis.hs ]; then
     timer travis/travis

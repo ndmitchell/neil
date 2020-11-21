@@ -8,13 +8,15 @@ jobs:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
         ghc: ['8.10.2', '8.8.4', '8.6.5']
+      include:
+        - os: windows-latest
+          ghc: latest
+        - os: macOS-latest
+          ghc: latest
 
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-haskell@v1.1.3
+    - uses: actions/setup-haskell@v1
       with:
         ghc-version: ${{ matrix.ghc }}
     - run: curl -sSL https://raw.github.com/ndmitchell/neil/master/github.sh | sh
-      env:
-        GHCVER: ${{ matrix.ghc }}
-        TRAVIS_OS_NAME: linux
