@@ -63,7 +63,7 @@ fi
 ghc-pkg list
 
 retry git clone -n "https://github.com/$GITHUB_USER/neil" .neil
-(cd .neil && git checkout $COMMIT && retry cabal install --allow-newer --flags=small --verbose --install-dir=.neil --install-method=copy)
+(cd .neil && git checkout $COMMIT && retry cabal install --allow-newer --flags=small --verbose --installdir=.neil --install-method=copy)
 
 export PATH="$HOME/.cabal/bin:/home/runner/.cabal/bin:/c/Users/runneradmin/AppData/Roaming/cabal/bin:$PATH"
 
