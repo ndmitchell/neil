@@ -174,11 +174,9 @@ withSDist no_warnings prefix run = withTempDir $ \tdir -> do
     system_ $ "cabal " ++ prefix ++ "configure --builddir=" ++ tdir
     system_ $ "cabal " ++ prefix ++ "sdist --builddir=" ++ tdir
     files <- listFilesRecursive tdir
-    print ("files", tdir, files)
     let tarball = head [x | x <- files, ".tar.gz" `isSuffixOf` x]
     withCurrentDirectory tdir $ system_ $ "tar -xf " ++ drop (length tdir + 1) tarball
     lst <- listFilesRecursive tdir
-    print ("recursive files", lst)
     let bad = local `intersect` map (normalise . drop (length tdir + length tarball - 5)) lst
     when (bad /= []) $
         error $ unlines $ "The following files are not checked in, but are in the dist" : bad
@@ -204,11 +202,7 @@ run Test{..} = Just $ do
 
     let prefix = if cabal2 then "new-" else "v1-"
     withSDist no_warnings prefix $ do
-        ls <- listFilesRecursive "."
         Just (takeBaseName -> project) <- findCabal
-
-        cwd <- getCurrentDirectory
-        print ("HERE!", cwd, ls)
         system_ $ "cabal " ++ (if cabal2 then "new-build " ++ project else "v1-install") ++ " --only-dependencies --enable-tests"
         let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
                          ["-Werror" | not no_warnings]
