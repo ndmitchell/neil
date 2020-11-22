@@ -176,7 +176,7 @@ withSDist no_warnings prefix run = withTempDir $ \tdir -> do
     files <- listFilesRecursive tdir
     print ("files", tdir, files)
     let tarball = head [x | x <- files, ".tar.gz" `isSuffixOf` x]
-    withCurrentDirectory tdir $ system_ $ "tar -xf " ++ tarball
+    withCurrentDirectory tdir $ system_ $ "tar -xf " ++ drop (length tdir + 1) tarball
     lst <- listFilesRecursive tdir
     let bad = local `intersect` map (normalise . drop (length tdir + length tarball - 5)) lst
     when (bad /= []) $
