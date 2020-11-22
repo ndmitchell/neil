@@ -205,9 +205,17 @@ run Test{..} = Just $ do
         system_ $ "cabal " ++ (if cabal2 then "new-build" else "v1-install") ++ " --only-dependencies --enable-tests"
         let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
                          ["-Werror" | not no_warnings]
-        system_ $ unwords $
-            ("cabal " ++ prefix ++ "configure --enable-tests --disable-library-profiling") :
-            map ("--ghc-option=" ++) ghcOptions
+        if cabal2 then do
+            Just cbl <- findCabal
+            writeFile "cabal.project.local" $ unlines
+                ["library-profiling: False"
+                ,"tests: True"
+                ,"package " ++ takeBaseName cbl
+                ,"  ghc-options: " ++ unwords ghcOptions]
+         else
+            system_ $ unwords $
+                ("cabal v1-configure --enable-tests --disable-library-profiling") :
+                map ("--ghc-option=" ++) ghcOptions
         system_ $ "cabal " ++ prefix ++ "build"
         system_ $ "cabal " ++ prefix ++ "haddock --hoogle"
         when (ghcVer `elem` takeEnd 2 ghcReleases) $ do
