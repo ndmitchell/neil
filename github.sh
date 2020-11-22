@@ -46,6 +46,7 @@ retry git clone --depth=1 "https://github.com/ndmitchell/neil" .neil
 (cd .neil && retry cabal new-install --allow-newer --flags=small --installdir=. --install-method=copy)
 
 timer .neil/neil test --install --cabal2
+export PATH=~/cabal/.bin:$PATH
 
 # Run any additional tests, written in Haskell
 if [ -e travis.hs ]; then
