@@ -224,11 +224,17 @@ run Test{..} = Just $ do
         when (ghcVer `elem` takeEnd 2 ghcReleases) $ do
             -- earlier Haddock's forget to document class members in the --hoogle
             checkHoogle
-        when install $ do
-            system_ $ "cabal " ++ prefix ++ "copy"
-            system_ $ "cabal " ++ prefix ++ "register"
+        when install $
+            if cabal2 then
+                system_ $ "cabal new-install --install-method=copy"
+            else do
+                system_ $ "cabal " ++ prefix ++ "copy"
+                system_ $ "cabal " ++ prefix ++ "register"
         when runTest $
-            system_ $ "cabal " ++ prefix ++ "test --show-details=streaming"
+            if cabal2 then
+                system_ "cabal new-test"
+            else
+                system_ $ "cabal " ++ prefix ++ "test --show-details=streaming"
 
 run Check{..} = Just $ withCurrentDirectory path cabalCheck
 
