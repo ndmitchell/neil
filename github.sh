@@ -30,8 +30,6 @@ curl -sSL https://raw.github.com/ndmitchell/hlint/master/misc/run.sh | sh -s $HL
 
 ghc --version
 cabal --version
-# happy --version
-# alex --version
 haddock --version
 
 if [ "$HASKELL_DEPENDENCIES" != "" ]; then
