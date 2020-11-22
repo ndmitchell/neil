@@ -194,28 +194,29 @@ badWhite x = '\r' `elem` x || " \n" `isInfixOf` x || "\n\n" `isSuffixOf` x
 
 run :: Arguments -> Maybe (IO ())
 run Test{..} = Just $ do
-    test <- cabalCheck
+    cabalCheck
 
     runTest <- maybeM (return True) (fmap ("test-suite" `isInfixOf`) . readFile) findCabal
     ghcVer <- fst . line1 <$> systemOutput_ "ghc --numeric-version"
 
+    let prefix = if cabal2 then "" else "v1-"
     withSDist no_warnings $ do
-        system_ "cabal v1-install --only-dependencies --enable-tests"
+        system_ $ "cabal " ++ prefix ++ "install --only-dependencies --enable-tests"
         let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
                          ["-Werror" | not no_warnings]
         system_ $ unwords $
-            "cabal v1-configure --enable-tests --disable-library-profiling" :
+            ("cabal " ++ prefix ++ "configure --enable-tests --disable-library-profiling") :
             map ("--ghc-option=" ++) ghcOptions
-        system_ "cabal v1-build"
-        system_ "cabal v1-haddock --hoogle"
+        system_ $ "cabal " ++ prefix ++ "build"
+        system_ $ "cabal " ++ prefix ++ "haddock --hoogle"
         when (ghcVer `elem` takeEnd 2 ghcReleases) $ do
             -- earlier Haddock's forget to document class members in the --hoogle
             checkHoogle
         when install $ do
-            system_ "cabal v1-copy"
-            system_ "cabal v1-register"
+            system_ $ "cabal " ++ prefix ++ "copy"
+            system_ $ "cabal " ++ prefix ++ "register"
         when runTest $
-            system_ "cabal v1-test --show-details=streaming"
+            system_ $ "cabal " ++ prefix ++ "test --show-details=streaming"
 
 run Check{..} = Just $ withCurrentDirectory path cabalCheck
 

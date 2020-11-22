@@ -45,7 +45,7 @@ retry cabal build --only-dependencies --enable-tests $CABALFLAGS
 retry git clone -n "https://github.com/ndmitchell/neil" .neil
 (cd .neil && git checkout && retry cabal install --allow-newer --flags=small --verbose --installdir=. --install-method=copy)
 
-timer .neil/neil test --install
+timer .neil/neil test --install --cabal2
 
 # Run any additional tests, written in Haskell
 if [ -e travis.hs ]; then
