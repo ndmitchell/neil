@@ -52,7 +52,7 @@ if [ -e travis.hs ]; then
     # We want to run travis.hs with the extra package in scope
     # Best way I can do that is by hijacking the Main.hs of .neil
     cp travis.hs .neil/src/Main.hs
-    (cd .neil && cabal new-install --allow-newer --flags=small --installdir=. --install-method=copy)
+    (cd .neil && cabal new-install --allow-newer --flags=small --installdir=. --install-method=copy --overwrite-policy=always)
     .neil/neil
 fi
 
