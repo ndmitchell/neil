@@ -222,7 +222,7 @@ run Test{..} = Just $ do
             system_ $ unwords $
                 ("cabal v1-configure --enable-tests --disable-library-profiling") :
                 map ("--ghc-option=" ++) ghcOptions
-        system_ $ "cabal " ++ prefix ++ "build"
+        system_ $ "cabal " ++ prefix ++ "build" ++ (if cabal2 then " ." else "")
         if cabal2 then
             system_ $ "cabal new-haddock " ++ project ++ " --haddock-hoogle"
          else
