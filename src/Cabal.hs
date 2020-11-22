@@ -173,8 +173,10 @@ withSDist no_warnings prefix run = withTempDir $ \tdir -> do
     local <- map normalise . lines <$> systemOutput_ "git ls-files . --others"
     system_ $ "cabal " ++ prefix ++ "configure --builddir=" ++ tdir
     system_ $ "cabal " ++ prefix ++ "sdist --builddir=" ++ tdir
-    files <- getDirectoryContents tdir
-    let tarball = head $ [x | x <- files, ".tar.gz" `isSuffixOf` x]
+    b <- doesFileExist $ tdir </> "sdist"
+    -- Old cabal writes to tdir, new cabal to tdir/sdist
+    files <- getDirectoryContents $ if b then tdir </> "sdist" else tdir
+    let tarball = head [x | x <- files, ".tar.gz" `isSuffixOf` x]
     withCurrentDirectory tdir $ system_ $ "tar -xf " ++ tarball
     lst <- listFilesRecursive tdir
     let bad = local `intersect` map (normalise . drop (length tdir + length tarball - 5)) lst
