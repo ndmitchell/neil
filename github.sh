@@ -35,21 +35,21 @@ cabal --version
 haddock --version
 
 if [ "$HASKELL_DEPENDENCIES" != "" ]; then
-    retry cabal build $HASKELL_DEPENDENCIES
+    retry cabal new-build $HASKELL_DEPENDENCIES
 fi
 
 # Install dependencies
-retry cabal build --only-dependencies --enable-tests $CABALFLAGS
+retry cabal new-build --only-dependencies --enable-tests $CABALFLAGS
 
 # Install the neil tool
 retry git clone -n "https://github.com/ndmitchell/neil" .neil
-(cd .neil && git checkout && retry cabal install --allow-newer --flags=small --verbose --installdir=. --install-method=copy)
+(cd .neil && git checkout && retry cabal new-install --allow-newer --flags=small --verbose --installdir=. --install-method=copy)
 
 timer .neil/neil test --install --cabal2
 
 # Run any additional tests, written in Haskell
 if [ -e travis.hs ]; then
-    timer cabal run -- runhaskell travis.hs
+    timer cabal new-run -- runhaskell travis.hs
 fi
 
 # Check regenerating doesn't change anything

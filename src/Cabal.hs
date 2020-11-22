@@ -200,9 +200,9 @@ run Test{..} = Just $ do
     runTest <- maybeM (return True) (fmap ("test-suite" `isInfixOf`) . readFile) findCabal
     ghcVer <- fst . line1 <$> systemOutput_ "ghc --numeric-version"
 
-    let prefix = if cabal2 then "" else "v1-"
+    let prefix = if cabal2 then "new-" else "v1-"
     withSDist no_warnings prefix $ do
-        system_ $ "cabal " ++ (if cabal2 then "build" else "v1-install") ++ " --only-dependencies --enable-tests"
+        system_ $ "cabal " ++ (if cabal2 then "new-build" else "v1-install") ++ " --only-dependencies --enable-tests"
         let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
                          ["-Werror" | not no_warnings]
         system_ $ unwords $
