@@ -178,6 +178,7 @@ withSDist no_warnings prefix run = withTempDir $ \tdir -> do
     let tarball = head [x | x <- files, ".tar.gz" `isSuffixOf` x]
     withCurrentDirectory tdir $ system_ $ "tar -xf " ++ drop (length tdir + 1) tarball
     lst <- listFilesRecursive tdir
+    print ("recursive files", lst)
     let bad = local `intersect` map (normalise . drop (length tdir + length tarball - 5)) lst
     when (bad /= []) $
         error $ unlines $ "The following files are not checked in, but are in the dist" : bad
