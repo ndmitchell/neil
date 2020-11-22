@@ -208,7 +208,8 @@ run Test{..} = Just $ do
         print ("HERE!", cwd, ls)
         Just (takeBaseName -> project) <- findCabal
 
-        system_ $ "cabal " ++ (if cabal2 then "new-build" else "v1-install") ++ " --only-dependencies --enable-tests"
+        system_ $ "cabal " ++ (if cabal2 then "new-build" else "v1-install") ++ " --verbose --only-dependencies --enable-tests"
+        print "THERE"
         let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
                          ["-Werror" | not no_warnings]
         if cabal2 then do
