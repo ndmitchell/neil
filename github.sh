@@ -42,15 +42,18 @@ fi
 retry cabal new-build --only-dependencies --enable-tests $CABALFLAGS
 
 # Install the neil tool
-retry git clone -n "https://github.com/ndmitchell/neil" .neil
-(cd .neil && git checkout && retry cabal new-install --allow-newer --flags=small --verbose --installdir=. --install-method=copy)
+retry git clone --depth=1 "https://github.com/ndmitchell/neil" .neil
+(cd .neil && retry cabal new-install --allow-newer --flags=small --installdir=. --install-method=copy)
 
 timer .neil/neil test --install --cabal2
 
 # Run any additional tests, written in Haskell
 if [ -e travis.hs ]; then
-    cd .neil && timer cabal new-exec ghc ../travis.hs
-    timer .neil/travis
+    # We want to run travis.hs with the extra package in scope
+    # Best way I can do that is by hijacking the Main.hs of .neil
+    cp travis.hs .neil/src/Main.hs
+    (cd .neil && cabal new-install --allow-newer --flags=small --installdir=. --install-method=copy)
+    .neil/neil
 fi
 
 # Check regenerating doesn't change anything
