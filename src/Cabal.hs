@@ -227,7 +227,7 @@ run Test{..} = Just $ do
             checkHoogle
         when install $
             if cabal2 then
-                system_ $ "cabal new-install --install-method=copy"
+                system_ $ "cabal new-install --install-method=copy --overwrite-policy=always"
             else do
                 system_ $ "cabal " ++ prefix ++ "copy"
                 system_ $ "cabal " ++ prefix ++ "register"
