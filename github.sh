@@ -35,11 +35,11 @@ cabal --version
 haddock --version
 
 if [ "$HASKELL_DEPENDENCIES" != "" ]; then
-    retry cabal install $HASKELL_DEPENDENCIES
+    retry cabal build $HASKELL_DEPENDENCIES
 fi
 
 # Install dependencies
-retry cabal install --only-dependencies --enable-tests $CABALFLAGS
+retry cabal build --only-dependencies --enable-tests $CABALFLAGS
 
 # Install the neil tool
 retry git clone -n "https://github.com/ndmitchell/neil" .neil
