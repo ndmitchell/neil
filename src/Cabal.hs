@@ -199,17 +199,17 @@ run Test{..} = Just $ do
     cabalCheck
 
     runTest <- maybeM (return True) (fmap ("test-suite" `isInfixOf`) . readFile) findCabal
+    hasLibrary <- maybeM (return True) (fmap ("library" `isInfixOf`) . readFile) findCabal
     ghcVer <- fst . line1 <$> systemOutput_ "ghc --numeric-version"
 
     let prefix = if cabal2 then "new-" else "v1-"
     withSDist no_warnings prefix $ do
         ls <- listFilesRecursive "."
-        cwd <- getCurrentDirectory
-        print ("HERE!", cwd, ls)
         Just (takeBaseName -> project) <- findCabal
 
-        system_ $ "cabal " ++ (if cabal2 then "new-build ." else "v1-install") ++ " --verbose --only-dependencies --enable-tests"
-        print "THERE"
+        cwd <- getCurrentDirectory
+        print ("HERE!", cwd, ls)
+        system_ $ "cabal " ++ (if cabal2 then "new-build " ++ project else "v1-install") ++ " --only-dependencies --enable-tests"
         let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
                          ["-Werror" | not no_warnings]
         if cabal2 then do
@@ -222,23 +222,24 @@ run Test{..} = Just $ do
             system_ $ unwords $
                 ("cabal v1-configure --enable-tests --disable-library-profiling") :
                 map ("--ghc-option=" ++) ghcOptions
-        system_ $ "cabal " ++ prefix ++ "build" ++ (if cabal2 then " ." else "")
-        if cabal2 then
-            system_ $ "cabal new-haddock . --haddock-hoogle"
-         else
-            system_ $ "cabal v1-haddock --hoogle"
-        when (ghcVer `elem` takeEnd 2 ghcReleases) $ do
-            -- earlier Haddock's forget to document class members in the --hoogle
-            checkHoogle
+        system_ $ "cabal " ++ prefix ++ "build" ++ (if cabal2 then " " ++ project else "")
+        when hasLibrary $ do
+            if cabal2 then
+                system_ $ "cabal new-haddock " ++ project ++ " --haddock-hoogle"
+            else
+                system_ $ "cabal v1-haddock --hoogle"
+            when (ghcVer `elem` takeEnd 2 ghcReleases) $ do
+                -- earlier Haddock's forget to document class members in the --hoogle
+                checkHoogle
         when install $
             if cabal2 then
-                system_ $ "cabal new-install . --install-method=copy --overwrite-policy=always"
+                system_ $ "cabal new-install " ++ project ++ " --install-method=copy --overwrite-policy=always"
             else do
                 system_ $ "cabal " ++ prefix ++ "copy"
                 system_ $ "cabal " ++ prefix ++ "register"
         when runTest $
             if cabal2 then
-                system_ "cabal new-test ."
+                system_ $ "cabal new-test " ++ project
             else
                 system_ $ "cabal " ++ prefix ++ "test --show-details=streaming"
 
