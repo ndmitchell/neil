@@ -166,13 +166,13 @@ parseType = map trim . splitOn "->" . drop 2 . snd . breakOn "::"
 
 
 -- | Run some commands in a temporary directory with the unpacked cabal
-withSDist :: Bool -> IO a -> IO a
-withSDist no_warnings run = withTempDir $ \tdir -> do
+withSDist :: Bool -> String -> IO a -> IO a
+withSDist no_warnings prefix run = withTempDir $ \tdir -> do
     unless no_warnings $
         system_ "git diff --stat --exit-code"
     local <- map normalise . lines <$> systemOutput_ "git ls-files . --others"
-    system_ $ "cabal v1-configure --builddir=" ++ tdir
-    system_ $ "cabal v1-sdist --builddir=" ++ tdir
+    system_ $ "cabal " ++ prefix ++ "configure --builddir=" ++ tdir
+    system_ $ "cabal " ++ prefix ++ "sdist --builddir=" ++ tdir
     files <- getDirectoryContents tdir
     let tarball = head $ [x | x <- files, ".tar.gz" `isSuffixOf` x]
     withCurrentDirectory tdir $ system_ $ "tar -xf " ++ tarball
@@ -200,7 +200,7 @@ run Test{..} = Just $ do
     ghcVer <- fst . line1 <$> systemOutput_ "ghc --numeric-version"
 
     let prefix = if cabal2 then "" else "v1-"
-    withSDist no_warnings $ do
+    withSDist no_warnings prefix $ do
         system_ $ "cabal " ++ prefix ++ "install --only-dependencies --enable-tests"
         let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
                          ["-Werror" | not no_warnings]
@@ -223,7 +223,7 @@ run Check{..} = Just $ withCurrentDirectory path cabalCheck
 run Sdist = Just $ do
     cabalCheck
     tested <- testedWith
-    withSDist False $ do
+    withSDist False "v1-" $ do
         system_ "cabal v1-clean"
         system_ "cabal v1-install --only-dependencies"
         system_ $ "cabal v1-configure --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
