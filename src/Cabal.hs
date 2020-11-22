@@ -202,22 +202,25 @@ run Test{..} = Just $ do
 
     let prefix = if cabal2 then "new-" else "v1-"
     withSDist no_warnings prefix $ do
+        Just (takeBaseName -> project) <- findCabal
         system_ $ "cabal " ++ (if cabal2 then "new-build" else "v1-install") ++ " --only-dependencies --enable-tests"
         let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
                          ["-Werror" | not no_warnings]
         if cabal2 then do
-            Just cbl <- findCabal
             writeFile "cabal.project.local" $ unlines
                 ["library-profiling: False"
                 ,"tests: True"
-                ,"package " ++ takeBaseName cbl
+                ,"package " ++ project
                 ,"  ghc-options: " ++ unwords ghcOptions]
          else
             system_ $ unwords $
                 ("cabal v1-configure --enable-tests --disable-library-profiling") :
                 map ("--ghc-option=" ++) ghcOptions
         system_ $ "cabal " ++ prefix ++ "build"
-        system_ $ "cabal " ++ prefix ++ "haddock --hoogle"
+        if cabal2 then
+            system_ $ "cabal new-haddock " ++ project ++ " --haddock-hoogle"
+         else
+            system_ $ "cabal v1-haddock --hoogle"
         when (ghcVer `elem` takeEnd 2 ghcReleases) $ do
             -- earlier Haddock's forget to document class members in the --hoogle
             checkHoogle
