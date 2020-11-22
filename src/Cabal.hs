@@ -202,7 +202,7 @@ run Test{..} = Just $ do
 
     let prefix = if cabal2 then "" else "v1-"
     withSDist no_warnings prefix $ do
-        system_ $ "cabal " ++ prefix ++ "install --only-dependencies --enable-tests"
+        system_ $ "cabal " ++ (if cabal2 then "build" else "v1-install") ++ " --only-dependencies --enable-tests"
         let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
                          ["-Werror" | not no_warnings]
         system_ $ unwords $
