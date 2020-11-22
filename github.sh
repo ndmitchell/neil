@@ -49,7 +49,8 @@ timer .neil/neil test --install --cabal2
 
 # Run any additional tests, written in Haskell
 if [ -e travis.hs ]; then
-    timer cabal new-exec runhaskell travis.hs
+    cd .neil && timer cabal new-exec ghc ../travis.hs
+    timer .neil/travis
 fi
 
 # Check regenerating doesn't change anything
