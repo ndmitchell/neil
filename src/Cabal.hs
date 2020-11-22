@@ -224,7 +224,7 @@ run Test{..} = Just $ do
                 map ("--ghc-option=" ++) ghcOptions
         system_ $ "cabal " ++ prefix ++ "build" ++ (if cabal2 then " ." else "")
         if cabal2 then
-            system_ $ "cabal new-haddock " ++ project ++ " --haddock-hoogle"
+            system_ $ "cabal new-haddock . --haddock-hoogle"
          else
             system_ $ "cabal v1-haddock --hoogle"
         when (ghcVer `elem` takeEnd 2 ghcReleases) $ do
@@ -232,13 +232,13 @@ run Test{..} = Just $ do
             checkHoogle
         when install $
             if cabal2 then
-                system_ $ "cabal new-install --install-method=copy --overwrite-policy=always"
+                system_ $ "cabal new-install . --install-method=copy --overwrite-policy=always"
             else do
                 system_ $ "cabal " ++ prefix ++ "copy"
                 system_ $ "cabal " ++ prefix ++ "register"
         when runTest $
             if cabal2 then
-                system_ "cabal new-test"
+                system_ "cabal new-test ."
             else
                 system_ $ "cabal " ++ prefix ++ "test --show-details=streaming"
 
