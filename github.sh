@@ -4,17 +4,6 @@
 set -e # exit on errors
 set -x # echo each line
 
-GITHUB_USER=$1
-COMMIT=$2
-
-if [ -z "$GITHUB_USER" ]; then
-    GITHUB_USER=ndmitchell
-fi
-
-if [ -z "$COMMIT" ]; then
-    COMMIT=master
-fi
-
 retry(){
     ($@) && return
     sleep 15
@@ -45,39 +34,23 @@ cabal --version
 # alex --version
 haddock --version
 
-ghc-pkg list
-
 if [ "$HASKELL_DEPENDENCIES" != "" ]; then
-    retry cabal v1-install $HASKELL_DEPENDENCIES
+    retry cabal install $HASKELL_DEPENDENCIES
 fi
 
-retry cabal v1-install --only-dependencies --enable-tests $CABALFLAGS || FAIL=1
-if [ "$GHC_HEAD" = "1" ] && [ "$FAIL" = "1" ]; then
-    FAIL=
-    retry cabal v1-install --only-dependencies --enable-tests --force-reinstalls --allow-newer || FAIL=1
-    if [ "$FAIL" = "1" ]; then
-        echo Failed because some dependencies failed to install, not my fault
-        exit
-    fi
-fi
-ghc-pkg list
+# Install dependencies
+retry cabal install --only-dependencies --enable-tests $CABALFLAGS
 
-retry git clone -n "https://github.com/$GITHUB_USER/neil" .neil
-(cd .neil && git checkout $COMMIT && retry cabal install --allow-newer --flags=small --verbose --installdir=. --install-method=copy)
-
-export PATH="$HOME/.cabal/bin:/home/runner/.cabal/bin:/c/Users/runneradmin/AppData/Roaming/cabal/bin:$PATH"
-
-env
-
-if [ -e travis.hs ]; then
-    # ensure that reinstalling this package won't break the test script
-    mkdir travis
-    ghc --make travis.hs -outputdir travis -o travis/travis
-fi
+# Install the neil tool
+retry git clone -n "https://github.com/ndmitchell/neil" .neil
+(cd .neil && git checkout && retry cabal install --allow-newer --flags=small --verbose --installdir=. --install-method=copy)
 
 timer .neil/neil test --install
 
+# Run any additional tests, written in Haskell
 if [ -e travis.hs ]; then
-    timer travis/travis
+    timer cabal run -- runhaskell travis.hs
 fi
-git diff --exit-code # check regenerating doesn't change anything
+
+# Check regenerating doesn't change anything
+git diff --exit-code
