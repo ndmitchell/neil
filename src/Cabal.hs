@@ -186,7 +186,9 @@ withSDist no_warnings prefix run = withTempDir $ \tdir -> do
         fmap badWhite (readFileBinary' file)
     when (bad /= []) $ do
         error $ unlines $ "The following files have \\r characters, trailing whitespace or excess newlines." : bad
-    withCurrentDirectory (tdir </> dropExtension (dropExtension $ takeFileName tarball)) run
+    -- Must canonicalize due to Cabal bug, see https://github.com/haskell/cabal/issues/7170
+    path <- canonicalizePath $ tdir </> dropExtension (dropExtension $ takeFileName tarball)
+    withCurrentDirectory path run
 
 badWhite :: String -> Bool
 badWhite x = '\r' `elem` x || " \n" `isInfixOf` x || "\n\n" `isSuffixOf` x
@@ -204,7 +206,7 @@ run Test{..} = Just $ do
     let prefix = if cabal2 then "new-" else "v1-"
     withSDist no_warnings prefix $ do
         Just (takeBaseName -> project) <- findCabal
-        system_ $ "cabal " ++ (if cabal2 then "new-build " ++ project else "v1-install") ++ " --only-dependencies --enable-tests"
+        system_ $ "cabal " ++ (if cabal2 then "new-build" else "v1-install") ++ " --only-dependencies --enable-tests"
         let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
                          ["-Werror" | not no_warnings]
         if cabal2 then do
