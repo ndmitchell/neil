@@ -35,11 +35,9 @@ haddock --version
 if [ "$INSTALL_FSATRACE" = "true" ]; then
     case $OS in
         Windows*|windows*)
-            curl https://github.com/ndmitchell/shake/releases/download/fsatrace-1/fsatrace.zip -o fsatrace.zip
+            curl https://github.com/ndmitchell/shake/releases/download/fsatrace-1/fsatrace.zip -L -o fsatrace.zip
             # Important that fsatrace.exe is not in the Shake root since otherwise fsatrace*.dll is reported as
             # an untracked read - so we put 'fsatrace' one directory up.
-            ls -la fsatrace.zip
-            cat fsatrace.zip
             7z x fsatrace.zip -o../fsatrace
             export PATH=$PATH:`pwd`/../fsatrace
             ;;
