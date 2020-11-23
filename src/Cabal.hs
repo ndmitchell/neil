@@ -234,7 +234,7 @@ run Test{..} = Just $ do
                 system_ $ "cabal " ++ prefix ++ "register"
         when runTest $
             if cabal2 then
-                system_ $ "cabal new-test " ++ project
+                system_ "cabal new-test"
             else
                 system_ $ "cabal " ++ prefix ++ "test --show-details=streaming"
 
