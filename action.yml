@@ -9,6 +9,10 @@ inputs:
     description: 'Arguments to pass to HLint'
     required: false
     default: '.'
+  install-fsatrace:
+    description: 'Install the fsatrace binary'
+    required: false
+    default: false
 runs:
   using: "composite"
   steps:
@@ -16,3 +20,5 @@ runs:
       shell: bash
       env:
         HLINT_ARGUMENTS: ${{ inputs.hlint-arguments }}
+        INSTALL_FSATRACE: ${{ inputs.install-fsatrace }}
+        OS: ${{ runner.os }}
