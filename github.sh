@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # This script is invoked from my GitHub-CI commands
 # It bootstraps to grab the 'neil' tool and run 'neil test'
 set -e # exit on errors
