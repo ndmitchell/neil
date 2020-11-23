@@ -39,6 +39,7 @@ if [ "$INSTALL_FSATRACE" = "true" ]; then
             # Important that fsatrace.exe is not in the Shake root since otherwise fsatrace*.dll is reported as
             # an untracked read - so we put 'fsatrace' one directory up.
             ls -la fsatrace.zip
+            cat fsatrace.zip
             7z x fsatrace.zip -o../fsatrace
             export PATH=$PATH:`pwd`/../fsatrace
             ;;
