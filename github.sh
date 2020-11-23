@@ -44,6 +44,7 @@ retry git clone --depth=1 "https://github.com/ndmitchell/neil" .neil
 (cd .neil && retry cabal new-install --allow-newer --flags=small --installdir=. --install-method=copy --overwrite-policy=always)
 
 timer .neil/neil test --install --cabal2
+# Make sure the output is on $PATH
 export PATH="$HOME/.cabal/bin:/home/runner/.cabal/bin:/c/Users/runneradmin/AppData/Roaming/cabal/bin:$PATH"
 
 # Run any additional tests, written in Haskell
