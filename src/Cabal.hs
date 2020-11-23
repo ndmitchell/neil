@@ -198,6 +198,7 @@ run Test{..} = Just $ do
 
     runTest <- maybeM (return True) (fmap ("test-suite" `isInfixOf`) . readFile) findCabal
     hasLibrary <- maybeM (return True) (fmap ("library" `isInfixOf`) . readFile) findCabal
+    hasExecutable <- maybeM (return True) (fmap ("executable" `isInfixOf`) . readFile) findCabal
     ghcVer <- fst . line1 <$> systemOutput_ "ghc --numeric-version"
 
     let prefix = if cabal2 then "new-" else "v1-"
@@ -225,7 +226,7 @@ run Test{..} = Just $ do
             when (ghcVer `elem` takeEnd 2 ghcReleases) $ do
                 -- earlier Haddock's forget to document class members in the --hoogle
                 checkHoogle
-        when install $
+        when (hasExecutable && install) $
             if cabal2 then
                 system_ $ "cabal new-install " ++ project ++ " --install-method=copy --overwrite-policy=always"
             else do
