@@ -1,3 +1,7 @@
+# Written to be available, and tested that it works, but worse than
+# just running the curl directly. Waiting for `use` in composite actions, e.g.
+# https://github.com/actions/runner/issues/646
+
 name: 'Neil Haskell CI'
 description: 'Run standard Neil Haskell CI pattern'
 inputs:
