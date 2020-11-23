@@ -198,7 +198,6 @@ run :: Arguments -> Maybe (IO ())
 run Test{..} = Just $ do
     cabalCheck
 
-    runTest <- maybeM (return True) (fmap ("test-suite" `isInfixOf`) . readFile) findCabal
     hasLibrary <- maybeM (return True) (fmap ("library" `isInfixOf`) . readFile) findCabal
     hasExecutable <- maybeM (return True) (fmap ("executable" `isInfixOf`) . readFile) findCabal
     ghcVer <- fst . line1 <$> systemOutput_ "ghc --numeric-version"
@@ -234,11 +233,10 @@ run Test{..} = Just $ do
             else do
                 system_ $ "cabal " ++ prefix ++ "copy"
                 system_ $ "cabal " ++ prefix ++ "register"
-        when runTest $
-            if cabal2 then
-                system_ "cabal new-test"
-            else
-                system_ $ "cabal " ++ prefix ++ "test --show-details=streaming"
+        if cabal2 then
+            system_ "cabal new-test"
+        else
+            system_ $ "cabal " ++ prefix ++ "test --show-details=streaming"
 
 run Check{..} = Just $ withCurrentDirectory path cabalCheck
 
