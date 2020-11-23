@@ -219,10 +219,10 @@ run Test{..} = Just $ do
             system_ $ unwords $
                 ("cabal v1-configure --enable-tests --disable-library-profiling") :
                 map ("--ghc-option=" ++) ghcOptions
-        system_ $ "cabal " ++ prefix ++ "build" ++ (if cabal2 then " " ++ project else "")
+        system_ $ "cabal " ++ prefix ++ "build"
         when hasLibrary $ do
             if cabal2 then
-                system_ $ "cabal new-haddock " ++ project ++ " --haddock-hoogle"
+                system_ $ "cabal new-haddock --haddock-hoogle"
             else
                 system_ $ "cabal v1-haddock --hoogle"
             when (ghcVer `elem` takeEnd 2 ghcReleases) $ do
@@ -230,7 +230,7 @@ run Test{..} = Just $ do
                 checkHoogle
         when (hasExecutable && install) $
             if cabal2 then
-                system_ $ "cabal new-install " ++ project ++ " --install-method=copy --overwrite-policy=always"
+                system_ $ "cabal new-install --install-method=copy --overwrite-policy=always"
             else do
                 system_ $ "cabal " ++ prefix ++ "copy"
                 system_ $ "cabal " ++ prefix ++ "register"
