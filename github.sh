@@ -33,16 +33,20 @@ cabal --version
 haddock --version
 
 if [ "$INSTALL_FSATRACE" = "true" ]; then
-    if [[ "$OS" == windows* ]]; then
-        curl https://github.com/ndmitchell/shake/releases/download/fsatrace-1/fsatrace.zip -o fsatrace.zip
-        # Important that fsatrace.exe is not in the Shake root since otherwise fsatrace*.dll is reported as
-        # an untracked read - so we put 'fsatrace' one directory up.
-        7z x fsatrace.zip -o../fsatrace
-        export PATH=$PATH:`pwd`/../fsatrace
-    else
-        git clone https://github.com/jacereda/fsatrace.git .fsatrace
-        (cd .fsatrace && make)
-        export PATH=$PATH:`pwd`/.fsatrace
+    case $OS in
+        Windows*|windows*)
+            curl https://github.com/ndmitchell/shake/releases/download/fsatrace-1/fsatrace.zip -o fsatrace.zip
+            # Important that fsatrace.exe is not in the Shake root since otherwise fsatrace*.dll is reported as
+            # an untracked read - so we put 'fsatrace' one directory up.
+            7z x fsatrace.zip -o../fsatrace
+            export PATH=$PATH:`pwd`/../fsatrace
+            ;;
+        *)
+            git clone https://github.com/jacereda/fsatrace.git .fsatrace
+            (cd .fsatrace && make)
+            export PATH=$PATH:`pwd`/.fsatrace
+            ;;
+        esac
     fi
     fsatrace v - -- echo fsatrace works
 fi
