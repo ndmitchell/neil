@@ -25,4 +25,4 @@ jobs:
         path: ${{ steps.setup-haskell.outputs.cabal-store }}
         key: ${{ runner.os }}-${{ matrix.ghc }}-${{ hashFiles('cabal.project.freeze') }}
         restore-keys: ${{ runner.os }}-${{ matrix.ghc }}-
-    - run: curl -sSL https://raw.github.com/ndmitchell/neil/master/github.sh | sh
+    - uses: ndmitchell/neil

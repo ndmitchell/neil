@@ -1,0 +1,14 @@
+name: 'Neil Haskell CI'
+description: 'Run standard Neil Haskell CI pattern'
+inputs:
+  hlint-arguments:
+    description: 'Arguments to pass to HLint'
+    required: false
+    default: '.'
+runs:
+  using: "composite"
+  steps:
+    - run: curl -sSL https://raw.github.com/ndmitchell/neil/master/github.sh | sh
+      shell: bash
+      env:
+        HLINT_ARGUMENTS: ${{ inputs.hlint-arguments }}
