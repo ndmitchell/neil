@@ -46,8 +46,7 @@ if [ "$INSTALL_FSATRACE" = "true" ]; then
             (cd .fsatrace && make)
             export PATH=$PATH:`pwd`/.fsatrace
             ;;
-        esac
-    fi
+    esac
     fsatrace v - -- echo fsatrace works
 fi
 
