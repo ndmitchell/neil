@@ -205,6 +205,8 @@ run Test{..} = Just $ do
     let prefix = if cabal2 then "new-" else "v1-"
     withSDist no_warnings prefix $ do
         Just (takeBaseName -> project) <- findCabal
+        -- cmdargs has a disabled executable, so this tool things it has one, but cabal falls over
+        hasExecutable <- pure $ hasExecutable && project /= "cmdargs"
         system_ $ "cabal " ++ (if cabal2 then "new-build" else "v1-install") ++ " --only-dependencies --enable-tests"
         let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
                          ["-Werror" | not no_warnings]
