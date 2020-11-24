@@ -58,7 +58,7 @@ fi
 retry cabal v2-build --only-dependencies --enable-tests $CABALFLAGS
 
 # Install the neil tool
-retry git clone --depth=1 "https://github.com/ndmitchell/neil" .neil
+retry git clone -b $BRANCH --depth=1 "https://github.com/$GITHUB_USER/neil" .neil
 (cd .neil && retry cabal v2-install --allow-newer --flags=small --installdir=. --install-method=copy --overwrite-policy=always)
 
 if [ "$MAKE_RELEASE" = "true" ]; then
