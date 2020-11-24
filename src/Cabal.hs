@@ -331,14 +331,15 @@ testedWith = do
 checkReadme :: IO ()
 checkReadme = do
     name <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal
+    github <- githubPath
     src <- fmap lines $ readFile "README.md"
     let badges =
             ["[![Hackage version](https://img.shields.io/hackage/v/" ++ name ++ ".svg?label=Hackage)]" ++
              "(https://hackage.haskell.org/package/" ++ name ++ ")"
             ,"[![Stackage version](https://www.stackage.org/package/" ++ name ++ "/badge/nightly?label=Stackage)]" ++
              "(https://www.stackage.org/package/" ++ name ++ ")"
-            ,"[![Build status](https://img.shields.io/github/workflow/status/ndmitchell/" ++ name ++ "/ci.svg)]" ++
-             "(https://github.com/ndmitchell/" ++ name ++ "/actions)"
+            ,"[![Build status](https://img.shields.io/github/workflow/status/" ++ github ++ "/ci.svg)]" ++
+             "(https://github.com/" ++ github ++ "/actions)"
             ]
     let line1 = head $ src ++ [""]
     let bangs = length $ filter (== '!') line1
@@ -385,12 +386,11 @@ getLatestYear = do
 checkCabalFile :: IO ()
 checkCabalFile = do
     src <- fmap lines readCabal
-    let project = projectName src
     test <- testedWith
     let grab tag = [trimStart $ drop (length tag + 1) x | x <- relines src, (tag ++ ":") `isPrefixOf` x]
     license <- catch_ (readFile' $ concat $ grab "license-file") $ \_ -> return ""
     year <- getLatestYear
-    let github = ownerGithub src ++ "/" ++ project
+    github <- githubPath
     let bad =
             ["Incorrect declaration style: " ++ x
                 | (x,':':_) <- map (break (== ':') . trimStart) src
@@ -415,8 +415,13 @@ checkCabalFile = do
 validTests :: [String] -> Bool
 validTests xs = length xs >= 1 && xs `isPrefixOf` reverse ghcReleases
 
-projectName x = owner ("https://github.com/" ++ ownerGithub x ++ "/") x
+repoName x = owner ("https://github.com/" ++ ownerGithub x ++ "/") x
 ownerGithub = owner " https://github.com/" -- leading space ensures other <https:// links don't pollute the owner
+
+-- For example ndmitchell/neil or tomjaguarpaw/haskell-opaleye
+githubPath = do
+  cabalSrc <- fmap lines readCabal
+  pure (ownerGithub cabalSrc ++ "/" ++ repoName cabalSrc)
 
 owner :: String -> [String] -> String
 owner fragment src = if x == "" then "ndmitchell" else x
