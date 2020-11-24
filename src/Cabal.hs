@@ -210,12 +210,12 @@ run Test{..} = Just $ do
     hasExecutable <- maybeM (return True) (fmap ("executable" `isInfixOf`) . readFile) findCabal
     ghcVer <- fst . line1 <$> systemOutput_ "ghc --numeric-version"
 
-    let prefix = if cabal2 then "new-" else "v1-"
+    let prefix = if cabal2 then "v2-" else "v1-"
     withSDist no_warnings prefix $ do
         Just (takeBaseName -> project) <- findCabal
         -- cmdargs has a disabled executable, so this tool things it has one, but cabal falls over
         hasExecutable <- pure $ hasExecutable && project /= "cmdargs"
-        system_ $ "cabal " ++ (if cabal2 then "new-build" else "v1-install") ++ " --only-dependencies --enable-tests"
+        system_ $ "cabal " ++ (if cabal2 then "v2-build" else "v1-install") ++ " --only-dependencies --enable-tests"
         let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
                          ["-Werror" | not no_warnings]
         if cabal2 then do
@@ -231,7 +231,7 @@ run Test{..} = Just $ do
         system_ $ "cabal " ++ prefix ++ "build"
         when hasLibrary $ do
             if cabal2 then
-                system_ $ "cabal new-haddock --haddock-hoogle"
+                system_ $ "cabal v2-haddock --haddock-hoogle"
             else
                 system_ $ "cabal v1-haddock --hoogle"
             when (ghcVer `elem` takeEnd 2 ghcReleases) $ do
@@ -239,13 +239,13 @@ run Test{..} = Just $ do
                 checkHoogle
         when (hasExecutable && install) $
             if cabal2 then
-                system_ $ "cabal new-install --install-method=copy --overwrite-policy=always"
+                system_ $ "cabal v2-install --install-method=copy --overwrite-policy=always"
             else do
                 system_ $ "cabal " ++ prefix ++ "copy"
                 system_ $ "cabal " ++ prefix ++ "register"
         if cabal2 then
             -- Try and make imported packages available while testing
-            system_ "cabal new-exec cabal new-test"
+            system_ "cabal v2-exec cabal v2-test"
         else
             system_ $ "cabal " ++ prefix ++ "test --show-details=streaming"
 

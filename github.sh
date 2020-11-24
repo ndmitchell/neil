@@ -51,15 +51,15 @@ if [ "$INSTALL_FSATRACE" = "true" ]; then
 fi
 
 if [ "$HASKELL_DEPENDENCIES" != "" ]; then
-    retry cabal new-build $HASKELL_DEPENDENCIES
+    retry cabal v2-build $HASKELL_DEPENDENCIES
 fi
 
 # Install dependencies
-retry cabal new-build --only-dependencies --enable-tests $CABALFLAGS
+retry cabal v2-build --only-dependencies --enable-tests $CABALFLAGS
 
 # Install the neil tool
 retry git clone --depth=1 "https://github.com/ndmitchell/neil" .neil
-(cd .neil && retry cabal new-install --allow-newer --flags=small --installdir=. --install-method=copy --overwrite-policy=always)
+(cd .neil && retry cabal v2-install --allow-newer --flags=small --installdir=. --install-method=copy --overwrite-policy=always)
 
 timer .neil/neil test --install --cabal2
 # Make sure the output is on $PATH
@@ -70,7 +70,7 @@ if [ -e travis.hs ]; then
     # We want to run travis.hs with the extra package in scope
     # Best way I can do that is by hijacking the Main.hs of .neil
     cp travis.hs .neil/src/Main.hs
-    (cd .neil && cabal new-install --allow-newer --flags=small --installdir=. --install-method=copy --overwrite-policy=always)
+    (cd .neil && cabal v2-install --allow-newer --flags=small --installdir=. --install-method=copy --overwrite-policy=always)
     .neil/neil
 fi
 
