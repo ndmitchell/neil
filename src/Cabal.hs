@@ -79,7 +79,7 @@ checkGhci = do
 checkGithub :: IO ()
 checkGithub = do
     src <- readFile' ".github/workflows/ci.yml"
-    unless ("ndmitchell/neil@master" `isInfixOf` src) $
+    unless ("/neil@" `isInfixOf` src) $
         fail "Must run the neil action in github"
 
 checkTravis :: IO ()
