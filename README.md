@@ -1,4 +1,4 @@
-# Neil: Workflow Utilities [![Hackage version](https://img.shields.io/hackage/v/neil.svg?label=Hackage)](https://hackage.haskell.org/package/neil) [![Linux build status](https://img.shields.io/travis/ndmitchell/neil/master.svg?label=Linux%20build)](https://travis-ci.org/ndmitchell/neil) [![Windows build status](https://img.shields.io/appveyor/ci/ndmitchell/neil/master.svg?label=Windows%20build)](https://ci.appveyor.com/project/ndmitchell/neil)
+# Neil: Workflow Utilities [![Hackage version](https://img.shields.io/hackage/v/neil.svg?label=Hackage)](https://hackage.haskell.org/package/neil) [![Build status](https://img.shields.io/github/workflow/status/ndmitchell/neil/ci.svg)](https://github.com/ndmitchell/neil/actions)
 
 A tool for performing common actions run by Neil Mitchell. Many of these commands enhance specific aspects of my workflow. While other people are welcome to use this tool, it is not supported. Use `neil --help` to see what is available. Some uses:
 

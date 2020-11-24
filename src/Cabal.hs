@@ -52,8 +52,11 @@ cabalCheck = do
     checkReadme
     checkChangelog
     checkGhci
-    checkTravis
-    checkAppveyor
+    checkGithub
+    -- These are disabled, for future removal assuming GitHub goes well
+    when False $ do
+        checkTravis
+        checkAppveyor
     checkPullRequestTemplate
 
 
@@ -63,6 +66,11 @@ checkGhci = do
     unless ("-W" `elem` src || all (`elem` src) ghcWarnings) $
         error $ "The .ghci file does not enough of " ++ unwords ("-W":ghcWarnings)
 
+checkGithub :: IO ()
+checkGithub = do
+    src <- readFile' ".github/workflows/ci.yml"
+    unless ("ndmitchell/neil@master" `isInfixOf` src) $
+        fail "Must run the neil action in github"
 
 checkTravis :: IO ()
 checkTravis = do
@@ -314,21 +322,13 @@ checkReadme :: IO ()
 checkReadme = do
     name <- takeBaseName . fromMaybe (error "Couldn't find cabal file") <$> findCabal
     src <- fmap lines $ readFile "README.md"
-    cabal <- fmap lines readCabal
-    let project = projectName cabal
-    let travis = ownerTravis src ++ "/" ++ project
-    let appveyor = ownerAppveyor src ++ "/" ++ name
     let badges =
             ["[![Hackage version](https://img.shields.io/hackage/v/" ++ name ++ ".svg?label=Hackage)]" ++
              "(https://hackage.haskell.org/package/" ++ name ++ ")"
             ,"[![Stackage version](https://www.stackage.org/package/" ++ name ++ "/badge/nightly?label=Stackage)]" ++
              "(https://www.stackage.org/package/" ++ name ++ ")"
-            ,"[![Linux build status](https://img.shields.io/travis/" ++ travis ++ "/master.svg?label=Linux%20build)]" ++
-             "(https://travis-ci.org/" ++ travis ++ ")"
-            ,"[![Windows build status](https://img.shields.io/appveyor/ci/" ++ appveyor ++ "/master.svg?label=Windows%20build)]" ++
-             "(https://ci.appveyor.com/project/" ++ appveyor ++ ")"
-            ,"[![Build status](https://img.shields.io/travis/" ++ travis ++ "/master.svg?label=Build)]" ++
-             "(https://travis-ci.org/" ++ travis ++ ")"
+            ,"[![Build status](https://img.shields.io/github/workflow/status/ndmitchell/" ++ name ++ "/ci.svg)]" ++
+             "(https://github.com/ndmitchell/" ++ name ++ "/actions)"
             ]
     let line1 = head $ src ++ [""]
     let bangs = length $ filter (== '!') line1
@@ -407,8 +407,6 @@ validTests xs = length xs >= 1 && xs `isPrefixOf` reverse ghcReleases
 
 projectName x = owner ("https://github.com/" ++ ownerGithub x ++ "/") x
 ownerGithub = owner " https://github.com/" -- leading space ensures other <https:// links don't pollute the owner
-ownerTravis = owner "https://img.shields.io/travis/"
-ownerAppveyor = owner "https://img.shields.io/appveyor/ci/"
 
 owner :: String -> [String] -> String
 owner fragment src = if x == "" then "ndmitchell" else x
