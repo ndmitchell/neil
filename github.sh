@@ -76,3 +76,7 @@ fi
 
 # Check regenerating doesn't change anything
 git diff --exit-code
+
+if [ "$MAKE_RELEASE" = "true" ]; then
+    .neil/neil bin
+fi

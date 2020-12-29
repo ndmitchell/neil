@@ -13,6 +13,10 @@ inputs:
     description: 'Install the fsatrace binary'
     required: false
     default: false
+  make-release:
+    description: 'Make a release binary'
+    required: false
+    default: false
 runs:
   using: "composite"
   steps:
@@ -21,4 +25,5 @@ runs:
       env:
         HLINT_ARGUMENTS: ${{ inputs.hlint-arguments }}
         INSTALL_FSATRACE: ${{ inputs.install-fsatrace }}
+        MAKE_RELEASE: ${{ inputs.make-release }}
         OS: ${{ runner.os }}

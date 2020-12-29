@@ -1,0 +1,46 @@
+name: release
+on:
+  # Match when pushing tags v*, i.e. v1.0, v20.15.10
+  push:
+    tags: ['v*']
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: ubuntu-latest
+          env:
+          - SUFFIX: x86_64-linux.tar.gz
+        os: windows-latest
+          env:
+          - SUFFIX: x86_64-windows.zip
+        os: macOS-latest
+          env:
+          - SUFFIX: x86_64-osx.tar.gz
+
+    steps:
+    - run: git config --global core.autocrlf false
+    - uses: actions/checkout@v2
+    - uses: actions/setup-haskell@v1
+    - uses: ndmitchell/neil@master
+      with:
+        make-release: true
+
+    - uses: actions/create-release@v1
+      id: create-release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
+
+    - uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: dist/bin/${{ github.repository }}-${{ github.ref }}-${{ env.SUFFIX }}
+        asset_name: ${{ github.repository }}-${{ github.ref }}-${{ env.SUFFIX }}
+        asset_content_type: application/zip
