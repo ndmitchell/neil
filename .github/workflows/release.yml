@@ -29,6 +29,7 @@ jobs:
         release_name: v${{ steps.reftags_version.outputs._1 }}
 
   build:
+    needs: init
     runs-on: ${{ matrix.os }}
 
     strategy:
