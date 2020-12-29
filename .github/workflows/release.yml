@@ -26,10 +26,10 @@ jobs:
         split-by: '/'
 
     - uses: rishabhgupta/split-by@v1
-      id: refs_tags_version
+      id: reftags_version
       with:
         string: ${{ github.ref }} # e.g. refs/tags/v0.11.1.1
-        split-by: '/'
+        split-by: 'v'
 
     - run: git config --global core.autocrlf false
     - uses: actions/checkout@v2
@@ -51,6 +51,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create-release.outputs.upload_url }}
-        asset_path: dist/bin/${{ steps.username_repo.outputs._1 }}-${{ steps.refs_tags_version.outputs._2 }}-${{ matrix.SUFFIX }}
-        asset_name: ${{ steps.username_repo.outputs._1 }}-${{ steps.refs_tags_version.outputs._2 }}-${{ matrix.SUFFIX }}
+        asset_path: dist/bin/${{ steps.username_repo.outputs._1 }}-${{ steps.reftags_version.outputs._1 }}-${{ matrix.SUFFIX }}
+        asset_name: ${{ steps.username_repo.outputs._1 }}-${{ steps.reftags_version.outputs._1 }}-${{ matrix.SUFFIX }}
         asset_content_type: application/zip
