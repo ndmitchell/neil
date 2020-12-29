@@ -19,6 +19,18 @@ jobs:
           SUFFIX: x86_64-osx.tar.gz
 
     steps:
+      - uses: jungwinter/split@v1
+        id: username_repo
+        with:
+          msg: ${{ github.repository }} # e.g. ndmitchell/neil
+          separator: '/'
+
+      - uses: jungwinter/split@v1
+        id: refs_tags_version
+        with:
+          msg: ${{ github.ref }} # e.g. refs/tags/v0.11.1.1
+          separator: '/'
+
     - run: git config --global core.autocrlf false
     - uses: actions/checkout@v2
     - uses: actions/setup-haskell@v1
@@ -39,6 +51,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create-release.outputs.upload_url }}
-        asset_path: dist/bin/${{ github.repository }}-${{ github.ref }}-${{ matrix.SUFFIX }}
-        asset_name: ${{ github.repository }}-${{ github.ref }}-${{ matrix.SUFFIX }}
+        asset_path: dist/bin/${{ steps.username_repo.outputs._1 }}-${{ steps.refs_tags_version.outputs._2 }}-${{ matrix.SUFFIX }}
+        asset_name: ${{ steps.username_repo.outputs._1 }}-${{ steps.refs_tags_version.outputs._2 }}-${{ matrix.SUFFIX }}
         asset_content_type: application/zip
