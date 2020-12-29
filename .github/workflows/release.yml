@@ -10,15 +10,12 @@ jobs:
 
     strategy:
       matrix:
-        os: ubuntu-latest
-          env:
-          - SUFFIX: x86_64-linux.tar.gz
-        os: windows-latest
-          env:
-          - SUFFIX: x86_64-windows.zip
-        os: macOS-latest
-          env:
-          - SUFFIX: x86_64-osx.tar.gz
+        - os: ubuntu-latest
+          SUFFIX: x86_64-linux.tar.gz
+        - os: windows-latest
+          SUFFIX: x86_64-windows.zip
+        - os: macOS-latest
+          SUFFIX: x86_64-osx.tar.gz
 
     steps:
     - run: git config --global core.autocrlf false
@@ -41,6 +38,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: dist/bin/${{ github.repository }}-${{ github.ref }}-${{ env.SUFFIX }}
-        asset_name: ${{ github.repository }}-${{ github.ref }}-${{ env.SUFFIX }}
+        asset_path: dist/bin/${{ github.repository }}-${{ github.ref }}-${{ matrix.SUFFIX }}
+        asset_name: ${{ github.repository }}-${{ github.ref }}-${{ matrix.SUFFIX }}
         asset_content_type: application/zip
