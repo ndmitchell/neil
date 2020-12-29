@@ -10,6 +10,7 @@ jobs:
 
     strategy:
       matrix:
+        include:
         - os: ubuntu-latest
           SUFFIX: x86_64-linux.tar.gz
         - os: windows-latest
