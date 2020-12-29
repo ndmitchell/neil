@@ -61,22 +61,22 @@ retry cabal v2-build --only-dependencies --enable-tests $CABALFLAGS
 retry git clone --depth=1 "https://github.com/ndmitchell/neil" .neil
 (cd .neil && retry cabal v2-install --allow-newer --flags=small --installdir=. --install-method=copy --overwrite-policy=always)
 
-timer .neil/neil test --install --cabal2
-# Make sure the output is on $PATH
-export PATH="$HOME/.cabal/bin:/home/runner/.cabal/bin:/c/Users/runneradmin/AppData/Roaming/cabal/bin:$PATH"
-
-# Run any additional tests, written in Haskell
-if [ -e travis.hs ]; then
-    # We want to run travis.hs with the extra package in scope
-    # Best way I can do that is by hijacking the Main.hs of .neil
-    cp travis.hs .neil/src/Main.hs
-    (cd .neil && cabal v2-install --allow-newer --flags=small --installdir=. --install-method=copy --overwrite-policy=always)
-    .neil/neil
-fi
-
-# Check regenerating doesn't change anything
-git diff --exit-code
-
 if [ "$MAKE_RELEASE" = "true" ]; then
     .neil/neil bin
+else
+    timer .neil/neil test --install --cabal2
+    # Make sure the output is on $PATH
+    export PATH="$HOME/.cabal/bin:/home/runner/.cabal/bin:/c/Users/runneradmin/AppData/Roaming/cabal/bin:$PATH"
+
+    # Run any additional tests, written in Haskell
+    if [ -e travis.hs ]; then
+        # We want to run travis.hs with the extra package in scope
+        # Best way I can do that is by hijacking the Main.hs of .neil
+        cp travis.hs .neil/src/Main.hs
+        (cd .neil && cabal v2-install --allow-newer --flags=small --installdir=. --install-method=copy --overwrite-policy=always)
+        .neil/neil
+    fi
+
+    # Check regenerating doesn't change anything
+    git diff --exit-code
 fi
