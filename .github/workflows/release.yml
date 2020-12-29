@@ -19,17 +19,17 @@ jobs:
           SUFFIX: x86_64-osx.tar.gz
 
     steps:
-    - uses: jungwinter/split@v1
+    - uses: rishabhgupta/split-by@v1
       id: username_repo
       with:
-        msg: ${{ github.repository }} # e.g. ndmitchell/neil
-        separator: '/'
+        string: ${{ github.repository }} # e.g. ndmitchell/neil
+        split-by: '/'
 
-    - uses: jungwinter/split@v1
+    - uses: rishabhgupta/split-by@v1
       id: refs_tags_version
       with:
-        msg: ${{ github.ref }} # e.g. refs/tags/v0.11.1.1
-        separator: '/'
+        string: ${{ github.ref }} # e.g. refs/tags/v0.11.1.1
+        split-by: '/'
 
     - run: git config --global core.autocrlf false
     - uses: actions/checkout@v2
