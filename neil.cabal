@@ -24,7 +24,7 @@ source-repository head
     location: https://github.com/ndmitchell/neil.git
 
 flag small
-    default: False
+    default: True
     manual: True
     description: Minimise dependencies
 
