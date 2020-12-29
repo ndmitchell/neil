@@ -7,6 +7,10 @@ on:
 jobs:
   init:
     runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create-release.outputs.upload_url }}
+      filename: ${{ steps.username_repo.outputs._1 }}-${{ steps.reftags_version.outputs._1 }}
+
     steps:
     - uses: rishabhgupta/split-by@v1
       id: username_repo
@@ -27,6 +31,8 @@ jobs:
       with:
         tag_name: v${{ steps.reftags_version.outputs._1 }}
         release_name: v${{ steps.reftags_version.outputs._1 }}
+
+
 
   build:
     needs: init
@@ -54,7 +60,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create-release.outputs.upload_url }}
-        asset_path: dist/bin/${{ steps.username_repo.outputs._1 }}-${{ steps.reftags_version.outputs._1 }}-${{ matrix.SUFFIX }}
-        asset_name: ${{ steps.username_repo.outputs._1 }}-${{ steps.reftags_version.outputs._1 }}-${{ matrix.SUFFIX }}
+        upload_url: ${{ needs.init.outputs.upload_url }}
+        asset_path: dist/bin/${{ needs.init.outputs.filename }}-${{ matrix.SUFFIX }}
+        asset_name: ${{ needs.init.outputs.filename }}-${{ matrix.SUFFIX }}
         asset_content_type: application/zip
