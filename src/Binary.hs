@@ -46,7 +46,7 @@ run Binary{..} = Just $ withCurrentDirectory path $ withTempDir $ \tdir -> do
                 copy file $ out </> file
             withCurrentDirectory "bin" $
                 if isWindows then
-                    system_ $ "zip -9 -r " ++ zname ++ " " ++ vname
+                    system_ $ "7z a " ++ zname ++ " " ++ vname
                 else
                     system_ $ "tar -czvf " ++ zname ++ " " ++ vname
             return True
