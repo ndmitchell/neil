@@ -34,22 +34,23 @@ run Binary{..} = Just $ withCurrentDirectory path $ withTempDir $ \tdir -> do
                 else if isMac then vname ++ "-x86_64-osx.tar.gz"
                 else vname ++ "-x86_64-linux.tar.gz"
     b <- withCurrentDirectory tdir $ do
-        system_ "cabal v1-install --dependencies"
-        system_ "cabal v1-configure --datadir=nul --disable-library-profiling"
-        system_ "cabal v1-build"
+        system_ "cabal v2-build --only-dependencies"
+        system_ "cabal v2-configure --datadir=nul --disable-library-profiling"
+        system_ "cabal v2-build"
         let out = "bin" </> vname
-        let built = "dist/build" </> name </> name <.> exe
-        b <- doesFileExist built
-        if not b then return False else do
-            copy built (out </> name <.> exe)
-            forM_ files $ \file -> when ('*' `notElem` file) $
-                copy file $ out </> file
-            withCurrentDirectory "bin" $
-                if isWindows then
-                    system_ $ "7z a " ++ zname ++ " " ++ vname
-                else
-                    system_ $ "tar -czvf " ++ zname ++ " " ++ vname
-            return True
+        builtFiles <- listFilesRecursive "dist-newstyle/build"
+        case find (\x -> takeFileName x == name <.> exe) builtFiles of
+            Nothing -> pure False
+            Just built -> do
+                copy built (out </> name <.> exe)
+                forM_ files $ \file -> when ('*' `notElem` file) $
+                    copy file $ out </> file
+                withCurrentDirectory "bin" $
+                    if isWindows then
+                        system_ $ "7z a " ++ zname ++ " " ++ vname
+                    else
+                        system_ $ "tar -czvf " ++ zname ++ " " ++ vname
+                pure True
     if not b then
         putStrLn "Completed, but package does not have a similarly named binary"
      else do
