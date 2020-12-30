@@ -64,3 +64,13 @@ jobs:
         asset_path: dist/bin/${{ needs.init.outputs.filename }}-${{ matrix.SUFFIX }}
         asset_name: ${{ needs.init.outputs.filename }}-${{ matrix.SUFFIX }}
         asset_content_type: application/zip
+
+    - uses: actions/upload-release-asset@v1
+      if: matrix.os == ubuntu-latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.init.outputs.upload_url }}
+        asset_path: dist/${{ needs.init.outputs.filename }}.tar.gz
+        asset_name: ${{ needs.init.outputs.filename }}.tar.gz
+        asset_content_type: application/zip
