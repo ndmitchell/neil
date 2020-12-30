@@ -33,8 +33,9 @@ run Binary{..} = Just $ withCurrentDirectory path $ withTempDir $ \tdir -> do
     let zname = if isWindows then vname ++ "-x86_64-windows.zip"
                 else if isMac then vname ++ "-x86_64-osx.tar.gz"
                 else vname ++ "-x86_64-linux.tar.gz"
+    tdir <- canonicalizePath tdir
     b <- withCurrentDirectory tdir $ do
-        system_ "cabal v2-build --only-dependencies all"
+        system_ "cabal v2-build --only-dependencies"
         system_ "cabal v2-configure --datadir=nul --disable-library-profiling"
         system_ "cabal v2-build"
         let out = "bin" </> vname
