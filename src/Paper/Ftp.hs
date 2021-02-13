@@ -5,8 +5,7 @@ import Control.Monad
 import System.Directory
 import System.FilePath
 import System.Process.Extra
-import System.IO
-import Paper.Util.IO
+import System.IO.Extra
 
 
 ftp :: FilePath -> IO ()

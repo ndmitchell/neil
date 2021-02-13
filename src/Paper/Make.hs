@@ -7,9 +7,9 @@ import System.Process
 import System.Directory
 import System.Exit
 import System.FilePath
+import System.IO.Extra
 
 import Paper.LatexError
-import Paper.Util.IO
 
 
 make :: FilePath -> FilePath -> FilePath -> FilePath -> [FilePath] -> IO ()

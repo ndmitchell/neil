@@ -56,7 +56,6 @@ executable neil
         Paper.Haskell2.Type
         Paper.Haskell2.Stage3
         Paper.Haskell2.Stage2
-        Paper.Util.IO
         Paper.Util.Error
         Paper.Haskell2.Stage1
         Paper.Todo

@@ -6,8 +6,7 @@ import Data.List
 import System.Process
 import System.Directory
 import System.FilePath
-import Paper.Util.IO
-
+import System.IO.Extra
 
 sync :: FilePath -> IO ()
 sync dir = do
