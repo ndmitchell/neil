@@ -17,7 +17,7 @@ import Arguments
 import Prelude
 
 -- | GHC releases I test with
-ghcReleases = ["8.0","8.2","8.4","8.6","8.8","8.10"]
+ghcReleases = ["8.0","8.2","8.4","8.6","8.8","8.10","9.0"]
 
 -- | The next version of GHC that has not yet been released
 --   (might test it in Travis, but won't be in the tested-with)
