@@ -29,23 +29,33 @@ ghcWarnings = words "-fwarn-unused-binds -fwarn-unused-imports -fwarn-orphans"
 ---------------------------------------------------------------------
 -- COMMANDS
 
+-- | Given a list of lines split up for a terminal, put them back together
+linesCabalCheck :: String -> [String]
+linesCabalCheck = repeatedly f . lines
+    where
+        f (x:xs) = (unwords (x:as), bs)
+            where (as, bs) = break isStartLine xs
+
+        -- Warning:, Error: etc
+        -- Plus * bullet point lists
+        -- But not 'cabal-version: xxx'
+        isStartLine x = "*" `isPrefixOf` s || (":" `isSuffixOf` s && not ("'" `isPrefixOf` s))
+            where s = fst $ word1 $ trimStart x
+
+
 -- | Check the .cabal file is well formed
 cabalCheck :: IO ()
 cabalCheck = do
-    -- a lot of the warnings aren't real problems, so whitelist some
-    (_, res) <- systemOutput "cabal check"
-    let allowed = ["No errors or warnings could be found in the package."
-                  ,"These warnings may cause trouble when distributing the package:"
-                  ,"* 'ghc-options: -main-is' is not portable."
-                  ,"* Packages relying on Cabal 1.12 or later should specify a version range of"
-                  ,"the form 'cabal-version: x.y'. Use 'cabal-version: 1.18'."
-                  ,"Warning: These warnings may cause trouble when distributing the package:"
-                  ,"Warning: 'ghc-options: -main-is' is not portable."
-                  ,"Warning: Packages relying on Cabal 1.12 or later should specify a specific"
-                  ,"version of the Cabal spec of the form 'cabal-version: x.y'. Use"
-                  ,"'cabal-version: 1.18'."
-                  ]
-    let bad = filter (not . null) (lines res) \\ allowed
+    (_, (linesCabalCheck -> warnings)) <- systemOutput "cabal check"
+
+    -- a lot of the warnings aren't real problems, so allow some
+    let allowed =
+            ["No errors or warnings could be found in the package."
+            ,"These warnings may cause trouble when distributing the package:"
+            ,"should specify a specific version of the Cabal spec"
+            ,"-main-is' is not portable."
+            ]
+    let bad = filter (\warning -> not $ any (`isInfixOf` warning) allowed) warnings
     when (bad /= []) $ error $ unlines $ "Cabal check gave bad warnings:" : map show bad
 
     checkCabalFile
