@@ -64,6 +64,7 @@ retry git clone --depth=1 "https://github.com/ndmitchell/neil" .neil
 if [ "$MAKE_RELEASE" = "true" ]; then
     .neil/neil bin
     cabal v2-sdist
+    cp dist-newstyle/*.tar.gz dist/
 else
     timer .neil/neil test --install --cabal2
     # Make sure the output is on $PATH

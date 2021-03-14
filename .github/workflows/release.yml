@@ -72,6 +72,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.init.outputs.upload_url }}
-        asset_path: dist-newstyle/${{ needs.init.outputs.filename }}.tar.gz
+        asset_path: dist/${{ needs.init.outputs.filename }}.tar.gz
         asset_name: ${{ needs.init.outputs.filename }}.tar.gz
         asset_content_type: application/zip
