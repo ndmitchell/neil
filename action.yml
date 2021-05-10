@@ -22,7 +22,7 @@ inputs:
     required: false
     default: 'ndmitchell'
   branch:
-    description: 'branch'
+    description: 'branch for the `neil` tool'
     required: false
     default: 'master'
 runs:
