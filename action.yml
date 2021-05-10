@@ -18,7 +18,7 @@ inputs:
     required: false
     default: false
   github-user:
-    description: 'Github user'
+    description: 'Github user for the `neil` tool'
     required: false
     default: 'ndmitchell'
   branch:
