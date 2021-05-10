@@ -17,6 +17,14 @@ inputs:
     description: 'Make a release binary'
     required: false
     default: false
+  github-user:
+    description: 'Github user for the `neil` tool'
+    required: false
+    default: 'ndmitchell'
+  branch:
+    description: 'branch for the `neil` tool'
+    required: false
+    default: 'master'
 runs:
   using: "composite"
   steps:
@@ -27,3 +35,5 @@ runs:
         INSTALL_FSATRACE: ${{ inputs.install-fsatrace }}
         MAKE_RELEASE: ${{ inputs.make-release }}
         OS: ${{ runner.os }}
+        GITHUB_USER: ${{ inputs.github-user }}
+        BRANCH: ${{ inputs.branch }}
