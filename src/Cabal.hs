@@ -63,10 +63,6 @@ cabalCheck = do
     checkChangelog
     checkGhci
     checkGithub
-    -- These are disabled, for future removal assuming GitHub goes well
-    when False $ do
-        checkTravis
-        checkAppveyor
     checkPullRequestTemplate
 
 
@@ -81,39 +77,6 @@ checkGithub = do
     src <- readFile' ".github/workflows/ci.yml"
     unless ("/neil@" `isInfixOf` src) $
         fail "Must run the neil action in github"
-
-checkTravis :: IO ()
-checkTravis = do
-    src <- lines <$> readFile' ".travis.yml"
-
-    let script = "- curl -sSL https://raw.github.com/<github_user>/neil/<commit>/travis.sh | sh -s <github_user> <commit>"
-    let isScript x = case words x of
-            ["-","curl","-sSL","https://raw.github.com/ndmitchell/neil/master/travis.sh","|","sh"] -> True
-            ["-","curl","-sSL",url,"|","sh","-s",user,commit] -> url == ("https://raw.github.com/" ++ user ++ "/neil/" ++ commit ++ "/travis.sh")
-            _ -> False
-
-    when (length (filter isScript src) /= 1) $
-        fail $ "Expect to see exactly one script but not, please add: " ++ script
-
-    claimed <- (\xs -> sort $ "head" : maybeToList ghcNext ++ xs) <$> testedWith
-    let extend x = fromMaybe x $ lookup (x++".") [(dropWhileEnd (/= '.') v, v) | v <- ghcReleases ++ maybeToList ghcNext]
-    -- Add a nub since you might write an entry twice, once with expected_failures
-    let tested = nubSort [extend $ fst $ word1 num | Just (pre, num) <- map (stripInfix "GHCVER=") src, '#' `notElem` pre]
-    when (claimed /= tested) $
-        fail $ "Difference between the .cabal and the travis, " ++ show claimed ++ " vs " ++ show tested
-
-checkAppveyor :: IO ()
-checkAppveyor = do
-    let required =
-            ["build: off"
-            ,"cache: \"c:\\\\sr -> appveyor.yml\""
-            ,"test_script:"
-            ,"- ps: Invoke-Expression (Invoke-WebRequest 'https://raw.githubusercontent.com/ndmitchell/neil/master/appveyor.ps1')"]
-    whenM (doesFileExist "appveyor.yml") $ do
-        src <- map (trimEnd . takeWhile (/= '#')) . lines <$> readFile' "appveyor.yml"
-        let missing = required \\ src
-        when (missing /= []) $
-            fail $ unlines $ "Missing some important lines in appveyor.yml" : missing
 
 
 undocumented :: [String]
