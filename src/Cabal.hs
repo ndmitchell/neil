@@ -338,7 +338,7 @@ checkReadme = do
              "(https://hackage.haskell.org/package/" ++ name ++ ")"
             ,"[![Stackage version](https://www.stackage.org/package/" ++ name ++ "/badge/nightly?label=Stackage)]" ++
              "(https://www.stackage.org/package/" ++ name ++ ")"
-            ,"[![Build status](https://img.shields.io/github/workflow/status/" ++ github ++ "/ci.svg)]" ++
+            ,"[![Build status](https://img.shields.io/github/workflow/status/" ++ github ++ "/ci/master.svg)]" ++
              "(https://github.com/" ++ github ++ "/actions)"
             ]
     let line1 = head $ src ++ [""]
