@@ -19,7 +19,7 @@ import Prelude
 -- | GHC releases I test with
 ghcReleases = ["8.0","8.2","8.4","8.6","8.8","8.10","9.0"]
 
-ghcWarnings = words "-fwarn-unused-binds -fwarn-unused-imports -fwarn-orphans"
+ghcWarnings = words "-Wunused-binds -Wunused-imports -Worphans"
 
 
 ---------------------------------------------------------------------
@@ -185,7 +185,7 @@ run Test{..} = Just $ do
         -- cmdargs has a disabled executable, so this tool things it has one, but cabal falls over
         hasExecutable <- pure $ hasExecutable && project /= "cmdargs"
         system_ $ "cabal " ++ (if cabal2 then "v2-build" else "v1-install") ++ " --only-dependencies --enable-tests"
-        let ghcOptions = "-rtsopts" : "-fwarn-tabs" : ghcWarnings ++
+        let ghcOptions = "-rtsopts" : "-Wtabs" : ghcWarnings ++
                          ["-Werror" | not no_warnings]
         if cabal2 then do
             writeFile "cabal.project.local" $ unlines
@@ -226,7 +226,7 @@ run Sdist = Just $ do
     withSDist False "v1-" $ do
         system_ "cabal v1-clean"
         system_ "cabal v1-install --only-dependencies"
-        system_ $ "cabal v1-configure --ghc-option=-fwarn-unused-imports --disable-library-profiling " ++
+        system_ $ "cabal v1-configure --ghc-option=-Wunused-imports --disable-library-profiling " ++
                   "--ghc-option=-Werror " ++
                   -- Ignore warnings in Cabal generated files :(
                   "--ghc-option=-fno-warn-warnings-deprecations --ghc-option=-fno-warn-unsupported-calling-conventions"
