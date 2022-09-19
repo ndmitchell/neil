@@ -54,11 +54,11 @@ cabalCheck = do
     let bad = filter (\warning -> not $ any (`isInfixOf` warning) allowed) warnings
     when (bad /= []) $ error $ unlines $ "Cabal check gave bad warnings:" : map show bad
 
-    checkCabalFile
+    tests <- checkCabalFile
     checkReadme
     checkChangelog
     checkGhci
-    checkGithub
+    checkGithub tests
     checkPullRequestTemplate
 
 
@@ -68,9 +68,12 @@ checkGhci = do
     unless ("-W" `elem` src || all (`elem` src) ghcWarnings) $
         error $ "The .ghci file does not enough of " ++ unwords ("-W":ghcWarnings)
 
-checkGithub :: IO ()
-checkGithub = do
+checkGithub :: [String] -> IO ()
+checkGithub tests = do
+    let expect_tests = "ghc: [" ++ intercalate ", " (map (\x -> "\'" ++ x ++ "\'") tests) ++ "]"
     src <- readFile' ".github/workflows/ci.yml"
+    unless (expect_tests `isInfixOf` src) $
+        fail $ "ghc: versions did not match " ++ show expect_tests
     unless ("/neil@" `isInfixOf` src) $
         fail "Must run the neil action in github"
 
@@ -342,7 +345,8 @@ getLatestYear = do
     return year
 
 
-checkCabalFile :: IO ()
+-- Return the tests that are required
+checkCabalFile :: IO [String]
 checkCabalFile = do
     src <- fmap lines readCabal
     test <- testedWith
@@ -370,6 +374,7 @@ checkCabalFile = do
             ["Missing README.md in extra-doc-files" | "README.md" `notElem` concatMap words (grab "extra-doc-files")] ++
             ["Not all flag's have manual attributes" | let flag = length $ filter ("flag " `isPrefixOf`) src, let manual = length $ filter ("manual:" `isPrefixOf`) $ map trimStart src, flag /= manual]
     unless (null bad) $ error $ unlines bad
+    pure test
 
 validTests :: [String] -> Bool
 validTests xs = length xs >= 1 && xs `isPrefixOf` reverse ghcReleases
