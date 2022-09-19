@@ -34,7 +34,7 @@ FILENAME=$(echo $RELEASES | grep -o '\"[^\"]*-x86_64-'$OS$ESCEXT'\"' | sed s/\"/
 echo DEBUG: FILENAME = $FILENAME
 VERSION=$(echo $FILENAME | sed -n 's@.*-\(.*\)-x86_64-'$OS$ESCEXT'@\1@p')
 echo DEBUG: VERSION = $VERSION
-URL=https://github.com/ndmitchell/$PACKAGE/releases/download/$VERSION/$FILENAME
+URL=https://github.com/ndmitchell/$PACKAGE/releases/download/v$VERSION/$FILENAME
 echo DEBUG: URL = $URL
 TEMP=$(mktemp -d .$PACKAGE-XXXXXX)
 
