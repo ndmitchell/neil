@@ -30,6 +30,8 @@ fi
 echo Downloading and running $PACKAGE...
 # Don't go for the API since it hits the Appveyor GitHub API limit and fails
 RELEASES=$(curl --silent --show-error https://api.github.com/repos/ndmitchell/$PACKAGE/releases)
+echo DEBUG: INFO $OS$ESCEXT
+echo DEBUG: RELEASED $(echo $RELEASES | grep -o '\"[^\"]*-x86_64-'$OS$ESCEXT'\"')
 FILENAME=$(echo $RELEASES | grep -o '\"[^\"]*-x86_64-'$OS$ESCEXT'\"' | sed s/\"//g | head -n1)
 echo DEBUG: FILENAME = $FILENAME
 VERSION=$(echo $FILENAME | sed -n 's@.*-\(.*\)-x86_64-'$OS$ESCEXT'@\1@p')
