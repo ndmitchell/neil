@@ -33,6 +33,14 @@ RELEASES=$(curl --silent --show-error https://api.github.com/repos/ndmitchell/$P
 echo DEBUG: INFO $OS$ESCEXT
 echo DEBUG: RELEASED $(echo $RELEASES | grep -o '\"https://[^\"]*-x86_64-'$OS$ESCEXT'\"')
 URL=$(echo $RELEASES | grep -o '\"https://[^\"]*-x86_64-'$OS$ESCEXT'\"' | sed s/\"//g | head -n1)
+
+if [ "$OS" = "osx" ] && [ "$URL" = "" ]; then
+    echo FAILED ON MAC
+    echo $RELEASES
+    echo END OF CURL OUTPUT
+    exit 1
+fi
+
 echo DEBUG: URL = $URL
 VERSION=$(echo $URL | sed -n 's@.*-\(.*\)-x86_64-'$OS$ESCEXT'@\1@p')
 echo DEBUG: VERSION = $VERSION
