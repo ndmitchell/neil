@@ -1,3 +1,4 @@
+{-# LANGUAGE TupleSections #-}
 
 module Paper.Graph(graphLog, graphCreate) where
 
@@ -40,7 +41,7 @@ incDate (a, b, c) = (a,b,c+1)
 
 totalCounts :: [FilePath] -> [(Date,FilePath,Int)] -> [(Date,Int)]
 totalCounts _ [] = [((2000,1,1),0)]
-totalCounts files xs = f (Map.fromList (zip files $ repeat 0)) xs steps
+totalCounts files xs = f (Map.fromList (map (,0) files)) xs steps
     where
         steps = iterate incDate $ fst3 (head xs)
 
