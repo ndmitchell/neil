@@ -1,7 +1,7 @@
 
 module Paper.Haskell2.Type where
 
-import Data.List
+import Data.List.Extra
 
 
 data Pos = Pos FilePath !Int
@@ -53,7 +53,7 @@ parseWhere xs | null neg = Only xs
 
 
 allWhere :: [Where] -> [String]
-allWhere = nub . sort . concatMap f
+allWhere = nubSort . concatMap f
     where
         f (Only x) = x
         f (OnlyNot x) = x
