@@ -4,7 +4,7 @@ module Paper.Util.FileData(
     ) where
 
 import Control.Monad
-import Data.List
+import Data.List.Extra
 import System.Directory
 import System.FilePath
 
@@ -31,8 +31,7 @@ getFileData args = do
     when (length (nub dirs) > 1) $
         error "All files must be from the same directory"
 
-    let snub = nub . sort
-        nullErr x | null explicit = error $ "Error: No Latex files found in " ++ show (head dirs)
+    let nullErr x | null explicit = error $ "Error: No Latex files found in " ++ show (head dirs)
                   | otherwise = x
 
     let dir = head dirs
@@ -41,8 +40,8 @@ getFileData args = do
     return $ FileData
         dir
         (nullErr $ head $ explicit)
-        (nullErr $ snub $ explicit)
-        (nullErr $ snub $ explicit ++ implicit)
+        (nullErr $ sortNub $ explicit)
+        (nullErr $ sortNub $ explicit ++ implicit)
         (map tail opt)
         darcs
     where
