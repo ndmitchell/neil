@@ -40,8 +40,8 @@ getFileData args = do
     return $ FileData
         dir
         (nullErr $ head $ explicit)
-        (nullErr $ sortNub $ explicit)
-        (nullErr $ sortNub $ explicit ++ implicit)
+        (nullErr $ nubSort $ explicit)
+        (nullErr $ nubSort $ explicit ++ implicit)
         (map tail opt)
         darcs
     where
