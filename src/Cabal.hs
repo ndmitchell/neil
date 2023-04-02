@@ -17,7 +17,7 @@ import Arguments
 import Prelude
 
 -- | GHC releases I test with
-ghcReleases = ["8.0","8.2","8.4","8.6","8.8","8.10","9.0","9.2"]
+ghcReleases = ["8.0","8.2","8.4","8.6","8.8","8.10","9.0","9.2","9.4"]
 
 ghcWarnings = words "-Wunused-binds -Wunused-imports -Worphans"
 
@@ -50,6 +50,7 @@ cabalCheck = do
             ,"These warnings may cause trouble when distributing the package:"
             ,"should specify a specific version of the Cabal spec"
             ,"-main-is' is not portable."
+            ,"These packages miss upper bounds:"
             ]
     let bad = filter (\warning -> not $ any (`isInfixOf` warning) allowed) warnings
     when (bad /= []) $ error $ unlines $ "Cabal check gave bad warnings:" : map show bad
