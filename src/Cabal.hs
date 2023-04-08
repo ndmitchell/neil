@@ -17,7 +17,7 @@ import Arguments
 import Prelude
 
 -- | GHC releases I test with
-ghcReleases = ["8.0","8.2","8.4","8.6","8.8","8.10","9.0","9.2","9.4"]
+ghcReleases = ["8.8","8.10","9.0","9.2","9.4", "9.6"]
 
 ghcWarnings = words "-Wunused-binds -Wunused-imports -Worphans"
 
