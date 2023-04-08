@@ -340,7 +340,10 @@ checkPullRequestTemplate = do
 
 getLatestYear :: IO String
 getLatestYear = do
-    res <- systemOutput_ "git show -s --format=%ci HEAD"
+    sl <- doesDirectoryExist ".sl"
+    res <- if sl
+        then systemOutput_ "sl log \"--template={date|isodate}\" -l1"
+        else systemOutput_ "git show -s --format=%ci HEAD"
     let year = takeWhile isDigit res
     when (length year /= 4) $ fail $ "Couldn't get date, " ++ res
     return year
