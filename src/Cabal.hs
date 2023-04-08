@@ -19,6 +19,9 @@ import Prelude
 -- | GHC releases I test with
 ghcReleases = ["8.8","8.10","9.0","9.2","9.4", "9.6"]
 
+-- | Is the last GHC release optional (as it is being rolled out)
+lastOptional = True
+
 ghcWarnings = words "-Wunused-binds -Wunused-imports -Worphans"
 
 
@@ -379,7 +382,9 @@ checkCabalFile = do
     pure test
 
 validTests :: [String] -> Bool
-validTests xs = length xs >= 1 && xs `isPrefixOf` reverse ghcReleases
+validTests xs = length xs >= 1 &&
+    (xs `isPrefixOf` reverse ghcReleases ||
+     lastOptional && xs `isPrefixOf` tail (reverse ghcReleases))
 
 repoName x = owner ("https://github.com/" ++ ownerGithub x ++ "/") x
 ownerGithub = owner " https://github.com/" -- leading space ensures other <https:// links don't pollute the owner
