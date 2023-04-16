@@ -20,7 +20,7 @@ validName xs = isHaskellSym xs || isHaskellVar xs
 
 
 defines :: String -> [String]
-defines = nub . filter validName . concatMap f . map lexer . classLeft . lines
+defines = nub . concatMap (filter validName . f) . map lexer . classLeft . lines
     where
         f ("(":name:")":_) | isHaskellSym name = [name]
         f ("(":xs) | isHaskellSym name = [name]
