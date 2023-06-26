@@ -55,7 +55,7 @@ if [ "$HASKELL_DEPENDENCIES" != "" ]; then
 fi
 
 # Install dependencies
-retry cabal v2-build --only-dependencies --enable-tests $CABALFLAGS
+retry cabal v2-build --only-dependencies --enable-tests --haddock-hoogle $CABALFLAGS
 
 # Install the neil tool
 retry git clone -b $BRANCH --depth=1 "https://github.com/$GITHUB_USER/neil" .neil
