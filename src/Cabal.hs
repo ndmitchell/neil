@@ -25,6 +25,11 @@ lastOptional = True
 ghcWarnings = words "-Wunused-binds -Wunused-imports -Worphans"
 
 
+systemLog_ :: String -> IO ()
+systemLog_ x = do
+    putStrLn $ "+ " ++ x
+    system_ x
+
 ---------------------------------------------------------------------
 -- COMMANDS
 
@@ -153,13 +158,13 @@ parseType = map trim . splitOn "->" . drop 2 . snd . breakOn "::"
 withSDist :: Bool -> String -> IO a -> IO a
 withSDist no_warnings prefix run = withTempDir $ \tdir -> do
     unless no_warnings $
-        system_ "git diff --stat --exit-code"
+        systemLog_ "git diff --stat --exit-code"
     local <- map normalise . lines <$> systemOutput_ "git ls-files . --others"
-    system_ $ "cabal " ++ prefix ++ "configure --builddir=" ++ tdir
-    system_ $ "cabal " ++ prefix ++ "sdist --builddir=" ++ tdir
+    systemLog_ $ "cabal " ++ prefix ++ "configure --builddir=" ++ tdir
+    systemLog_ $ "cabal " ++ prefix ++ "sdist --builddir=" ++ tdir
     files <- listFilesRecursive tdir
     let tarball = head [x | x <- files, ".tar.gz" `isSuffixOf` x]
-    withCurrentDirectory tdir $ system_ $ "tar -xf " ++ drop (length tdir + 1) tarball
+    withCurrentDirectory tdir $ systemLog_ $ "tar -xf " ++ drop (length tdir + 1) tarball
     lst <- listFilesRecursive tdir
     let bad = local `intersect` map (normalise . drop (length tdir + length tarball - 5)) lst
     when (bad /= []) $
@@ -191,7 +196,7 @@ run Test{..} = Just $ do
         Just (takeBaseName -> project) <- findCabal
         -- cmdargs has a disabled executable, so this tool things it has one, but cabal falls over
         hasExecutable <- pure $ hasExecutable && project /= "cmdargs"
-        system_ $ "cabal " ++ (if cabal2 then "v2-build" else "v1-install") ++ " --only-dependencies --enable-tests"
+        systemLog_ $ "cabal " ++ (if cabal2 then "v2-build" else "v1-install") ++ " --only-dependencies --enable-tests"
         let ghcOptions = "-rtsopts" : "-Wtabs" : ghcWarnings ++
                          ["-Werror" | not no_warnings]
         if cabal2 then do
@@ -201,27 +206,27 @@ run Test{..} = Just $ do
                 ,"package " ++ project
                 ,"  ghc-options: " ++ unwords ghcOptions]
          else
-            system_ $ unwords $
+            systemLog_ $ unwords $
                 ("cabal v1-configure --enable-tests --disable-library-profiling") :
                 map ("--ghc-option=" ++) ghcOptions
-        system_ $ "cabal " ++ prefix ++ "build"
+        systemLog_ $ "cabal " ++ prefix ++ "build"
         when hasLibrary $ do
             if cabal2 then
-                system_ $ "cabal v2-haddock --haddock-hoogle"
+                systemLog_ $ "cabal v2-haddock --haddock-hoogle"
             else
-                system_ $ "cabal v1-haddock --hoogle"
+                systemLog_ $ "cabal v1-haddock --hoogle"
             checkHoogle
         when (hasExecutable && install) $
             if cabal2 then
-                system_ $ "cabal v2-install --install-method=copy --overwrite-policy=always"
+                systemLog_ $ "cabal v2-install --install-method=copy --overwrite-policy=always"
             else do
-                system_ $ "cabal " ++ prefix ++ "copy"
-                system_ $ "cabal " ++ prefix ++ "register"
+                systemLog_ $ "cabal " ++ prefix ++ "copy"
+                systemLog_ $ "cabal " ++ prefix ++ "register"
         if cabal2 then
             -- Try and make imported packages available while testing
-            system_ "cabal v2-exec cabal v2-test"
+            systemLog_ "cabal v2-exec cabal v2-test"
         else
-            system_ $ "cabal " ++ prefix ++ "test --show-details=streaming"
+            systemLog_ $ "cabal " ++ prefix ++ "test --show-details=streaming"
 
 run Check{..} = Just $ withCurrentDirectory path cabalCheck
 
@@ -229,34 +234,34 @@ run Sdist = Just $ do
     cabalCheck
     tested <- testedWith
     withSDist False "v1-" $ do
-        system_ "cabal v1-clean"
-        system_ "cabal v1-install --only-dependencies"
-        system_ $ "cabal v1-configure --ghc-option=-Wunused-imports --disable-library-profiling " ++
+        systemLog_ "cabal v1-clean"
+        systemLog_ "cabal v1-install --only-dependencies"
+        systemLog_ $ "cabal v1-configure --ghc-option=-Wunused-imports --disable-library-profiling " ++
                   "--ghc-option=-Werror " ++
                   -- Ignore warnings in Cabal generated files :(
                   "--ghc-option=-fno-warn-warnings-deprecations --ghc-option=-fno-warn-unsupported-calling-conventions"
-        system_ "cabal v1-build"
-        system_ "cabal v1-haddock"
-    system_ "cabal v1-sdist"
+        systemLog_ "cabal v1-build"
+        systemLog_ "cabal v1-haddock"
+    systemLog_ "cabal v1-sdist"
     putStrLn $ "Ready to release! (remember to neil tag after uploading)"
 
 run Docs{..} = Just $ do
     src <- readCabal
     let ver = extractCabal "version" src
     let name = extractCabal "name" src
-    system_ $ "cabal v1-haddock --hoogle --html --hyperlink-source " ++
+    systemLog_ $ "cabal v1-haddock --hoogle --html --hyperlink-source " ++
           "--contents-location=/package/" ++ name
     withTempDir $ \dir -> do
-        system_ $ "cp -R dist/doc/html/" ++ name ++ " \"" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs\""
+        systemLog_ $ "cp -R dist/doc/html/" ++ name ++ " \"" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs\""
         files <- listFilesRecursive dir
         forM_ files $ \file -> when (takeExtension file == ".html") $ do
-            system_ $ "chmod u+w " ++ (dir </> file)
+            systemLog_ $ "chmod u+w " ++ (dir </> file)
             src <- readFileBinary' $ dir </> file
             src <- return $ filter (/= '\r') src -- filter out \r, due to CPP bugs
             src <- return $ fixFileLinks $ fixHashT src
             writeFileBinary (dir </> file) src
-        system_ $ "tar cvz -C " ++ dir ++ " --format=ustar -f " ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs.tar.gz " ++ name ++ "-" ++ ver ++ "-docs"
-        system_ $ "curl -X PUT -H \"Content-Type: application/x-tar\" " ++
+        systemLog_ $ "tar cvz -C " ++ dir ++ " --format=ustar -f " ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs.tar.gz " ++ name ++ "-" ++ ver ++ "-docs"
+        systemLog_ $ "curl -X PUT -H \"Content-Type: application/x-tar\" " ++
               "-H \"Content-Encoding: gzip\" " ++
               "-u " ++ username ++ " " ++
               "--data-binary \"@" ++ dir ++ "/" ++ name ++ "-" ++ ver ++ "-docs.tar.gz\" " ++
