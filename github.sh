@@ -27,7 +27,7 @@ if [ "$HLINT_ARGUMENTS" = "" ]; then
     HLINT_ARGUMENTS=.
 fi
 # Don't run on Mac, since that often exceeds download limits for hlint itself
-if [ "$OS" != "osx" ]; then
+if [ "$OS" != "macOS" ]; then
     curl -sSL https://raw.github.com/ndmitchell/hlint/master/misc/run.sh | sh -s $HLINT_ARGUMENTS --with-group=extra --with-group=future
 fi
 
