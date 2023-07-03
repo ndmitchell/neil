@@ -60,7 +60,6 @@ run Whatsnew{..} = Just $ forEachRepo $ \name -> do
 
 run Tag = Just $ do
     src <- readCabal
-    let [name] = [trim $ drop 5 x | x <- lines src, "name:" `isPrefixOf` x]
     let [ver] = [trim $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
     putStrLn $ "Confirm to tag the release with 'v" ++ ver ++ "'? Type 'yes':"
     "yes" <- getLine
