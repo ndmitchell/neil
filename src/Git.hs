@@ -64,8 +64,7 @@ run Tag = Just $ do
     let [ver] = [trim $ drop 8 x | x <- lines src, "version:" `isPrefixOf` x]
     putStrLn $ "Confirm to tag the release with 'v" ++ ver ++ "'? Type 'yes':"
     "yes" <- getLine
-    retry 2 $ system_ "git push"
-    system_ $ "git tag -a -s -m \"" ++ name ++ " " ++ ver ++ "\" v" ++ ver
-    retry 2 $ system_ "git push --tags"
+    retry 2 $ system_ "sl push"
+    system_ $ "sl push --to tags/v" ++ ver
 
 run _ = Nothing
