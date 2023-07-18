@@ -11,13 +11,16 @@ fi
 shift
 
 # The PACKAGE_ARG can optionally have a release version separated by the @ character.
-if [[ "$PACKAGE_ARG" == *'@'* ]]; then
-    PACKAGE=$(echo "$PACKAGE_ARG" | cut -d'@' -f1)
-    RELEASE_VERSION=$(echo "$PACKAGE_ARG" | cut -d'@' -f2)
-else 
-    PACKAGE="$PACKAGE_ARG"
-    RELEASE_VERSION=""
-fi
+case ${PACKAGE_ARG} in
+    *@*)
+        PACKAGE=$(echo "$PACKAGE_ARG" | cut -d'@' -f1)
+        RELEASE_VERSION=$(echo "$PACKAGE_ARG" | cut -d'@' -f2)
+        ;;
+    *)
+        PACKAGE="$PACKAGE_ARG"
+        RELEASE_VERSION=""
+        ;;
+esac
 
 case "$(uname)" in
     "Darwin")
