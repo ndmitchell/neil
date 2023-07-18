@@ -3,12 +3,21 @@
 # It bootstraps to grab the a binary release and run it
 set -e # exit on errors
 
-PACKAGE=$1
-if [ -z "$PACKAGE" ]; then
+PACKAGE_ARG=$1
+if [ -z "$PACKAGE_ARG" ]; then
     echo No arguments provided, please pass the project name as the first argument
     exit 1
 fi
 shift
+
+# The PACKAGE_ARG can optionally have a release version separated by the @ character.
+if [[ $PACKAGE_ARG == *'@'* ]]; then
+    PACKAGE=$(echo "$PACKAGE_ARG" | cut -d'@' -f1)
+    RELEASE_VERSION=$(echo "$PACKAGE_ARG" | cut -d'@' -f2)
+else 
+    PACKAGE="$PACKAGE_ARG"
+    RELEASE_VERSION=""
+fi
 
 case "$(uname)" in
     "Darwin")
@@ -32,7 +41,7 @@ echo Downloading and running $PACKAGE...
 RELEASES=$(curl --silent --show-error https://api.github.com/repos/ndmitchell/$PACKAGE/releases)
 echo DEBUG: INFO $OS$ESCEXT
 echo DEBUG: RELEASED $(echo $RELEASES | grep -o '\"https://[^\"]*-x86_64-'$OS$ESCEXT'\"')
-URL=$(echo $RELEASES | grep -o '\"https://[^\"]*-x86_64-'$OS$ESCEXT'\"' | sed s/\"//g | head -n1)
+URL=$(echo $RELEASES | grep -o '\"https://[^\"]*-x86_64-'$OS$ESCEXT'\"' | sed s/\"//g | grep "$RELEASE_VERSION" | head -n1)
 
 if [ "$OS" = "osx" ] && [ "$URL" = "" ]; then
     echo FAILED ON MAC
