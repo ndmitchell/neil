@@ -11,7 +11,7 @@ fi
 shift
 
 # The PACKAGE_ARG can optionally have a release version separated by the @ character.
-if [[ $PACKAGE_ARG == *'@'* ]]; then
+if [[ "$PACKAGE_ARG" == *'@'* ]]; then
     PACKAGE=$(echo "$PACKAGE_ARG" | cut -d'@' -f1)
     RELEASE_VERSION=$(echo "$PACKAGE_ARG" | cut -d'@' -f2)
 else 
