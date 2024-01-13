@@ -47,6 +47,6 @@ arguments = cmdArgsMode $ modes
     ,Docs {username = "NeilMitchell", host = "https://hackage.haskell.org"}
     ,Travis {wait = 0.1 &= help "Time to wait after each wget request"}
     ,Releases {wait = 0.1 &= help "Time to wait after each wget request"} &= help "List releases for a project"
-    ,Test {install = False &= help "Install after building", no_warnings = False, cabal2 = False}
+    ,Test {install = False &= help "Install after building", no_warnings = False, cabal2 = True}
     ]
     &= summary "Neil's utility tool"
