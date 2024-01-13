@@ -41,6 +41,9 @@ executable neil
             CI
             Releases
 
+    if impl(ghc >= 9.8)
+        ghc-options: -Wno-x-partial
+
     main-is:            Main.hs
 
     other-modules:
