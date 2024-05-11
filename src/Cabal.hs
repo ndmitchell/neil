@@ -17,7 +17,7 @@ import Arguments
 import Prelude
 
 -- | GHC releases I test with
-ghcReleases = ["8.8","8.10","9.0","9.2","9.4", "9.6", "9.8", "9.10"]
+ghcReleases = ["8.8","8.10","9.0","9.2","9.4", "9.6", "9.8"]
 
 -- | Is the last GHC release optional (as it is being rolled out)
 lastOptional = True
