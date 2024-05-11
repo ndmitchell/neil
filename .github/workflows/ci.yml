@@ -34,4 +34,4 @@ jobs:
       with:
         # Only required to test this CI path,
         # which currently fails on Mac, alas.
-        install-fsatrace: runner.os != 'macOS'
+        install-fsatrace: true
