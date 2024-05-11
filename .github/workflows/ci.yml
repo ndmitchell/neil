@@ -32,5 +32,6 @@ jobs:
         restore-keys: ${{ runner.os }}-${{ matrix.ghc }}-
     - uses: ndmitchell/neil@master
       with:
-        # Only required to test this CI path
-        install-fsatrace: true
+        # Only required to test this CI path,
+        # which currently fails on Mac, alas.
+        install-fsatrace: runner.os != 'macOS'
