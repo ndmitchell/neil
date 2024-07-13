@@ -59,6 +59,7 @@ cabalCheck = do
             ,"should specify a specific version of the Cabal spec"
             ,"-main-is' is not portable."
             ,"These packages miss upper bounds:"
+            ,"Warning: [missing-upper-bounds]"
             ]
     let bad = filter (\warning -> not $ any (`isInfixOf` warning) allowed) warnings
     when (bad /= []) $ error $ unlines $ "Cabal check gave bad warnings:" : map show bad
