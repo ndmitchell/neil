@@ -43,19 +43,22 @@ if [ "$INSTALL_FSATRACE" = "true" ]; then
             # an untracked read - so we put 'fsatrace' one directory up.
             7z x fsatrace.zip -o../fsatrace
             export PATH=$PATH:`pwd`/../fsatrace
+            fsatrace v - -- echo fsatrace works
             ;;
         Mac*|mac*)
             git clone https://github.com/ndmitchell/fsatrace.git .fsatrace
             (cd .fsatrace && make CFLAGS="-arch arm64e" LDFLAGS="-arch arm64e")
             export PATH=$PATH:`pwd`/.fsatrace
+            # Unfortunately actually running the binary fails, so don't test it
+            # Upstream ticket at https://github.com/jacereda/fsatrace/issues/50
             ;;
         *)
             git clone https://github.com/jacereda/fsatrace.git .fsatrace
             (cd .fsatrace && make)
             export PATH=$PATH:`pwd`/.fsatrace
+            fsatrace v - -- echo fsatrace works
             ;;
     esac
-    fsatrace v - -- echo fsatrace works
 fi
 
 if [ "$HASKELL_DEPENDENCIES" != "" ]; then
