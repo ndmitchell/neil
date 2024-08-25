@@ -46,7 +46,7 @@ if [ "$INSTALL_FSATRACE" = "true" ]; then
             ;;
         Mac*|mac*)
             git clone https://github.com/ndmitchell/fsatrace.git .fsatrace
-            (cd .fsatrace && make CFLAGS="-arch arm64" LDFLAGS="-arch arm64")
+            (cd .fsatrace && make CFLAGS="-arch arm64e" LDFLAGS="-arch arm64e")
             export PATH=$PATH:`pwd`/.fsatrace
             ;;
         *)
