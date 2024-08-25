@@ -46,7 +46,7 @@ if [ "$INSTALL_FSATRACE" = "true" ]; then
             ;;
         Mac*|mac*)
             git clone https://github.com/jacereda/fsatrace.git .fsatrace
-            (cd .fsatrace && make CFLAGS="NEIL_CCFALGS -arch arm64" LDFLAGS="NEIL_LDFLAGS -arch arm64")
+            (cd .fsatrace && make CFLAGS="-arch arm64" LDFLAGS="NEIL_LDFLAGS -arch arm64")
             export PATH=$PATH:`pwd`/.fsatrace
             ;;
         *)
