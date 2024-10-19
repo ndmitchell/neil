@@ -17,10 +17,9 @@ import Arguments
 import Prelude
 
 -- | GHC releases I test with
-ghcReleases = ["8.8","8.10","9.0","9.2","9.4", "9.6", "9.8"]
+ghcReleases = ["8.8","8.10","9.0","9.2","9.4", "9.6", "9.8", "9.10", "9.12"]
 
--- | Is the last GHC release optional (as it is being rolled out)
-lastOptional = True
+ghcReleaseRequired = "9.8"
 
 ghcWarnings = words "-Wunused-binds -Wunused-imports -Worphans"
 
@@ -380,7 +379,7 @@ checkCabalFile = do
             ["Homepage no longer exists" | "~ndm" `isInfixOf` concat (grab "homepage")] ++
             ["Incorrect license" | grab "license" `notElem` [["BSD3"],["MIT"]]] ++
             ["Incorrect default language" | x <- grab "default-language", x /= "Haskell2010"] ++
-            ["Invalid tested-with: " ++ show test ++ "\nShould be prefix of " ++ show (reverse ghcReleases) | not $ validTests test] ++
+            ["Invalid tested-with: " ++ show test ++ "\nShould be releases in of " ++ show ghcReleases ++ " and contain " ++ ghcReleaseRequired | not $ validTests test] ++
             ["Bad stabilty, should be missing" | grab "stability" /= []] ++
             ["Missing CHANGES.txt in extra-doc-files" | ["CHANGES.txt","CHANGELOG.md","changelog.md"] `disjoint` concatMap words (grab "extra-doc-files")] ++
             ["Missing README.md in extra-doc-files" | "README.md" `notElem` concatMap words (grab "extra-doc-files")] ++
@@ -389,9 +388,9 @@ checkCabalFile = do
     pure test
 
 validTests :: [String] -> Bool
-validTests xs = length xs >= 1 &&
-    (xs `isPrefixOf` reverse ghcReleases ||
-     lastOptional && xs `isPrefixOf` tail (reverse ghcReleases))
+validTests xs =
+    ghcReleaseRequired `elem` xs &&
+    xs `isInfixOf` reverse ghcReleases
 
 repoName x = owner ("https://github.com/" ++ ownerGithub x ++ "/") x
 ownerGithub = owner " https://github.com/" -- leading space ensures other <https:// links don't pollute the owner
