@@ -19,7 +19,7 @@ import Prelude
 -- | GHC releases I test with
 ghcReleases = ["8.8","8.10","9.0","9.2","9.4", "9.6", "9.8", "9.10", "9.12"]
 
-ghcReleaseRequired = "9.8"
+ghcReleaseRequired = "9.6"
 
 ghcWarnings = words "-Wunused-binds -Wunused-imports -Worphans"
 
