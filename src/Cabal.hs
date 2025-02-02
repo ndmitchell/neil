@@ -56,6 +56,7 @@ cabalCheck = do
     let allowed =
             [ "No errors or warnings could be found in the package."
             , "These warnings may cause trouble when distributing the package:"
+            , "These warnings will likely cause trouble when distributing the package:"
             , "should specify a specific version of the Cabal spec"
             , "-main-is' is not portable."
             , "These packages miss upper bounds:"
