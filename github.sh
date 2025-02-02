@@ -69,25 +69,27 @@ fi
 retry cabal v2-build --only-dependencies --enable-tests --haddock-hoogle $CABALFLAGS
 
 # Install the neil tool
-retry git clone -b $BRANCH --depth=1 "https://github.com/$GITHUB_USER/neil" .neil
-(cd .neil && retry cabal v2-install --allow-newer --flags=small --installdir=. --install-method=copy --overwrite-policy=always)
+# Use used to use `$PWD/.neil`, but then `cabal.project` files started to interfere.
+NEIL_DIR=$(mktemp -d)
+retry git clone -b $BRANCH --depth=1 "https://github.com/$GITHUB_USER/neil" $NEIL_DIR
+(cd $NEIL_DIR && retry cabal v2-install --allow-newer --flags=small --installdir=. --install-method=copy --overwrite-policy=always)
 
 if [ "$MAKE_RELEASE" = "true" ]; then
-    .neil/neil bin
+    $NEIL_DIR/neil bin
     cabal v2-sdist
     cp dist-newstyle/sdist/*.tar.gz dist/
 else
-    timer .neil/neil test --install --cabal2
+    timer $NEIL_DIR/neil test --install --cabal2
     # Make sure the output is on $PATH
     export PATH="$HOME/.cabal/bin:/home/runner/.cabal/bin:/c/Users/runneradmin/AppData/Roaming/cabal/bin:$PATH"
 
     # Run any additional tests, written in Haskell
     if [ -e travis.hs ]; then
         # We want to run travis.hs with the extra package in scope
-        # Best way I can do that is by hijacking the Main.hs of .neil
-        cp travis.hs .neil/src/Main.hs
-        (cd .neil && cabal v2-install --allow-newer --flags=small --installdir=. --install-method=copy --overwrite-policy=always)
-        .neil/neil
+        # Best way I can do that is by hijacking the Main.hs of `neil`
+        cp travis.hs $NEIL_DIR/src/Main.hs
+        (cd $NEIL_DIR && cabal v2-install --allow-newer --flags=small --installdir=. --install-method=copy --overwrite-policy=always)
+        $NEIL_DIR/neil
     fi
 
     # Check regenerating doesn't change anything
